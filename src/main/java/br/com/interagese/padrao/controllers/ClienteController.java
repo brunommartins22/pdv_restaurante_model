@@ -5,11 +5,10 @@
  */
 package br.com.interagese.padrao.controllers;
 
-import br.com.interagese.padrao.services.CidadeService;
-import br.com.interagese.padrao.rest.models.Cidade;
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
-
+import br.com.interagese.padrao.services.ClienteService;
+import br.com.interagese.syscontabil.models.Cliente;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,22 +18,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author adam
+ * @author Bruno Martins
  */
 @RestController
-@RequestMapping(path = "/api/cidades")
-public class CidadeController extends PadraoController<Cidade> {
-
+@RequestMapping(path = "api/cliente")
+public class ClienteController extends PadraoController<Cliente> {
+    
+    //********************** inject service in controller **********************
     @IsServiceDefault
     @Autowired
-    private CidadeService service;
-
-
-    @GetMapping(path = "findByUf/{idUf}")
-    public String findByUf(@PathVariable Long idUf) {
-        List<Cidade> result = service.findByUf(idUf);
+    private ClienteService service;
+    
+    //*************************** endpoint *************************************
+    
+    @GetMapping(path = "getListClientByName/{nome}")
+    public String getListClientByName(@PathVariable String nome) {
+        List<Cliente> result = service.getListClientByName(nome);
 
         return serializar(result);
     }
-
+    
+    
+    
 }

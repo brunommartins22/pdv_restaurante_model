@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CidadeService extends PadraoService<Cidade> {
 
-    public CidadeService() {
-        super(Cidade.class);
-    }
-
+    //************************ create business rules ***************************
     public List<Cidade> findByUf(Long idUf) {
         return em.createQuery("SELECT o from Cidade o "
                 + "where o.cuF.id = " + idUf + " order by o.xmun").getResultList();

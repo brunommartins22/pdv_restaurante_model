@@ -20,13 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api/estados")
 public class EstadoController extends PadraoController<Estado> {
-
+    
+    //******************** inject service in controller ************************
     @IsServiceDefault
     @Autowired
     private EstadoService service;
 
-    public EstadoController() {
-        super(Estado.class);
-    }
 
 }

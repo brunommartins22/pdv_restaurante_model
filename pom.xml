@@ -24,8 +24,8 @@
     <dependencies>
         
         <dependency>
-            <groupId>br.com.interagese.interagese_rest</groupId>
-            <artifactId>interagese_rest</artifactId>
+            <groupId>br.com.interagese.siscontabilmodel</groupId>
+            <artifactId>syscontabil_model</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
        

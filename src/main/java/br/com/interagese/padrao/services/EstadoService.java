@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EstadoService extends PadraoService<Estado> {
 
-    public EstadoService() {
-        super(Estado.class);
-    }
-
+    //************************ create business rules ***************************
     @Override
     public List<Estado> findAll() {
         return em.createQuery("SELECT o from Estado o ORDER BY o.sigla").getResultList();
