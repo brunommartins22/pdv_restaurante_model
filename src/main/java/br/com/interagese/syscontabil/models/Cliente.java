@@ -5,14 +5,22 @@
  */
 package br.com.interagese.syscontabil.models;
 
+import br.com.interagese.padrao.rest.models.Cidade;
+import br.com.interagese.padrao.rest.models.Estado;
 import br.com.interagese.padrao.rest.models.Usuario;
+import br.com.interagese.rest.domain.DominioTipoPessoa;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -31,23 +39,29 @@ public class Cliente implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_cli")
     @SequenceGenerator(name = "gen_cli", sequenceName = "seq_cli")
     private Long id;
+    @Column(length = 50, nullable = false)
     private String nmCliente;
     private String email;
     private String nmFantasia;
-    private String tpCliente;
+    private DominioTipoPessoa tpCliente;
+    @Column(nullable = false, unique = true)
     private String cpfCnpj;
     private String rgIe;
     private String endereco;
     private String numero;
     private String bairro;
     private String pais;
-    private String cidade;
-    private String estado;
+    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_cidade"), nullable = false)
+    
+    private Cidade cidade;
+    private Estado estado;
     private String cep;
     private String perimetro;
     private String fone1;
     private String fone2;
-    @OneToOne
+
+    @ManyToOne
+    
     private Usuario usuarioRegistrador;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataRegistro;
@@ -137,14 +151,14 @@ public class Cliente implements Serializable {
     /**
      * @return the tpCliente
      */
-    public String getTpCliente() {
+    public DominioTipoPessoa getTpCliente() {
         return tpCliente;
     }
 
     /**
      * @param tpCliente the tpCliente to set
      */
-    public void setTpCliente(String tpCliente) {
+    public void setTpCliente(DominioTipoPessoa tpCliente) {
         this.tpCliente = tpCliente;
     }
 
@@ -235,28 +249,28 @@ public class Cliente implements Serializable {
     /**
      * @return the cidade
      */
-    public String getCidade() {
+    public Cidade getCidade() {
         return cidade;
     }
 
     /**
      * @param cidade the cidade to set
      */
-    public void setCidade(String cidade) {
+    public void setCidade(Cidade cidade) {
         this.cidade = cidade;
     }
 
     /**
      * @return the estado
      */
-    public String getEstado() {
+    public Estado getEstado() {
         return estado;
     }
 
     /**
      * @param estado the estado to set
      */
-    public void setEstado(String estado) {
+    public void setEstado(Estado estado) {
         this.estado = estado;
     }
 
