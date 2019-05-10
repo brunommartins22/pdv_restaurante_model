@@ -14,14 +14,14 @@ import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -41,30 +41,48 @@ public class Cliente implements Serializable {
     private Long id;
     @Column(length = 50, nullable = false)
     private String nmCliente;
-    private String email;
-    private String nmFantasia;
-    private DominioTipoPessoa tpCliente;
-    @Column(nullable = false, unique = true)
+    @Column(length = 14, nullable = false, unique = true)
     private String cpfCnpj;
+    @Column(length = 255)
+    private String nmFantasia;
+    @Enumerated(EnumType.STRING)
+    private DominioTipoPessoa tpCliente;
+    @Column(length = 120)
+    private String email;
+    @Column(length = 12, nullable = false, unique = true)
     private String rgIe;
+    @Column(length = 255)
     private String endereco;
+    @Column(length = 120)
     private String numero;
+    @Column(length = 120)
     private String bairro;
+    @Column(length = 120)
     private String pais;
-    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_cidade"), nullable = false)
-    
-    private Cidade cidade;
-    private Estado estado;
-    private String cep;
-    private String perimetro;
-    private String fone1;
-    private String fone2;
-
     @ManyToOne
-    
+    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_cidade"))
+    private Cidade cidade;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_estado"))
+    private Estado estado;
+    @Column(length = 8, unique = true)
+    private String cep;
+    @Column(length = 255)
+    private String perimetro;
+    @Column(length = 12)
+    private String fone1;
+    @Column(length = 12)
+    private String fone2;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_usuario"))
     private Usuario usuarioRegistrador;
+    @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataRegistro;
+
+    public Cliente() {
+        dataRegistro = new Date();
+    }
 
     //*********************** Eequals && Hashcode ******************************
     @Override
@@ -348,6 +366,9 @@ public class Cliente implements Serializable {
      * @return the dataRegistro
      */
     public Date getDataRegistro() {
+        if (dataRegistro == null) {
+            dataRegistro = new Date();
+        }
         return dataRegistro;
     }
 
