@@ -25,5 +25,7 @@ public class ClienteService extends PadraoService<Cliente> {
         return result.getResultList();
 
     }
+    
+    
 
 }
