@@ -79,6 +79,9 @@ public class Cliente implements Serializable {
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataRegistro;
+    
+    
+    
 
     public Cliente() {
         dataRegistro = new Date();
