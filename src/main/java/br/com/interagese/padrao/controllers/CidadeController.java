@@ -36,5 +36,7 @@ public class CidadeController extends PadraoController<Cidade> {
 
         return serializar(result);
     }
+    
+    
 
 }
