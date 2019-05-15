@@ -6,9 +6,9 @@
 package br.com.interagese.padrao.controllers;
 
 import br.com.interagese.padrao.rest.models.Usuario;
+import br.com.interagese.padrao.rest.services.UsuarioService;
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
-import br.com.interagese.padrao.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

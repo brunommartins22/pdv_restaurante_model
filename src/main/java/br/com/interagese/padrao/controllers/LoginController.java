@@ -6,15 +6,11 @@
 package br.com.interagese.padrao.controllers;
 
 import br.com.interagese.padrao.rest.models.Usuario;
+import br.com.interagese.padrao.rest.services.UsuarioService;
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
-import br.com.interagese.padrao.services.UsuarioService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +30,7 @@ public class LoginController extends PadraoController<Usuario> {
 
     @PostMapping(path = "/login")
 // @HeaderParam("Authorization"
-    public String login(@RequestHeader String authorizationHeader) {
+    public String login(@RequestHeader("Authorization") String authorizationHeader) {
         try {
             String accessToken = service.login(authorizationHeader);
             return accessToken;
