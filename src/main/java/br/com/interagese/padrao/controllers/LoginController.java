@@ -9,23 +9,34 @@ import br.com.interagese.padrao.rest.models.Usuario;
 import br.com.interagese.padrao.rest.services.UsuarioService;
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author Bruno Martins
+ * @author adam
  */
 @RestController
-@RequestMapping(path = "api/usuario")
-public class UsuarioController extends PadraoController<Usuario> {
+@RequestMapping(path = "/api/security")
+public class LoginController extends PadraoController<Usuario> {
 
-    //******************** inject service in controller ************************
     @IsServiceDefault
     @Autowired
     private UsuarioService service;
-    
-    
+
+    @PostMapping(path = "/login")
+// @HeaderParam("Authorization"
+    public String login(@RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            String accessToken = service.login(authorizationHeader);
+            return accessToken;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 
 }
