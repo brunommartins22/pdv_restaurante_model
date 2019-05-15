@@ -5,7 +5,7 @@
  */
 package br.com.interagese.padrao.services;
 
-
+import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.padrao.rest.models.Cidade;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import java.util.List;
@@ -22,6 +22,21 @@ public class CidadeService extends PadraoService<Cidade> {
     public List<Cidade> findByUf(Long idUf) {
         return em.createQuery("SELECT o from Cidade o "
                 + "where o.cuF.id = " + idUf + " order by o.xmun").getResultList();
+    }
+
+    @Override
+    public String getWhere(String complementoConsulta) {
+        String consultaSQL = "";
+
+        if (complementoConsulta != null && !complementoConsulta.trim().equals("")) {
+            if (Utils.somenteNumeros(complementoConsulta)) {
+                consultaSQL = "o.id = '" + complementoConsulta;
+            } else {
+                consultaSQL = "o.xmun LIKE '%" + complementoConsulta + "%' ";
+            }
+        }
+
+        return consultaSQL;
     }
 
 }
