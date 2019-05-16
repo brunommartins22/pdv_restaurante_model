@@ -5,10 +5,9 @@
  */
 package br.com.interagese.padrao.services;
 
+import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.models.Cliente;
-import java.util.List;
-import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,12 +17,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClienteService extends PadraoService<Cliente> {
 
-    public List<Cliente> getListClientByName(String nome) {
+ @Override
+    public String getWhere(String complementoConsulta) {
+        String consultaSQL = "";
 
-        TypedQuery<Cliente> result = (TypedQuery<Cliente>) em.createNativeQuery("SELECT * FROM cliente o where o.nm_Cliente like '%" + nome + "%'", Cliente.class);
+        if (complementoConsulta != null && !complementoConsulta.trim().equals("")) {
+            if (Utils.somenteNumeros(complementoConsulta)) {
+                consultaSQL = "o.id = '" + complementoConsulta;
+            } else {
+                consultaSQL = "o.nmCliente LIKE '%" + complementoConsulta + "%' ";
+            }
+        }
 
-        return result.getResultList();
-
+        return consultaSQL;
     }
     
     
