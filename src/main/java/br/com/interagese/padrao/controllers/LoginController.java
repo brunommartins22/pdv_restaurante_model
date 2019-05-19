@@ -30,8 +30,7 @@ public class LoginController extends PadraoController<Usuario> {
 // @HeaderParam("Authorization"
     public String login(@RequestHeader("Authorization") String authorizationHeader) {
         try {
-            String accessToken = service.login(authorizationHeader);
-            return accessToken;
+            return "";
         } catch (Exception ex) {
             return null;
         }
