@@ -10,6 +10,7 @@ import br.com.interagese.padrao.rest.services.UsuarioService;
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 /**
  *
@@ -25,12 +26,12 @@ public class LoginController extends PadraoController<Usuario> {
 
 //    @PostMapping(path = "/login")
 // @HeaderParam("Authorization"
-//    public String login(@RequestHeader("Authorization") String authorizationHeader) {
-//        try {
-//            String accessToken = service.login(authorizationHeader);
-//            return accessToken;
-//        } catch (Exception ex) {
-//            return null;
-//        }
-//    };
+    public String login(@RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            return "";
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
 }
