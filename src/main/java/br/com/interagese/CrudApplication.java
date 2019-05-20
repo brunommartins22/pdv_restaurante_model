@@ -7,14 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CrudApplication {
 
     public static void main(String[] args) {
-//        liquibase();
         SpringApplication.run(CrudApplication.class, args);
     }
-    
-//    public SpringLiquibase liquibase() {
-//    SpringLiquibase liquibase = new SpringLiquibase();
-//    liquibase.setChangeLog("classpath:liquibase-changeLog.xml");
-//    liquibase.setDataSource(dataSource());
-//    return liquibase;
-//}
+
 }
