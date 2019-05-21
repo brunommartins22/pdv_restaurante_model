@@ -10,8 +10,6 @@ import br.com.interagese.padrao.rest.services.UsuarioService;
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 /**
@@ -26,7 +24,7 @@ public class LoginController extends PadraoController<Usuario> {
     @Autowired
     private UsuarioService service;
 
-    @PostMapping(path = "/login")
+//    @PostMapping(path = "/login")
 // @HeaderParam("Authorization"
     public String login(@RequestHeader("Authorization") String authorizationHeader) {
         try {
