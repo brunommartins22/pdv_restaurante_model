@@ -5,6 +5,7 @@
  */
 package br.com.interagese.syscontabil.models;
 
+import br.com.interagese.erplibrary.AtributoPadrao;
 import br.com.interagese.padrao.rest.models.Cidade;
 import br.com.interagese.padrao.rest.models.Estado;
 import br.com.interagese.padrao.rest.models.Usuario;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -24,8 +26,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  *
@@ -36,55 +36,58 @@ import javax.persistence.TemporalType;
 public class Cliente implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_cli")
-    @SequenceGenerator(name = "gen_cli", sequenceName = "seq_cli")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_cliente")
+    @SequenceGenerator(name = "gen_cliente", sequenceName = "seq_cliente")
     private Long id;
-    @Column(length = 50, nullable = false)
-    private String nmCliente;
+    @Column(length = 255, nullable = false)
+    private String razaoSocial;
+    @Column(length = 255)
+    private String nomeFantasia;
+    @Column(length = 255)
+    private String nomeResposavel;
+    @Enumerated(EnumType.STRING)
+    private DominioTipoPessoa tipoCliente;
     @Column(length = 14, nullable = false, unique = true)
     private String cpfCnpj;
-    @Column(length = 255)
-    private String nmFantasia;
-    @Enumerated(EnumType.STRING)
-    private DominioTipoPessoa tpCliente;
-    @Column(length = 120)
-    private String email;
     @Column(length = 12, nullable = false, unique = true)
     private String rgIe;
-    @Column(length = 255)
-    private String endereco;
-    @Column(length = 120)
-    private String numero;
-    @Column(length = 120)
-    private String bairro;
-    @Column(length = 120)
-    private String pais;
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_cidade"))
-    private Cidade cidade;
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_estado"))
-    private Estado estado;
+    @Column(length = 12, unique = true)
+    private String im;
+    @Column(length = 12, unique = true)
+    private String ieSt;
+    @Column(length = 12, unique = true)
+    private String cnae;
+    @Column(length = 12, unique = true)
+    private String suframa;
+    @Column(length = 12, nullable = false)
+    private String crt;
     @Column(length = 8, unique = true)
     private String cep;
     @Column(length = 255)
-    private String perimetro;
+    private String logradouro;
+    @Column(length = 120)
+    private String numero;
+    @Column(length = 255)
+    private String complemento;
+    @Column(length = 120)
+    private String bairro;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_estado"))
+    private Estado estado;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_cidade"))
+    private Cidade cidade;
     @Column(length = 12)
     private String fone1;
     @Column(length = 12)
     private String fone2;
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_usuario"))
-    private Usuario usuarioRegistrador;
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dataRegistro;
-    
-    
-    
+    @Column(length = 120)
+    private String email;
+    @Embedded
+    private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
     public Cliente() {
-        dataRegistro = new Date();
+
     }
 
     //*********************** Eequals && Hashcode ******************************
@@ -128,59 +131,59 @@ public class Cliente implements Serializable {
     }
 
     /**
-     * @return the nmCliente
+     * @return the razaoSocial
      */
-    public String getNmCliente() {
-        return nmCliente;
+    public String getRazaoSocial() {
+        return razaoSocial;
     }
 
     /**
-     * @param nmCliente the nmCliente to set
+     * @param razaoSocial the razaoSocial to set
      */
-    public void setNmCliente(String nmCliente) {
-        this.nmCliente = nmCliente;
+    public void setRazaoSocial(String razaoSocial) {
+        this.razaoSocial = razaoSocial;
     }
 
     /**
-     * @return the email
+     * @return the nomeFantasia
      */
-    public String getEmail() {
-        return email;
+    public String getNomeFantasia() {
+        return nomeFantasia;
     }
 
     /**
-     * @param email the email to set
+     * @param nomeFantasia the nomeFantasia to set
      */
-    public void setEmail(String email) {
-        this.email = email;
+    public void setNomeFantasia(String nomeFantasia) {
+        this.nomeFantasia = nomeFantasia;
     }
 
     /**
-     * @return the nmFantasia
+     * @return the nomeResposavel
      */
-    public String getNmFantasia() {
-        return nmFantasia;
+    public String getNomeResposavel() {
+        return nomeResposavel;
     }
 
     /**
-     * @param nmFantasia the nmFantasia to set
+     * @param nomeResposavel the nomeResposavel to set
      */
-    public void setNmFantasia(String nmFantasia) {
-        this.nmFantasia = nmFantasia;
+    public void setNomeResposavel(String nomeResposavel) {
+        this.nomeResposavel = nomeResposavel;
     }
 
     /**
-     * @return the tpCliente
+     * @return the tipoCliente
      */
-    public DominioTipoPessoa getTpCliente() {
-        return tpCliente;
+    public DominioTipoPessoa getTipoCliente() {
+        return tipoCliente;
     }
 
     /**
-     * @param tpCliente the tpCliente to set
+     * @param tipoCliente the tipoCliente to set
      */
-    public void setTpCliente(DominioTipoPessoa tpCliente) {
-        this.tpCliente = tpCliente;
+    public void setTipoCliente(DominioTipoPessoa tipoCliente) {
+        this.tipoCliente = tipoCliente;
     }
 
     /**
@@ -212,87 +215,73 @@ public class Cliente implements Serializable {
     }
 
     /**
-     * @return the endereco
+     * @return the im
      */
-    public String getEndereco() {
-        return endereco;
+    public String getIm() {
+        return im;
     }
 
     /**
-     * @param endereco the endereco to set
+     * @param im the im to set
      */
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
+    public void setIm(String im) {
+        this.im = im;
     }
 
     /**
-     * @return the numero
+     * @return the ieSt
      */
-    public String getNumero() {
-        return numero;
+    public String getIeSt() {
+        return ieSt;
     }
 
     /**
-     * @param numero the numero to set
+     * @param ieSt the ieSt to set
      */
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public void setIeSt(String ieSt) {
+        this.ieSt = ieSt;
     }
 
     /**
-     * @return the bairro
+     * @return the cnae
      */
-    public String getBairro() {
-        return bairro;
+    public String getCnae() {
+        return cnae;
     }
 
     /**
-     * @param bairro the bairro to set
+     * @param cnae the cnae to set
      */
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
+    public void setCnae(String cnae) {
+        this.cnae = cnae;
     }
 
     /**
-     * @return the pais
+     * @return the suframa
      */
-    public String getPais() {
-        return pais;
+    public String getSuframa() {
+        return suframa;
     }
 
     /**
-     * @param pais the pais to set
+     * @param suframa the suframa to set
      */
-    public void setPais(String pais) {
-        this.pais = pais;
+    public void setSuframa(String suframa) {
+        this.suframa = suframa;
     }
 
     /**
-     * @return the cidade
+     * @return the crt
      */
-    public Cidade getCidade() {
-        return cidade;
+    public String getCrt() {
+        return crt;
     }
 
     /**
-     * @param cidade the cidade to set
+     * @param crt the crt to set
      */
-    public void setCidade(Cidade cidade) {
-        this.cidade = cidade;
-    }
-
-    /**
-     * @return the estado
-     */
-    public Estado getEstado() {
-        return estado;
-    }
-
-    /**
-     * @param estado the estado to set
-     */
-    public void setEstado(Estado estado) {
-        this.estado = estado;
+    public void setCrt(String crt) {
+        this.crt = crt;
     }
 
     /**
@@ -310,17 +299,87 @@ public class Cliente implements Serializable {
     }
 
     /**
-     * @return the perimetro
+     * @return the logradouro
      */
-    public String getPerimetro() {
-        return perimetro;
+    public String getLogradouro() {
+        return logradouro;
     }
 
     /**
-     * @param perimetro the perimetro to set
+     * @param logradouro the logradouro to set
      */
-    public void setPerimetro(String perimetro) {
-        this.perimetro = perimetro;
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
+    }
+
+    /**
+     * @return the numero
+     */
+    public String getNumero() {
+        return numero;
+    }
+
+    /**
+     * @param numero the numero to set
+     */
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    /**
+     * @return the complemento
+     */
+    public String getComplemento() {
+        return complemento;
+    }
+
+    /**
+     * @param complemento the complemento to set
+     */
+    public void setComplemento(String complemento) {
+        this.complemento = complemento;
+    }
+
+    /**
+     * @return the bairro
+     */
+    public String getBairro() {
+        return bairro;
+    }
+
+    /**
+     * @param bairro the bairro to set
+     */
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    /**
+     * @return the estado
+     */
+    public Estado getEstado() {
+        return estado;
+    }
+
+    /**
+     * @param estado the estado to set
+     */
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
+
+    /**
+     * @return the cidade
+     */
+    public Cidade getCidade() {
+        return cidade;
+    }
+
+    /**
+     * @param cidade the cidade to set
+     */
+    public void setCidade(Cidade cidade) {
+        this.cidade = cidade;
     }
 
     /**
@@ -352,33 +411,31 @@ public class Cliente implements Serializable {
     }
 
     /**
-     * @return the usuarioRegistrador
+     * @return the email
      */
-    public Usuario getUsuarioRegistrador() {
-        return usuarioRegistrador;
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * @param usuarioRegistrador the usuarioRegistrador to set
+     * @param email the email to set
      */
-    public void setUsuarioRegistrador(Usuario usuarioRegistrador) {
-        this.usuarioRegistrador = usuarioRegistrador;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     /**
-     * @return the dataRegistro
+     * @return the atributoPadrao
      */
-    public Date getDataRegistro() {
-        if (dataRegistro == null) {
-            dataRegistro = new Date();
-        }
-        return dataRegistro;
+    public AtributoPadrao getAtributoPadrao() {
+        return atributoPadrao;
     }
 
     /**
-     * @param dataRegistro the dataRegistro to set
+     * @param atributoPadrao the atributoPadrao to set
      */
-    public void setDataRegistro(Date dataRegistro) {
-        this.dataRegistro = dataRegistro;
+    public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
+        this.atributoPadrao = atributoPadrao;
     }
+
 }

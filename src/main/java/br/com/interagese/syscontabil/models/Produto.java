@@ -5,18 +5,19 @@
  */
 package br.com.interagese.syscontabil.models;
 
-import br.com.interagese.padrao.rest.models.Usuario;
+import br.com.interagese.erplibrary.AtributoPadrao;
 import java.io.Serializable;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  *
@@ -27,18 +28,24 @@ import javax.persistence.TemporalType;
 public class Produto implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_prod")
-    @SequenceGenerator(name = "gen_prod", sequenceName = "seq_prod")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_produto")
+    @SequenceGenerator(name = "gen_produto", sequenceName = "seq_produto")
     private Long id;
-    private String nmProduto;
-    private String ean;
-    private String ncm;
+    @Column(length = 255,nullable = false,unique = true)
+    private String nomeProduto;
+    @Column(length = 50)
+    private String codigoProduto;
+    @Column(length = 20)
+    private Long ean;
+    @Column(length = 50)
+    private String genero;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "produto_fk_ncm"))
+    private Ncm ncm;
+    @Column(length = 20,nullable = false)
     private String cest;
-    private String unidade;
-    @OneToOne
-    private Usuario usuarioRegistrador;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dataRegistro;
+    @Embedded
+    private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
     //************************** Equals && hashcode ****************************
     @Override
@@ -76,44 +83,72 @@ public class Produto implements Serializable {
     }
 
     /**
-     * @return the nmProduto
+     * @return the nomeProduto
      */
-    public String getNmProduto() {
-        return nmProduto;
+    public String getNomeProduto() {
+        return nomeProduto;
     }
 
     /**
-     * @param nmProduto the nmProduto to set
+     * @param nomeProduto the nomeProduto to set
      */
-    public void setNmProduto(String nmProduto) {
-        this.nmProduto = nmProduto;
+    public void setNomeProduto(String nomeProduto) {
+        this.nomeProduto = nomeProduto;
+    }
+
+    /**
+     * @return the codigoProduto
+     */
+    public String getCodigoProduto() {
+        return codigoProduto;
+    }
+
+    /**
+     * @param codigoProduto the codigoProduto to set
+     */
+    public void setCodigoProduto(String codigoProduto) {
+        this.codigoProduto = codigoProduto;
     }
 
     /**
      * @return the ean
      */
-    public String getEan() {
+    public Long getEan() {
         return ean;
     }
 
     /**
      * @param ean the ean to set
      */
-    public void setEan(String ean) {
+    public void setEan(Long ean) {
         this.ean = ean;
+    }
+
+    /**
+     * @return the genero
+     */
+    public String getGenero() {
+        return genero;
+    }
+
+    /**
+     * @param genero the genero to set
+     */
+    public void setGenero(String genero) {
+        this.genero = genero;
     }
 
     /**
      * @return the ncm
      */
-    public String getNcm() {
+    public Ncm getNcm() {
         return ncm;
     }
 
     /**
      * @param ncm the ncm to set
      */
-    public void setNcm(String ncm) {
+    public void setNcm(Ncm ncm) {
         this.ncm = ncm;
     }
 
@@ -132,45 +167,17 @@ public class Produto implements Serializable {
     }
 
     /**
-     * @return the unidade
+     * @return the atributoPadrao
      */
-    public String getUnidade() {
-        return unidade;
+    public AtributoPadrao getAtributoPadrao() {
+        return atributoPadrao;
     }
 
     /**
-     * @param unidade the unidade to set
+     * @param atributoPadrao the atributoPadrao to set
      */
-    public void setUnidade(String unidade) {
-        this.unidade = unidade;
-    }
-
-    /**
-     * @return the usuarioRegistrador
-     */
-    public Usuario getUsuarioRegistrador() {
-        return usuarioRegistrador;
-    }
-
-    /**
-     * @param usuarioRegistrador the usuarioRegistrador to set
-     */
-    public void setUsuarioRegistrador(Usuario usuarioRegistrador) {
-        this.usuarioRegistrador = usuarioRegistrador;
-    }
-
-    /**
-     * @return the dataRegistro
-     */
-    public Date getDataRegistro() {
-        return dataRegistro;
-    }
-
-    /**
-     * @param dataRegistro the dataRegistro to set
-     */
-    public void setDataRegistro(Date dataRegistro) {
-        this.dataRegistro = dataRegistro;
+    public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
+        this.atributoPadrao = atributoPadrao;
     }
 
 }
