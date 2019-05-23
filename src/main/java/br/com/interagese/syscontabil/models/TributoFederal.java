@@ -41,6 +41,7 @@ public class TributoFederal implements Serializable {
     @Column(length = 12)
     private Double aliquotaIpiSaida;
 
+   
     /**
      * @return the cstPisEntrada
      */

@@ -28,6 +28,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.websocket.OnOpen;
 
 /**
  *
@@ -47,7 +48,7 @@ public class Cliente implements Serializable {
     private String nomeFantasia;
     @Column(length = 255)
     private String nomeResposavel;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_regime_tributario"))
     private List<RegimeTributario> listRegimeTributario;
     @Enumerated(EnumType.STRING)
