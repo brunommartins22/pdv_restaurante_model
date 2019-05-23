@@ -28,7 +28,7 @@ public class RegraNcm implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_ncm")
     @SequenceGenerator(name = "gen_regra_ncm", sequenceName = "seq_regra_ncm")
     private Long id;
-    private String cdigoNcm;
+    private String codigoNcm;
     @Embedded
     private TributoFederal tributoFederal = new TributoFederal();
     @Embedded
@@ -81,17 +81,17 @@ public class RegraNcm implements Serializable {
     }
 
     /**
-     * @return the cdigoNcm
+     * @return the codigoNcm
      */
-    public String getCdigoNcm() {
-        return cdigoNcm;
+    public String getCodigoNcm() {
+        return codigoNcm;
     }
 
     /**
-     * @param cdigoNcm the cdigoNcm to set
+     * @param codigoNcm the codigoNcm to set
      */
-    public void setCdigoNcm(String cdigoNcm) {
-        this.cdigoNcm = cdigoNcm;
+    public void setCodigoNcm(String codigoNcm) {
+        this.codigoNcm = codigoNcm;
     }
 
     /**
