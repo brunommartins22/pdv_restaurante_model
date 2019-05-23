@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -24,6 +25,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -58,7 +60,7 @@ public class Cliente implements Serializable {
     private String im;
     @Column(length = 12, unique = true)
     private String ieSt;
-    @ManyToOne
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_cnae"))
     private List<Cnae> listAtividades;
     @Column(length = 12, unique = true)
