@@ -47,7 +47,7 @@ public class Cliente implements Serializable {
     private String nomeFantasia;
     @Column(length = 255)
     private String nomeResposavel;
-    @ManyToOne
+    @OneToMany
     @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_regime_tributario"))
     private List<RegimeTributario> listRegimeTributario;
     @Enumerated(EnumType.STRING)
