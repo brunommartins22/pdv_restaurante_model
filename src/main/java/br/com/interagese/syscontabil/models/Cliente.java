@@ -8,10 +8,10 @@ package br.com.interagese.syscontabil.models;
 import br.com.interagese.erplibrary.AtributoPadrao;
 import br.com.interagese.padrao.rest.models.Cidade;
 import br.com.interagese.padrao.rest.models.Estado;
-import br.com.interagese.padrao.rest.models.Usuario;
 import br.com.interagese.rest.domain.DominioTipoPessoa;
 import java.io.Serializable;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -45,6 +45,9 @@ public class Cliente implements Serializable {
     private String nomeFantasia;
     @Column(length = 255)
     private String nomeResposavel;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_regime_tributario"))
+    private List<RegimeTributario> listRegimeTributario;
     @Enumerated(EnumType.STRING)
     private DominioTipoPessoa tipoCliente;
     @Column(length = 14, nullable = false, unique = true)
@@ -55,13 +58,14 @@ public class Cliente implements Serializable {
     private String im;
     @Column(length = 12, unique = true)
     private String ieSt;
-    @Column(length = 12, unique = true)
-    private String cnae;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_cnae"))
+    private List<Cnae> listAtividades;
     @Column(length = 12, unique = true)
     private String suframa;
     @Column(length = 12, nullable = false)
     private String crt;
-    @Column(length = 8, unique = true)
+    @Column(length = 8)
     private String cep;
     @Column(length = 255)
     private String logradouro;
@@ -240,20 +244,6 @@ public class Cliente implements Serializable {
      */
     public void setIeSt(String ieSt) {
         this.ieSt = ieSt;
-    }
-
-    /**
-     * @return the cnae
-     */
-    public String getCnae() {
-        return cnae;
-    }
-
-    /**
-     * @param cnae the cnae to set
-     */
-    public void setCnae(String cnae) {
-        this.cnae = cnae;
     }
 
     /**
@@ -436,6 +426,37 @@ public class Cliente implements Serializable {
      */
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
+    }
+
+    /**
+     * @return the listAtividades
+     */
+    public List<Cnae> getListAtividades() {
+        return listAtividades;
+    }
+
+    /**
+     * @param listAtividades the listAtividades to set
+     */
+    public void setListAtividades(List<Cnae> listAtividades) {
+        this.listAtividades = listAtividades;
+    }
+
+    /**
+     * @return the listRegimeTributario
+     */
+    public List<RegimeTributario> getListRegimeTributario() {
+        if (listRegimeTributario == null) {
+            listRegimeTributario = new ArrayList<>();
+        }
+        return listRegimeTributario;
+    }
+
+    /**
+     * @param listRegimeTributario the listRegimeTributario to set
+     */
+    public void setListRegimeTributario(List<RegimeTributario> listRegimeTributario) {
+        this.listRegimeTributario = listRegimeTributario;
     }
 
 }

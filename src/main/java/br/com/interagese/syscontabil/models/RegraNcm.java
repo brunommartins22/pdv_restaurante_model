@@ -8,7 +8,6 @@ package br.com.interagese.syscontabil.models;
 import br.com.interagese.erplibrary.AtributoPadrao;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,28 +21,24 @@ import javax.persistence.Table;
  * @author Bruno Martins
  */
 @Entity
-@Table(name = "cenario_federal")
-public class CenarioFederal implements Serializable{
+@Table(name = "regra_ncm")
+public class RegraNcm implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "gen_cenario_federal")
-    @SequenceGenerator(name = "gen_cenario_federal",sequenceName = "seq_cenario_federal")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_ncm")
+    @SequenceGenerator(name = "gen_regra_ncm", sequenceName = "seq_regra_ncm")
     private Long id;
-    @Column(length = 255, nullable = false,unique = true)
-    private String nomeCenario;
-    @Column(length = 10,nullable = false)
-    private String cfop;
+    private String cdigoNcm;
     @Embedded
-    private TributoFederal tributoFederal= new TributoFederal();
+    private TributoFederal tributoFederal = new TributoFederal();
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
-    
-    //************************* Equals && Hashcode *****************************
-    
+
+    //**************************** Equals && HashCode **************************
     @Override
-    public int hashCode(){
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.getId());
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + Objects.hashCode(this.getId());
         return hash;
     }
 
@@ -58,7 +53,7 @@ public class CenarioFederal implements Serializable{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CenarioFederal other = (CenarioFederal) obj;
+        final RegraNcm other = (RegraNcm) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
@@ -67,44 +62,36 @@ public class CenarioFederal implements Serializable{
 
     @Override
     public String toString() {
-        return "br.com.interagese.syscontabil.models.CenarioFederal{" + "id=" + getId() + '}';
+        return "br.com.interagese.syscontabil.models.RegraNcm{" + "id=" + getId() + '}';
     }
-    
-    //************************* get && setts ***********************************
+
+    //***************************** get && setts *******************************
+    /**
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
-    
-    public void setId(Long id){
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * @return the nomeCenario
+     * @return the cdigoNcm
      */
-    public String getNomeCenario() {
-        return nomeCenario;
+    public String getCdigoNcm() {
+        return cdigoNcm;
     }
 
     /**
-     * @param nomeCenario the nomeCenario to set
+     * @param cdigoNcm the cdigoNcm to set
      */
-    public void setNomeCenario(String nomeCenario) {
-        this.nomeCenario = nomeCenario;
-    }
-
-    /**
-     * @return the cfop
-     */
-    public String getCfop() {
-        return cfop;
-    }
-
-    /**
-     * @param cfop the cfop to set
-     */
-    public void setCfop(String cfop) {
-        this.cfop = cfop;
+    public void setCdigoNcm(String cdigoNcm) {
+        this.cdigoNcm = cdigoNcm;
     }
 
     /**
@@ -134,5 +121,5 @@ public class CenarioFederal implements Serializable{
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
     }
-    
+
 }

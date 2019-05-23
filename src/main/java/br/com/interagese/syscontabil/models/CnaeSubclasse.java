@@ -22,28 +22,25 @@ import javax.persistence.Table;
  * @author Bruno Martins
  */
 @Entity
-@Table(name = "cenario_federal")
-public class CenarioFederal implements Serializable{
+@Table(name = "cnae_subclasse")
+public class CnaeSubclasse implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "gen_cenario_federal")
-    @SequenceGenerator(name = "gen_cenario_federal",sequenceName = "seq_cenario_federal")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_cnae_subclasse")
+    @SequenceGenerator(name = "gen_cnae_subclasse", sequenceName = "seq_cnae_subclasse")
     private Long id;
-    @Column(length = 255, nullable = false,unique = true)
-    private String nomeCenario;
-    @Column(length = 10,nullable = false)
-    private String cfop;
-    @Embedded
-    private TributoFederal tributoFederal= new TributoFederal();
+    @Column(length = 12, nullable = false, unique = true)
+    private String codigoSubclasse;
+    @Column(length = 255, nullable = false)
+    private String descricaoSubclasse;
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
-    
-    //************************* Equals && Hashcode *****************************
-    
+
+    //**************************** Eequals && Hashcode *************************
     @Override
-    public int hashCode(){
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.getId());
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -58,7 +55,7 @@ public class CenarioFederal implements Serializable{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CenarioFederal other = (CenarioFederal) obj;
+        final CnaeSubclasse other = (CnaeSubclasse) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
@@ -67,58 +64,50 @@ public class CenarioFederal implements Serializable{
 
     @Override
     public String toString() {
-        return "br.com.interagese.syscontabil.models.CenarioFederal{" + "id=" + getId() + '}';
+        return "br.com.interagese.syscontabil.models.CnaeSubclasse{" + "id=" + id + '}';
     }
-    
-    //************************* get && setts ***********************************
+
+    //**************************** get && setts ********************************
+    /**
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
-    
-    public void setId(Long id){
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * @return the nomeCenario
+     * @return the codigoSubclasse
      */
-    public String getNomeCenario() {
-        return nomeCenario;
+    public String getCodigoSubclasse() {
+        return codigoSubclasse;
     }
 
     /**
-     * @param nomeCenario the nomeCenario to set
+     * @param codigoSubclasse the codigoSubclasse to set
      */
-    public void setNomeCenario(String nomeCenario) {
-        this.nomeCenario = nomeCenario;
+    public void setCodigoSubclasse(String codigoSubclasse) {
+        this.codigoSubclasse = codigoSubclasse;
     }
 
     /**
-     * @return the cfop
+     * @return the descricaoSubclasse
      */
-    public String getCfop() {
-        return cfop;
+    public String getDescricaoSubclasse() {
+        return descricaoSubclasse;
     }
 
     /**
-     * @param cfop the cfop to set
+     * @param descricaoSubclasse the descricaoSubclasse to set
      */
-    public void setCfop(String cfop) {
-        this.cfop = cfop;
-    }
-
-    /**
-     * @return the tributoFederal
-     */
-    public TributoFederal getTributoFederal() {
-        return tributoFederal;
-    }
-
-    /**
-     * @param tributoFederal the tributoFederal to set
-     */
-    public void setTributoFederal(TributoFederal tributoFederal) {
-        this.tributoFederal = tributoFederal;
+    public void setDescricaoSubclasse(String descricaoSubclasse) {
+        this.descricaoSubclasse = descricaoSubclasse;
     }
 
     /**
@@ -134,5 +123,5 @@ public class CenarioFederal implements Serializable{
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
     }
-    
+
 }

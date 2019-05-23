@@ -22,28 +22,29 @@ import javax.persistence.Table;
  * @author Bruno Martins
  */
 @Entity
-@Table(name = "cenario_federal")
-public class CenarioFederal implements Serializable{
+@Table(name = "regra_produto")
+public class RegraProduto implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "gen_cenario_federal")
-    @SequenceGenerator(name = "gen_cenario_federal",sequenceName = "seq_cenario_federal")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_produto")
+    @SequenceGenerator(name = "gen_regra_produto", sequenceName = "seq_regra_produto")
     private Long id;
-    @Column(length = 255, nullable = false,unique = true)
-    private String nomeCenario;
-    @Column(length = 10,nullable = false)
-    private String cfop;
+    @Column(length = 12)
+    private Long clienteId;
+    @Column(length = 12)
+    private String codigoProduto;
+    @Column(length = 20)
+    private Long eanProduto;
     @Embedded
-    private TributoFederal tributoFederal= new TributoFederal();
+    private TributoFederal tributoFederal = new TributoFederal();
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
-    
-    //************************* Equals && Hashcode *****************************
-    
+
+    //**************************** Equals && HashCode **************************
     @Override
-    public int hashCode(){
+    public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.getId());
+        hash = 67 * hash + Objects.hashCode(this.getId());
         return hash;
     }
 
@@ -58,7 +59,7 @@ public class CenarioFederal implements Serializable{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CenarioFederal other = (CenarioFederal) obj;
+        final RegraProduto other = (RegraProduto) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
@@ -67,44 +68,64 @@ public class CenarioFederal implements Serializable{
 
     @Override
     public String toString() {
-        return "br.com.interagese.syscontabil.models.CenarioFederal{" + "id=" + getId() + '}';
+        return "br.com.interagese.syscontabil.models.RegraProduto{" + "id=" + getId() + '}';
     }
-    
-    //************************* get && setts ***********************************
+
+    //**************************** get && setts ********************************
+    /**
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
-    
-    public void setId(Long id){
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * @return the nomeCenario
+     * @return the clienteId
      */
-    public String getNomeCenario() {
-        return nomeCenario;
+    public Long getClienteId() {
+        return clienteId;
     }
 
     /**
-     * @param nomeCenario the nomeCenario to set
+     * @param clienteId the clienteId to set
      */
-    public void setNomeCenario(String nomeCenario) {
-        this.nomeCenario = nomeCenario;
+    public void setClienteId(Long clienteId) {
+        this.clienteId = clienteId;
     }
 
     /**
-     * @return the cfop
+     * @return the codigoProduto
      */
-    public String getCfop() {
-        return cfop;
+    public String getCodigoProduto() {
+        return codigoProduto;
     }
 
     /**
-     * @param cfop the cfop to set
+     * @param codigoProduto the codigoProduto to set
      */
-    public void setCfop(String cfop) {
-        this.cfop = cfop;
+    public void setCodigoProduto(String codigoProduto) {
+        this.codigoProduto = codigoProduto;
+    }
+
+    /**
+     * @return the eanProduto
+     */
+    public Long getEanProduto() {
+        return eanProduto;
+    }
+
+    /**
+     * @param eanProduto the eanProduto to set
+     */
+    public void setEanProduto(Long eanProduto) {
+        this.eanProduto = eanProduto;
     }
 
     /**
@@ -134,5 +155,5 @@ public class CenarioFederal implements Serializable{
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
     }
-    
+
 }

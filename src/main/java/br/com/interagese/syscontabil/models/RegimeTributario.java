@@ -22,28 +22,26 @@ import javax.persistence.Table;
  * @author Bruno Martins
  */
 @Entity
-@Table(name = "cenario_federal")
-public class CenarioFederal implements Serializable{
-
+@Table(name = "regime_tributario")
+public class RegimeTributario implements Serializable{
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "gen_cenario_federal")
-    @SequenceGenerator(name = "gen_cenario_federal",sequenceName = "seq_cenario_federal")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regime_tributario")
+    @SequenceGenerator(name = "gen_regime_tributario",sequenceName = "seq_regime_tributario")
     private Long id;
-    @Column(length = 255, nullable = false,unique = true)
-    private String nomeCenario;
-    @Column(length = 10,nullable = false)
-    private String cfop;
-    @Embedded
-    private TributoFederal tributoFederal= new TributoFederal();
+    @Column(length = 120,nullable = false,unique = true)
+    private String nomeRegimeTributario;
+    @Column(length = 5,unique = true)
+    private String siglaRegimeTributario;
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     
-    //************************* Equals && Hashcode *****************************
-    
+    //************************ Equal && HashCode *******************************
+
     @Override
-    public int hashCode(){
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.getId());
+    public int hashCode() {
+        int hash = 5;
+        hash = 11 * hash + Objects.hashCode(this.getId());
         return hash;
     }
 
@@ -58,7 +56,7 @@ public class CenarioFederal implements Serializable{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CenarioFederal other = (CenarioFederal) obj;
+        final RegimeTributario other = (RegimeTributario) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
@@ -67,58 +65,51 @@ public class CenarioFederal implements Serializable{
 
     @Override
     public String toString() {
-        return "br.com.interagese.syscontabil.models.CenarioFederal{" + "id=" + getId() + '}';
+        return "RegimeTributario{" + "id=" + getId() + '}';
     }
     
-    //************************* get && setts ***********************************
+    //****************************** get && setts ******************************
+
+    /**
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
-    
-    public void setId(Long id){
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * @return the nomeCenario
+     * @return the nomeRegimeTributario
      */
-    public String getNomeCenario() {
-        return nomeCenario;
+    public String getNomeRegimeTributario() {
+        return nomeRegimeTributario;
     }
 
     /**
-     * @param nomeCenario the nomeCenario to set
+     * @param nomeRegimeTributario the nomeRegimeTributario to set
      */
-    public void setNomeCenario(String nomeCenario) {
-        this.nomeCenario = nomeCenario;
+    public void setNomeRegimeTributario(String nomeRegimeTributario) {
+        this.nomeRegimeTributario = nomeRegimeTributario;
     }
 
     /**
-     * @return the cfop
+     * @return the siglaRegimeTributario
      */
-    public String getCfop() {
-        return cfop;
+    public String getSiglaRegimeTributario() {
+        return siglaRegimeTributario;
     }
 
     /**
-     * @param cfop the cfop to set
+     * @param siglaRegimeTributario the siglaRegimeTributario to set
      */
-    public void setCfop(String cfop) {
-        this.cfop = cfop;
-    }
-
-    /**
-     * @return the tributoFederal
-     */
-    public TributoFederal getTributoFederal() {
-        return tributoFederal;
-    }
-
-    /**
-     * @param tributoFederal the tributoFederal to set
-     */
-    public void setTributoFederal(TributoFederal tributoFederal) {
-        this.tributoFederal = tributoFederal;
+    public void setSiglaRegimeTributario(String siglaRegimeTributario) {
+        this.siglaRegimeTributario = siglaRegimeTributario;
     }
 
     /**
@@ -134,5 +125,9 @@ public class CenarioFederal implements Serializable{
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
     }
+    
+    
+    
+    
     
 }
