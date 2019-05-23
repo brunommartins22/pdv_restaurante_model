@@ -14,53 +14,29 @@ import javax.persistence.Embeddable;
  * @author Bruno Martins
  */
 @Embeddable
-public class TributoFederal implements Serializable{
-    
-    @Column(length = 12)
+public class TributoFederal implements Serializable {
+
+    @Column(length = 2)
     private String cstPisEntrada;
     @Column(length = 12)
     private Double aliquotaPisEntrada;
-    @Column(length = 12)
-    private Double aliquotaPisEntradaST;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsEntrada;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsEntradaST;
-    @Column(length = 12)
+    @Column(length = 2)
     private String cstPisSaida;
     @Column(length = 12)
     private Double aliquotaPisSaida;
-    @Column(length = 12)
-    private Double aliquotaPisSaidaST;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoPisSaida;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoPisSaidaST;
-    @Column(length = 12)
+    @Column(length = 2)
     private String cstCofinsEntrada;
     @Column(length = 12)
     private Double aliquotaCofinsEntrada;
-    @Column(length = 12)
-    private Double aliquotaCofinsEntradaST;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoCofinsEntrada;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoCofinsEntradaST;
-    @Column(length = 12)
+    @Column(length = 2)
     private String cstCofinsSaida;
     @Column(length = 12)
     private Double aliquotaCofinsSaida;
     @Column(length = 12)
-    private Double aliquotaCofinsSaidaST;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoCofinsSaida;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoCofinsSaidaST;
-    @Column(length = 12)
     private String cstIpiEntrada;
     @Column(length = 12)
     private Double aliquotaIpiEntrada;
-    @Column(length = 12)
+    @Column(length = 2)
     private String cstIpiSaida;
     @Column(length = 12)
     private Double aliquotaIpiSaida;
@@ -94,48 +70,6 @@ public class TributoFederal implements Serializable{
     }
 
     /**
-     * @return the aliquotaPisEntradaST
-     */
-    public Double getAliquotaPisEntradaST() {
-        return aliquotaPisEntradaST;
-    }
-
-    /**
-     * @param aliquotaPisEntradaST the aliquotaPisEntradaST to set
-     */
-    public void setAliquotaPisEntradaST(Double aliquotaPisEntradaST) {
-        this.aliquotaPisEntradaST = aliquotaPisEntradaST;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsEntrada
-     */
-    public Double getReducaoBaseCalculoIcmsEntrada() {
-        return reducaoBaseCalculoIcmsEntrada;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsEntrada the reducaoBaseCalculoIcmsEntrada to set
-     */
-    public void setReducaoBaseCalculoIcmsEntrada(Double reducaoBaseCalculoIcmsEntrada) {
-        this.reducaoBaseCalculoIcmsEntrada = reducaoBaseCalculoIcmsEntrada;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsEntradaST
-     */
-    public Double getReducaoBaseCalculoIcmsEntradaST() {
-        return reducaoBaseCalculoIcmsEntradaST;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsEntradaST the reducaoBaseCalculoIcmsEntradaST to set
-     */
-    public void setReducaoBaseCalculoIcmsEntradaST(Double reducaoBaseCalculoIcmsEntradaST) {
-        this.reducaoBaseCalculoIcmsEntradaST = reducaoBaseCalculoIcmsEntradaST;
-    }
-
-    /**
      * @return the cstPisSaida
      */
     public String getCstPisSaida() {
@@ -161,48 +95,6 @@ public class TributoFederal implements Serializable{
      */
     public void setAliquotaPisSaida(Double aliquotaPisSaida) {
         this.aliquotaPisSaida = aliquotaPisSaida;
-    }
-
-    /**
-     * @return the aliquotaPisSaidaST
-     */
-    public Double getAliquotaPisSaidaST() {
-        return aliquotaPisSaidaST;
-    }
-
-    /**
-     * @param aliquotaPisSaidaST the aliquotaPisSaidaST to set
-     */
-    public void setAliquotaPisSaidaST(Double aliquotaPisSaidaST) {
-        this.aliquotaPisSaidaST = aliquotaPisSaidaST;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoPisSaida
-     */
-    public Double getReducaoBaseCalculoPisSaida() {
-        return reducaoBaseCalculoPisSaida;
-    }
-
-    /**
-     * @param reducaoBaseCalculoPisSaida the reducaoBaseCalculoPisSaida to set
-     */
-    public void setReducaoBaseCalculoPisSaida(Double reducaoBaseCalculoPisSaida) {
-        this.reducaoBaseCalculoPisSaida = reducaoBaseCalculoPisSaida;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoPisSaidaST
-     */
-    public Double getReducaoBaseCalculoPisSaidaST() {
-        return reducaoBaseCalculoPisSaidaST;
-    }
-
-    /**
-     * @param reducaoBaseCalculoPisSaidaST the reducaoBaseCalculoPisSaidaST to set
-     */
-    public void setReducaoBaseCalculoPisSaidaST(Double reducaoBaseCalculoPisSaidaST) {
-        this.reducaoBaseCalculoPisSaidaST = reducaoBaseCalculoPisSaidaST;
     }
 
     /**
@@ -234,48 +126,6 @@ public class TributoFederal implements Serializable{
     }
 
     /**
-     * @return the aliquotaCofinsEntradaST
-     */
-    public Double getAliquotaCofinsEntradaST() {
-        return aliquotaCofinsEntradaST;
-    }
-
-    /**
-     * @param aliquotaCofinsEntradaST the aliquotaCofinsEntradaST to set
-     */
-    public void setAliquotaCofinsEntradaST(Double aliquotaCofinsEntradaST) {
-        this.aliquotaCofinsEntradaST = aliquotaCofinsEntradaST;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoCofinsEntrada
-     */
-    public Double getReducaoBaseCalculoCofinsEntrada() {
-        return reducaoBaseCalculoCofinsEntrada;
-    }
-
-    /**
-     * @param reducaoBaseCalculoCofinsEntrada the reducaoBaseCalculoCofinsEntrada to set
-     */
-    public void setReducaoBaseCalculoCofinsEntrada(Double reducaoBaseCalculoCofinsEntrada) {
-        this.reducaoBaseCalculoCofinsEntrada = reducaoBaseCalculoCofinsEntrada;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoCofinsEntradaST
-     */
-    public Double getReducaoBaseCalculoCofinsEntradaST() {
-        return reducaoBaseCalculoCofinsEntradaST;
-    }
-
-    /**
-     * @param reducaoBaseCalculoCofinsEntradaST the reducaoBaseCalculoCofinsEntradaST to set
-     */
-    public void setReducaoBaseCalculoCofinsEntradaST(Double reducaoBaseCalculoCofinsEntradaST) {
-        this.reducaoBaseCalculoCofinsEntradaST = reducaoBaseCalculoCofinsEntradaST;
-    }
-
-    /**
      * @return the cstCofinsSaida
      */
     public String getCstCofinsSaida() {
@@ -301,48 +151,6 @@ public class TributoFederal implements Serializable{
      */
     public void setAliquotaCofinsSaida(Double aliquotaCofinsSaida) {
         this.aliquotaCofinsSaida = aliquotaCofinsSaida;
-    }
-
-    /**
-     * @return the aliquotaCofinsSaidaST
-     */
-    public Double getAliquotaCofinsSaidaST() {
-        return aliquotaCofinsSaidaST;
-    }
-
-    /**
-     * @param aliquotaCofinsSaidaST the aliquotaCofinsSaidaST to set
-     */
-    public void setAliquotaCofinsSaidaST(Double aliquotaCofinsSaidaST) {
-        this.aliquotaCofinsSaidaST = aliquotaCofinsSaidaST;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoCofinsSaida
-     */
-    public Double getReducaoBaseCalculoCofinsSaida() {
-        return reducaoBaseCalculoCofinsSaida;
-    }
-
-    /**
-     * @param reducaoBaseCalculoCofinsSaida the reducaoBaseCalculoCofinsSaida to set
-     */
-    public void setReducaoBaseCalculoCofinsSaida(Double reducaoBaseCalculoCofinsSaida) {
-        this.reducaoBaseCalculoCofinsSaida = reducaoBaseCalculoCofinsSaida;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoCofinsSaidaST
-     */
-    public Double getReducaoBaseCalculoCofinsSaidaST() {
-        return reducaoBaseCalculoCofinsSaidaST;
-    }
-
-    /**
-     * @param reducaoBaseCalculoCofinsSaidaST the reducaoBaseCalculoCofinsSaidaST to set
-     */
-    public void setReducaoBaseCalculoCofinsSaidaST(Double reducaoBaseCalculoCofinsSaidaST) {
-        this.reducaoBaseCalculoCofinsSaidaST = reducaoBaseCalculoCofinsSaidaST;
     }
 
     /**
@@ -401,5 +209,4 @@ public class TributoFederal implements Serializable{
         this.aliquotaIpiSaida = aliquotaIpiSaida;
     }
 
-        
 }
