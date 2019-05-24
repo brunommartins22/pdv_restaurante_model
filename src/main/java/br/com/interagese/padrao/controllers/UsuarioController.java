@@ -23,17 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(path = "api/usuario")
-public class UsuarioController extends PadraoController<Usuario> implements UserDetailsService{
+public class UsuarioController extends PadraoController<Usuario> {
 
     //******************** inject service in controller ************************
     @IsServiceDefault
     @Autowired
     private UsuarioService service;
 
-    @Override
-    public UserDetails loadUserByUsername(String string) throws UsernameNotFoundException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
+
     
     
  
