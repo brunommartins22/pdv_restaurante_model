@@ -26,10 +26,10 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     private UsuarioService usuarioService;
     @Autowired
     private SessionService sessionService;
-    
+
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        
+
         httpSecurity.csrf().disable().authorizeRequests()
                 .antMatchers("/home").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/security/login").permitAll()
@@ -40,14 +40,13 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
                 // filtra requisições de login
                 .addFilterBefore(
                         new JWTLoginFilter(
-                            "/api/security/login",
-                            authenticationManager(),
-                            usuarioService,
-                            sessionService
+                                "/api/security/login",
+                                authenticationManager(),
+                                usuarioService,
+                                sessionService
                         ),
                         UsernamePasswordAuthenticationFilter.class
                 )
-                
                 // filtra outras requisições para verificar a presença do JWT no header
                 .addFilterBefore(new JWTAuthenticationFilter(sessionService),
                         UsernamePasswordAuthenticationFilter.class);
@@ -64,7 +63,7 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
         //authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
-    
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -76,9 +75,9 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-    
+
     @Bean
-    public SessionService sessionService(){
+    public SessionService sessionService() {
         return new SessionService();
     }
 

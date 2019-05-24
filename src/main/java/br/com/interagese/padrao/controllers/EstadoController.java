@@ -26,5 +26,4 @@ public class EstadoController extends PadraoController<Estado> {
     @Autowired
     private EstadoService service;
 
-
 }
