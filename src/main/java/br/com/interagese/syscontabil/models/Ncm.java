@@ -13,9 +13,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -26,26 +28,26 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ncm")
-public class Ncm implements Serializable{
+public class Ncm implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_ncm")
-    @SequenceGenerator(name = "gen_ncm",sequenceName = "seq_ncm")
+    @SequenceGenerator(name = "gen_ncm", sequenceName = "seq_ncm")
     private Long id;
-    @Column(length = 12,nullable = false,unique = true)
+    @Column(length = 12, nullable = false, unique = true)
     private Long codigoNcm;
-    @Column(length = 12,nullable = false,unique = true)
+    @Column(length = 12, nullable = false, unique = true)
     private String nomeNcm;
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(foreignKey = @ForeignKey(name = "ncm_fk_cenario_estadual"))
     private List<CenarioEstadual> listCenariosEstaduais;
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(foreignKey = @ForeignKey(name = "ncm_fk_cenario_federal"))
     private List<CenarioFederal> listCenariosFederais;
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
-    
-    
-    //************************** Equals && HashCode ****************************
 
+    //************************** Equals && HashCode ****************************
     @Override
     public int hashCode() {
         int hash = 7;
@@ -75,11 +77,8 @@ public class Ncm implements Serializable{
     public String toString() {
         return "br.com.interagese.syscontabil.models.Ncm{" + "id=" + getId() + '}';
     }
-        
-    
-    
-    //*************************** get && setts *********************************
 
+    //*************************** get && setts *********************************
     public Long getId() {
         return id;
     }
@@ -157,5 +156,5 @@ public class Ncm implements Serializable{
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
     }
-    
+
 }
