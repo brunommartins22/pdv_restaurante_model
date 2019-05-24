@@ -7,7 +7,6 @@ package br.com.interagese.padrao.services;
 
 import br.com.interagese.padrao.rest.models.Estado;
 import br.com.interagese.padrao.rest.util.PadraoService;
-import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,11 +15,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EstadoService extends PadraoService<Estado> {
-
-    //************************ create business rules ***************************
-    @Override
-    public List<Estado> findAll() {
-        return em.createQuery("SELECT o from Estado o ORDER BY o.sigla").getResultList();
-    }
 
 }
