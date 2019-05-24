@@ -5,11 +5,13 @@
  */
 package br.com.interagese.syscontabil.models;
 
+import br.com.interagese.erplibrary.AtributoPadrao;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -39,6 +41,8 @@ public class Tributacao implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(foreignKey = @ForeignKey(name = "tributacao_fk_produto"))
     private List<Produto> listProduto;
+    @Embedded
+    private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
     //*************************** Equals && HashCode ***************************
     @Override
@@ -110,6 +114,20 @@ public class Tributacao implements Serializable {
      */
     public void setListProduto(List<Produto> listProduto) {
         this.listProduto = listProduto;
+    }
+
+    /**
+     * @return the atributoPadrao
+     */
+    public AtributoPadrao getAtributoPadrao() {
+        return atributoPadrao;
+    }
+
+    /**
+     * @param atributoPadrao the atributoPadrao to set
+     */
+    public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
+        this.atributoPadrao = atributoPadrao;
     }
 
 }
