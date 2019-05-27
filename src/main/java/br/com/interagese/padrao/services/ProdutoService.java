@@ -6,7 +6,7 @@
 package br.com.interagese.padrao.services;
 
 import br.com.interagese.padrao.rest.util.PadraoService;
-import br.com.interagese.syscontabil.models.Produto;
+import br.com.interagese.syscontabil.models.ProdutoCliente;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
  * @author Bruno Martins
  */
 @Service
-public class ProdutoService extends  PadraoService<Produto>{
+public class ProdutoService extends  PadraoService<ProdutoCliente>{
 //    
 //    public ProdutoService() {
-//        super(Produto.class);
+//        super(ProdutoCliente.class);
 //    }
     // create regra de negocios
     

@@ -8,7 +8,7 @@ package br.com.interagese.padrao.controllers;
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
 import br.com.interagese.padrao.services.ProdutoService;
-import br.com.interagese.syscontabil.models.Produto;
+import br.com.interagese.syscontabil.models.ProdutoCliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(path = "api/produtos")
-public class ProdutoController extends PadraoController<Produto> {
+public class ProdutoController extends PadraoController<ProdutoCliente> {
 
     //******************** inject service in controller ************************
     @IsServiceDefault
