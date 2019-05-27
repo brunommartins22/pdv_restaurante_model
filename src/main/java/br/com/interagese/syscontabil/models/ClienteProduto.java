@@ -28,12 +28,12 @@ import javax.persistence.Table;
  * @author Bruno Martins
  */
 @Entity
-@Table(name = "tributacao")
-public class Tributacao implements Serializable {
+@Table(name = "cliente_produto")
+public class ClienteProduto implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_tributacao")
-    @SequenceGenerator(name = "gen_tributacao", sequenceName = "seq_tributacao")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_cliente_produto")
+    @SequenceGenerator(name = "gen_cliente_produto", sequenceName = "seq_cliente_produto")
     private Long id;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "tributacao_fk_cliente"))
@@ -63,7 +63,7 @@ public class Tributacao implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Tributacao other = (Tributacao) obj;
+        final ClienteProduto other = (ClienteProduto) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
