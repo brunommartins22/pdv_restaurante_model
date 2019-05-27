@@ -6,11 +6,13 @@
 package br.com.interagese.syscontabil.models;
 
 import br.com.interagese.erplibrary.AtributoPadrao;
+import br.com.interagese.syscontabil.domains.DominioRegime;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,8 +31,8 @@ public class RegraRegimeTributario implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_regime_tributario")
     @SequenceGenerator(name = "gen_regra_regime_tributario", sequenceName = "seq_regra_regime_tributario")
     private Long id;
-    @Column(length = 12, nullable = false)
-    private Long regimeTributarioId;
+    @Enumerated(EnumType.STRING)
+    private DominioRegime regimeTributarioId;
     @Embedded
     private TributoFederal tributoFederal = new TributoFederal();
     @Embedded
@@ -83,20 +85,6 @@ public class RegraRegimeTributario implements Serializable {
     }
 
     /**
-     * @return the regimeTributarioId
-     */
-    public Long getRegimeTributarioId() {
-        return regimeTributarioId;
-    }
-
-    /**
-     * @param regimeTributarioId the regimeTributarioId to set
-     */
-    public void setRegimeTributarioId(Long regimeTributarioId) {
-        this.regimeTributarioId = regimeTributarioId;
-    }
-
-    /**
      * @return the atributoPadrao
      */
     public AtributoPadrao getAtributoPadrao() {
@@ -122,6 +110,20 @@ public class RegraRegimeTributario implements Serializable {
      */
     public void setTributoFederal(TributoFederal tributoFederal) {
         this.tributoFederal = tributoFederal;
+    }
+
+    /**
+     * @return the regimeTributarioId
+     */
+    public DominioRegime getRegimeTributarioId() {
+        return regimeTributarioId;
+    }
+
+    /**
+     * @param regimeTributarioId the regimeTributarioId to set
+     */
+    public void setRegimeTributarioId(DominioRegime regimeTributarioId) {
+        this.regimeTributarioId = regimeTributarioId;
     }
 
 }

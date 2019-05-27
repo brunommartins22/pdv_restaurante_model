@@ -22,26 +22,29 @@ import javax.persistence.Table;
  * @author Bruno Martins
  */
 @Entity
-@Table(name = "regime_tributario")
-public class RegimeTributario implements Serializable{
-    
+@Table(name = "produto_geral")
+public class ProdutoGeral implements Serializable {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regime_tributario")
-    @SequenceGenerator(name = "gen_regime_tributario",sequenceName = "seq_regime_tributario")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_produto_geral")
+    @SequenceGenerator(name = "gen_produto_geral", sequenceName = "seq_produto_geral")
     private Long id;
-    @Column(length = 120,nullable = false,unique = true)
-    private String nomeRegimeTributario;
-    @Column(length = 5,unique = true)
-    private String siglaRegimeTributario;
+    @Column(length = 255)
+    private String nomeProduto;
+    @Column(length = 13, nullable = false, unique = true)
+    private Long ean;
+    @Column(length = 8, nullable = false)
+    private String ncm;
+    @Column(length = 7, nullable = false)
+    private String cest;
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
-    
-    //************************ Equal && HashCode *******************************
 
+    //************************* Equals && HashCode *****************************
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 11 * hash + Objects.hashCode(this.getId());
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.getId());
         return hash;
     }
 
@@ -56,7 +59,7 @@ public class RegimeTributario implements Serializable{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final RegimeTributario other = (RegimeTributario) obj;
+        final ProdutoGeral other = (ProdutoGeral) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
@@ -65,11 +68,10 @@ public class RegimeTributario implements Serializable{
 
     @Override
     public String toString() {
-        return "RegimeTributario{" + "id=" + getId() + '}';
+        return "br.com.interagese.syscontabil.models.ProdutoGeral{" + "id=" + id + '}';
     }
-    
-    //****************************** get && setts ******************************
 
+    //***************************** get && setts *******************************
     /**
      * @return the id
      */
@@ -85,31 +87,59 @@ public class RegimeTributario implements Serializable{
     }
 
     /**
-     * @return the nomeRegimeTributario
+     * @return the nomeProduto
      */
-    public String getNomeRegimeTributario() {
-        return nomeRegimeTributario;
+    public String getNomeProduto() {
+        return nomeProduto;
     }
 
     /**
-     * @param nomeRegimeTributario the nomeRegimeTributario to set
+     * @param nomeProduto the nomeProduto to set
      */
-    public void setNomeRegimeTributario(String nomeRegimeTributario) {
-        this.nomeRegimeTributario = nomeRegimeTributario;
+    public void setNomeProduto(String nomeProduto) {
+        this.nomeProduto = nomeProduto;
     }
 
     /**
-     * @return the siglaRegimeTributario
+     * @return the ean
      */
-    public String getSiglaRegimeTributario() {
-        return siglaRegimeTributario;
+    public Long getEan() {
+        return ean;
     }
 
     /**
-     * @param siglaRegimeTributario the siglaRegimeTributario to set
+     * @param ean the ean to set
      */
-    public void setSiglaRegimeTributario(String siglaRegimeTributario) {
-        this.siglaRegimeTributario = siglaRegimeTributario;
+    public void setEan(Long ean) {
+        this.ean = ean;
+    }
+
+    /**
+     * @return the ncm
+     */
+    public String getNcm() {
+        return ncm;
+    }
+
+    /**
+     * @param ncm the ncm to set
+     */
+    public void setNcm(String ncm) {
+        this.ncm = ncm;
+    }
+
+    /**
+     * @return the cest
+     */
+    public String getCest() {
+        return cest;
+    }
+
+    /**
+     * @param cest the cest to set
+     */
+    public void setCest(String cest) {
+        this.cest = cest;
     }
 
     /**
@@ -125,9 +155,5 @@ public class RegimeTributario implements Serializable{
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
     }
-    
-    
-    
-    
-    
+
 }

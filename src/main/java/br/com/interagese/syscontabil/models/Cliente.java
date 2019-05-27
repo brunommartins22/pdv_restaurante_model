@@ -9,11 +9,9 @@ import br.com.interagese.erplibrary.AtributoPadrao;
 import br.com.interagese.padrao.rest.models.Cidade;
 import br.com.interagese.padrao.rest.models.Estado;
 import br.com.interagese.rest.domain.DominioTipoPessoa;
+import br.com.interagese.syscontabil.domains.DominioRegime;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -25,7 +23,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -47,9 +44,8 @@ public class Cliente implements Serializable {
     private String nomeFantasia;
     @Column(length = 255)
     private String nomeResposavel;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_regime_tributario"))
-    private List<RegimeTributario> listRegimeTributario;
+    @Enumerated(EnumType.STRING)
+    private DominioRegime tipoRegime;
     @Enumerated(EnumType.STRING)
     private DominioTipoPessoa tipoCliente;
     @Column(length = 14, nullable = false, unique = true)
@@ -60,9 +56,6 @@ public class Cliente implements Serializable {
     private String im;
     @Column(length = 12, unique = true)
     private String ieSt;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_cnae"))
-    private List<Cnae> listAtividades;
     @Column(length = 12, unique = true)
     private String suframa;
     @Column(length = 12, nullable = false)
@@ -431,34 +424,17 @@ public class Cliente implements Serializable {
     }
 
     /**
-     * @return the listAtividades
+     * @return the tipoRegime
      */
-    public List<Cnae> getListAtividades() {
-        return listAtividades;
+    public DominioRegime getTipoRegime() {
+        return tipoRegime;
     }
 
     /**
-     * @param listAtividades the listAtividades to set
+     * @param tipoRegime the tipoRegime to set
      */
-    public void setListAtividades(List<Cnae> listAtividades) {
-        this.listAtividades = listAtividades;
-    }
-
-    /**
-     * @return the listRegimeTributario
-     */
-    public List<RegimeTributario> getListRegimeTributario() {
-        if (listRegimeTributario == null) {
-            listRegimeTributario = new ArrayList<>();
-        }
-        return listRegimeTributario;
-    }
-
-    /**
-     * @param listRegimeTributario the listRegimeTributario to set
-     */
-    public void setListRegimeTributario(List<RegimeTributario> listRegimeTributario) {
-        this.listRegimeTributario = listRegimeTributario;
+    public void setTipoRegime(DominioRegime tipoRegime) {
+        this.tipoRegime = tipoRegime;
     }
 
 }
