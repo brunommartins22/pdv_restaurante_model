@@ -3,6 +3,7 @@ package br.com.interagese;
 import br.com.interagese.padrao.rest.services.SessionService;
 import br.com.interagese.padrao.rest.services.UsuarioService;
 import br.com.interagese.padrao.rest.util.JWTAuthenticationFilter;
+import br.com.interagese.padrao.rest.util.JWTCookieFilter;
 import br.com.interagese.padrao.rest.util.JWTLoginFilter;
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable().authorizeRequests()
                 .antMatchers("/home").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/security/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/security/cookie").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .cors()
@@ -43,6 +45,13 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
                                 "/api/security/login",
                                 authenticationManager(),
                                 usuarioService,
+                                sessionService
+                        ),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .addFilterBefore(
+                        new JWTCookieFilter(
+                                "/api/security/cookie",
                                 sessionService
                         ),
                         UsernamePasswordAuthenticationFilter.class
