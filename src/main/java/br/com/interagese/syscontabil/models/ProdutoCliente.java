@@ -29,6 +29,8 @@ public class ProdutoCliente implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_produto_cliente")
     @SequenceGenerator(name = "gen_produto_cliente", sequenceName = "seq_produto_cliente")
     private Long id;
+    @Column(nullable = false)
+    private Long clienteId;
     @Column(length = 255)
     private String nomeProduto;
     @Column(length = 120)
@@ -202,6 +204,20 @@ public class ProdutoCliente implements Serializable {
      */
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
+    }
+
+    /**
+     * @return the clienteId
+     */
+    public Long getClienteId() {
+        return clienteId;
+    }
+
+    /**
+     * @param clienteId the clienteId to set
+     */
+    public void setClienteId(Long clienteId) {
+        this.clienteId = clienteId;
     }
 
 }
