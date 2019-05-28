@@ -14,11 +14,9 @@ import org.springframework.stereotype.Service;
  * @author Bruno Martins
  */
 @Service
-public class ProdutoService extends  PadraoService<ProdutoCliente>{
-//    
-//    public ProdutoService() {
-//        super(ProdutoCliente.class);
-//    }
-    // create regra de negocios
+public class ProdutoClienteService extends PadraoService<ProdutoCliente>{
+    
+    
+    
     
 }
