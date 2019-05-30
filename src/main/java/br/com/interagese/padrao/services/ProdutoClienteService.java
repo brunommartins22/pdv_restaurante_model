@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ProdutoClienteService extends PadraoService<ProdutoCliente>{
-    
-    
+   
+   
     
     
 }
