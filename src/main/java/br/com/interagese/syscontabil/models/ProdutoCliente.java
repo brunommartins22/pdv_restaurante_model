@@ -38,11 +38,19 @@ public class ProdutoCliente implements Serializable {
     @Column(length = 13, unique = true)
     private Long ean;
     @Column(length = 8)
-    private String ncm;
+    private String ncmCliente;
+    @Column(length = 8)
+    private String ncmPadrao;
     @Column(length = 7)
-    private String cest;
+    private String cestCliente;
+    @Column(length = 7)
+    private String cestPadrao;
+    @Embedded
+    private TributoFederalCliente tributoFederalCliente;
     @Embedded
     private TributoFederal tributoFederal;
+    @Embedded
+    private TributoEstadualCliente tributoEstadualCliente;
     @Embedded
     private TributoEstadual tributoEstadual;
     @Embedded
@@ -80,6 +88,7 @@ public class ProdutoCliente implements Serializable {
     }
 
     //**************************** get && setts ********************************
+
     /**
      * @return the id
      */
@@ -92,6 +101,20 @@ public class ProdutoCliente implements Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @return the clienteId
+     */
+    public Long getClienteId() {
+        return clienteId;
+    }
+
+    /**
+     * @param clienteId the clienteId to set
+     */
+    public void setClienteId(Long clienteId) {
+        this.clienteId = clienteId;
     }
 
     /**
@@ -137,31 +160,73 @@ public class ProdutoCliente implements Serializable {
     }
 
     /**
-     * @return the ncm
+     * @return the ncmCliente
      */
-    public String getNcm() {
-        return ncm;
+    public String getNcmCliente() {
+        return ncmCliente;
     }
 
     /**
-     * @param ncm the ncm to set
+     * @param ncmCliente the ncmCliente to set
      */
-    public void setNcm(String ncm) {
-        this.ncm = ncm;
+    public void setNcmCliente(String ncmCliente) {
+        this.ncmCliente = ncmCliente;
     }
 
     /**
-     * @return the cest
+     * @return the ncmPadrao
      */
-    public String getCest() {
-        return cest;
+    public String getNcmPadrao() {
+        return ncmPadrao;
     }
 
     /**
-     * @param cest the cest to set
+     * @param ncmPadrao the ncmPadrao to set
      */
-    public void setCest(String cest) {
-        this.cest = cest;
+    public void setNcmPadrao(String ncmPadrao) {
+        this.ncmPadrao = ncmPadrao;
+    }
+
+    /**
+     * @return the cestCliente
+     */
+    public String getCestCliente() {
+        return cestCliente;
+    }
+
+    /**
+     * @param cestCliente the cestCliente to set
+     */
+    public void setCestCliente(String cestCliente) {
+        this.cestCliente = cestCliente;
+    }
+
+    /**
+     * @return the cestPadrao
+     */
+    public String getCestPadrao() {
+        return cestPadrao;
+    }
+
+    /**
+     * @param cestPadrao the cestPadrao to set
+     */
+    public void setCestPadrao(String cestPadrao) {
+        this.cestPadrao = cestPadrao;
+    }
+
+    /**
+     * @return the tributoFederalCliente
+     */
+    public TributoFederalCliente getTributoFederalCliente() {
+        return tributoFederalCliente;
+    }
+
+    /**
+     * @param tributoFederalCliente the tributoFederalCliente to set
+     */
+    public void setTributoFederalCliente(TributoFederalCliente tributoFederalCliente) {
+        this.tributoFederalCliente = tributoFederalCliente;
     }
 
     /**
@@ -176,6 +241,20 @@ public class ProdutoCliente implements Serializable {
      */
     public void setTributoFederal(TributoFederal tributoFederal) {
         this.tributoFederal = tributoFederal;
+    }
+
+    /**
+     * @return the tributoEstadualCliente
+     */
+    public TributoEstadualCliente getTributoEstadualCliente() {
+        return tributoEstadualCliente;
+    }
+
+    /**
+     * @param tributoEstadualCliente the tributoEstadualCliente to set
+     */
+    public void setTributoEstadualCliente(TributoEstadualCliente tributoEstadualCliente) {
+        this.tributoEstadualCliente = tributoEstadualCliente;
     }
 
     /**
@@ -205,19 +284,5 @@ public class ProdutoCliente implements Serializable {
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
     }
-
-    /**
-     * @return the clienteId
-     */
-    public Long getClienteId() {
-        return clienteId;
-    }
-
-    /**
-     * @param clienteId the clienteId to set
-     */
-    public void setClienteId(Long clienteId) {
-        this.clienteId = clienteId;
-    }
-
+   
 }
