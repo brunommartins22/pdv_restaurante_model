@@ -7,9 +7,17 @@ package br.com.interagese.padrao.controllers;
 
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
+import br.com.interagese.padrao.services.ClienteService;
 import br.com.interagese.padrao.services.ProdutoClienteService;
+import br.com.interagese.syscontabil.temp.ClienteProdutoTemp;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,5 +32,28 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
     @IsServiceDefault
     @Autowired
     private ProdutoClienteService produtoClienteService;
+    @Autowired
+    private ClienteService clienteService;
+
+    //**************************************************************************
+    @GetMapping(path = "loadClientProductAll")
+    public String loadClientProductAll() {
+         
+        try {
+            return serializar(produtoClienteService.loadProductClient());
+        } catch (Exception ex) {
+            return returnException(ex);
+        }
+    }
+
+//    @GetMapping(path = "loadClientSelected/{clienteId}")
+//    public String loadClientSelected(@PathVariable Long clienteId) {
+//        if (clienteId != null) {
+//            ClienteProdutoTemp temp = produtoClienteService.loadRuleProductClient(clienteService.findById(clienteId), produtoClienteService.loadProductClientById(clienteId));
+//            return serializar(temp);
+//        }
+//
+//        return "";
+//    }
 
 }
