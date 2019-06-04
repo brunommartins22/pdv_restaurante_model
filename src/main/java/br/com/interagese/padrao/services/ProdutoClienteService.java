@@ -13,6 +13,7 @@ import br.com.interagese.syscontabil.models.ProdutoCliente;
 import br.com.interagese.syscontabil.models.RegraProduto;
 import br.com.interagese.syscontabil.models.TributoFederal;
 import br.com.interagese.syscontabil.temp.ClienteProdutoTemp;
+import java.math.BigInteger;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +49,11 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 
     }
 
-    public List<ProdutoCliente> loadProductClientById(Long idCliente) {
-        if (idCliente != null) {
+    public List<ProdutoCliente> loadProductClientById(BigInteger clienteId) {
+        if (clienteId != null) {
             String sql = "select o from ProdutoCliente o where o.clienteId = :clienteid order by o.nomeProduto";
             TypedQuery<ProdutoCliente> query = em.createQuery(sql, ProdutoCliente.class);
-            query.setParameter("clienteid", idCliente);
+            query.setParameter("clienteid", clienteId);
 
             return query.getResultList();
 
@@ -60,40 +61,43 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         return null;
     }
 
-//    public ClienteProdutoTemp loadRuleProductClient(Cliente cliente, List<ProdutoCliente> listProductClient) {
-//
-//        ClienteProdutoTemp temp = new ClienteProdutoTemp();
-//        temp.setCliente(cliente);
-//        temp.setSize(new Long(listProductClient.size()));
-//
-//        listProductClient.forEach((produtoCliente) -> {
-//            String ncmPadrao = null;
-//            String cestPadrao = null;
-//            TributoFederal tributoFederalPadrao = null;
-//            //************************ Rule product ****************************
-//            RegraProduto regraProduto = regraProdutoService.loadRegraProduto(cliente.getId(), produtoCliente.getEan());
-//
-//            if (regraProduto != null) {
-//
-//                if (produtoCliente.getEan() != null) {
-//                    String sql = "Select o.ncm,o.cest from ProdutoGeral o where o.ean ='" + produtoCliente.getEan() + "'";
-//
-//                    Object[] o = em.createQuery(sql, Object[].class).getSingleResult();
-//                    ncmPadrao = (String) o[0];
-//                    cestPadrao = (String) o[1];
-//                }
-//
-//                tributoFederalPadrao = regraProduto.getTributoFederal();
-//            }
-//
-//            //*************** insert data in productClient *********************
-//            produtoCliente.setNcmPadrao(ncmPadrao);
-//            produtoCliente.setCestPadrao(cestPadrao);
-//            produtoCliente.setTributoFederal(tributoFederalPadrao);
-//        });
-//        //******** insert update list for new result ListProductClient *********
-//        temp.setResultProdutocliente(listProductClient);
-//
-//        return temp;
-//    }
+    public ClienteProdutoTemp loadRuleProductClient(Cliente cliente) {
+        
+
+        ClienteProdutoTemp temp = new ClienteProdutoTemp();
+        temp.setClienteId(new BigInteger(cliente.getId().toString()));
+        temp.setCpfCnpj(cliente.getCpfCnpj());
+        temp.setNomeCliente(cliente.getRazaoSocial());
+        List<ProdutoCliente> listProductClient = loadProductClientById(new BigInteger(cliente.getId().toString()));
+     
+        listProductClient.forEach((produtoCliente) -> {
+            String ncmPadrao = null;
+            String cestPadrao = null;
+            TributoFederal tributoFederalPadrao = null;
+            //************************ Rule product ****************************
+            RegraProduto regraProduto = regraProdutoService.loadRegraProduto(new BigInteger(cliente.getId().toString()), produtoCliente.getEan());
+
+            if (regraProduto != null) {
+
+                if (produtoCliente.getEan() != null) {
+                    String sql = "Select o.ncm,o.cest from ProdutoGeral o where o.ean ='" + produtoCliente.getEan() + "'";
+
+                    Object[] o = em.createQuery(sql, Object[].class).getSingleResult();
+                    ncmPadrao = (String) o[0];
+                    cestPadrao = (String) o[1];
+                }
+
+                tributoFederalPadrao = regraProduto.getTributoFederal();
+            }
+
+            //*************** insert data in productClient *********************
+            produtoCliente.setNcmPadrao(ncmPadrao);
+            produtoCliente.setCestPadrao(cestPadrao);
+            produtoCliente.setTributoFederal(tributoFederalPadrao);
+        });
+        //******** insert update list for new result ListProductClient *********
+        temp.setResultProdutoCliente(listProductClient);
+
+        return temp;
+    }
 }

@@ -11,6 +11,7 @@ import br.com.interagese.padrao.services.ClienteService;
 import br.com.interagese.padrao.services.ProdutoClienteService;
 import br.com.interagese.syscontabil.temp.ClienteProdutoTemp;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -46,14 +47,14 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
         }
     }
 
-//    @GetMapping(path = "loadClientSelected/{clienteId}")
-//    public String loadClientSelected(@PathVariable Long clienteId) {
-//        if (clienteId != null) {
-//            ClienteProdutoTemp temp = produtoClienteService.loadRuleProductClient(clienteService.findById(clienteId), produtoClienteService.loadProductClientById(clienteId));
-//            return serializar(temp);
-//        }
-//
-//        return "";
-//    }
+    @GetMapping(path = "loadClientSelected/{clienteId}")
+    public String loadClientSelected(@PathVariable Long clienteId) {
+        if (clienteId != null) {
+            ClienteProdutoTemp temp = produtoClienteService.loadRuleProductClient(clienteService.findById(clienteId));
+            return serializar(temp);
+        }
+
+        return "";
+    }
 
 }

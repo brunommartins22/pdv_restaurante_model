@@ -7,6 +7,7 @@ package br.com.interagese.padrao.services;
 
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.models.RegraProduto;
+import java.math.BigInteger;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RegraProdutoService extends PadraoService<RegraProduto> {
 
-    public RegraProduto loadRegraProduto(Long clienteId, Long ean) {
+    public RegraProduto loadRegraProduto(BigInteger clienteId, Long ean) {
         String sql = "select o from RegraProduto o where";
         if (ean != null) {
             sql += " o.ean = '" + ean + "'";
