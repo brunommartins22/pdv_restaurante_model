@@ -102,7 +102,24 @@
             ALTER TABLE syscontabil.cliente
             ALTER COLUMN tipo_regime TYPE syscontabil."DominioRegime";
         </sql>
-    </changeSet>   
+    </changeSet> 
+    
+    <changeSet id="CRIAR DominioValidacaoProduto" author="syscontabil-bruno-joao"   runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">
+            CREATE DOMAIN syscontabil."DominioValidacaoProduto"
+            AS character varying(12)
+            CONSTRAINT "DominioValidacaoProduto" CHECK (value in ('PENDENTE','VALIDADO'));
+            ALTER DOMAIN syscontabil."DominioValidacaoProduto"
+            OWNER TO interage;
+        </sql>
+    </changeSet>
+    
+    <changeSet id="ALTER TIPO COLUNA syscontabil.cliente.status" author="syscontabil-bruno-joao" runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">
+            ALTER TABLE syscontabil.produto_cliente
+            ALTER COLUMN status TYPE syscontabil."DominioValidacaoProduto";
+        </sql>
+    </changeSet>     
     
     
 </databaseChangeLog>
