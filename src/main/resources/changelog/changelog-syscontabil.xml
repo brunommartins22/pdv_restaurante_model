@@ -77,6 +77,13 @@
         </sql>
     </changeSet>
     
+    <changeSet id="4" author="joao" runOnChange="true">        
+        <sql splitStatements="true" dbms="postgresql">
+            ALTER TABLE syscontabil.regra_regime_tributario
+            ADD CONSTRAINT uk_regime_tributario_id UNIQUE(regime_tributario_id);
+        </sql>
+    </changeSet>
+
     <changeSet id="4" author="syscontabil-bruno-joao" runOnChange="true">
         <sql splitStatements="true" dbms="postgresql">
             ALTER TABLE syscontabil.cliente
@@ -103,12 +110,5 @@
             ALTER COLUMN tipo_regime TYPE syscontabil."DominioRegime";
         </sql>
     </changeSet>   
-    
-    <changeSet id="7" author="joao" runOnChange="true">        
-        <sql splitStatements="true" dbms="postgresql">
-            ALTER TABLE syscontabil.regra_regime_tributario
-            ADD CONSTRAINT uk_regime_tributario_id UNIQUE(regime_tributario_id);
-        </sql>
-    </changeSet>
 
 </databaseChangeLog>
