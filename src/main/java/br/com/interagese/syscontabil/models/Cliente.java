@@ -58,8 +58,6 @@ public class Cliente implements Serializable {
     private String ieSt;
     @Column(length = 12, unique = true)
     private String suframa;
-    @Column(length = 12, nullable = false)
-    private String crt;
     @Column(length = 8)
     private String cep;
     @Column(length = 255)
@@ -253,20 +251,6 @@ public class Cliente implements Serializable {
      */
     public void setSuframa(String suframa) {
         this.suframa = suframa;
-    }
-
-    /**
-     * @return the crt
-     */
-    public String getCrt() {
-        return crt;
-    }
-
-    /**
-     * @param crt the crt to set
-     */
-    public void setCrt(String crt) {
-        this.crt = crt;
     }
 
     /**

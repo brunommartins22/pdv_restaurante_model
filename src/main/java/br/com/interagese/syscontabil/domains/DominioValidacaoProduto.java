@@ -11,15 +11,15 @@ import br.com.interagese.padrao.rest.util.DominioPadrao;
  *
  * @author Bruno Martins
  */
-public enum DominioRegime implements DominioPadrao {
-    NORMAL("Normal"), LUCROPRESUMIDO("Lucro Presumido"), SIMPLESNACIONAL("Simples Nacional");
+public enum DominioValidacaoProduto implements DominioPadrao {
+     PENDENTE("Pendente"),VALIDADO("Validado");
+     
+     private String descricao;
 
-    private String descricao;
-
-    private DominioRegime(String descricao) {
-        this.descricao = descricao;
-    }
-
+     private DominioValidacaoProduto(String descricao){
+         this.descricao = descricao;
+     }
+     
     @Override
     public String getDescricao() {
         return descricao;

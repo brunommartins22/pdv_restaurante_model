@@ -6,11 +6,14 @@
 package br.com.interagese.syscontabil.models;
 
 import br.com.interagese.erplibrary.AtributoPadrao;
+import br.com.interagese.syscontabil.domains.DominioValidacaoProduto;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -45,6 +48,8 @@ public class ProdutoCliente implements Serializable {
     private String cestCliente;
     @Column(length = 7)
     private String cestPadrao;
+    @Enumerated(EnumType.STRING)
+    private DominioValidacaoProduto status;
     @Embedded
     private TributoFederalCliente tributoFederalCliente;
     @Embedded
@@ -283,6 +288,20 @@ public class ProdutoCliente implements Serializable {
      */
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
+    }
+
+    /**
+     * @return the dominioValidacaoProduto
+     */
+    public DominioValidacaoProduto getstatus() {
+        return status;
+    }
+
+    /**
+     * @param status
+     */
+    public void setDominioValidacaoProduto(DominioValidacaoProduto status) {
+        this.status = status;
     }
    
 }

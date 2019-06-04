@@ -5,7 +5,10 @@
  */
 package br.com.interagese.syscontabil.temp;
 
+import br.com.interagese.syscontabil.models.ProdutoCliente;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -19,8 +22,9 @@ public class ClienteProdutoTemp {
     private BigInteger qtdRegistrosPendentes;
     private BigInteger qtdRegistrosAtualizados;
     private BigInteger qtdRegistro;
+    private List<ProdutoCliente> resultProdutoCliente;
 
-    //****************************** get ¨&& setts *****************************
+    //****************************** get && setts ******************************
     /**
      * @return the clienteId
      */
@@ -103,6 +107,23 @@ public class ClienteProdutoTemp {
      */
     public void setQtdRegistro(BigInteger qtdRegistro) {
         this.qtdRegistro = qtdRegistro;
+    }
+
+    /**
+     * @return the resultProdutoCliente
+     */
+    public List<ProdutoCliente> getResultProdutoCliente() {
+        if (resultProdutoCliente == null) {
+            resultProdutoCliente = new ArrayList<>();
+        }
+        return resultProdutoCliente;
+    }
+
+    /**
+     * @param resultProdutoCliente the resultProdutoCliente to set
+     */
+    public void setResultProdutoCliente(List<ProdutoCliente> resultProdutoCliente) {
+        this.resultProdutoCliente = resultProdutoCliente;
     }
 
 }
