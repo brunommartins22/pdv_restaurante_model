@@ -73,12 +73,11 @@
         </sql>
     </changeSet>
     
-    
-    
-    
-     
-    
-    
-     
+    <changeSet id="4" author="joao" runOnChange="true">        
+        <sql splitStatements="true" dbms="postgresql">
+            ALTER TABLE syscontabil.regra_regime_tributario
+            ADD CONSTRAINT uk_regime_tributario_id UNIQUE(regime_tributario_id);
+        </sql>
+    </changeSet>
     
 </databaseChangeLog>
