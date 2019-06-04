@@ -6,8 +6,7 @@
 package br.com.interagese.syscontabil.models;
 
 import br.com.interagese.erplibrary.AtributoPadrao;
-import br.com.interagese.padrao.rest.models.Cidade;
-import br.com.interagese.padrao.rest.models.Estado;
+import br.com.interagese.erplibrary.EnderecoPadrao;
 import br.com.interagese.rest.domain.DominioTipoPessoa;
 import br.com.interagese.syscontabil.domains.DominioRegime;
 import java.io.Serializable;
@@ -17,12 +16,9 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -46,6 +42,7 @@ public class Cliente implements Serializable {
     private String nomeResposavel;
     @Enumerated(EnumType.STRING)
     private DominioRegime tipoRegime;
+    @Column(length = 30)
     @Enumerated(EnumType.STRING)
     private DominioTipoPessoa tipoCliente;
     @Column(length = 14, nullable = false, unique = true)
@@ -58,30 +55,10 @@ public class Cliente implements Serializable {
     private String ieSt;
     @Column(length = 12, unique = true)
     private String suframa;
-    @Column(length = 8)
-    private String cep;
-    @Column(length = 255)
-    private String logradouro;
-    @Column(length = 120)
-    private String numero;
-    @Column(length = 255)
-    private String complemento;
-    @Column(length = 120)
-    private String bairro;
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_estado"))
-    private Estado estado;
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "cliente_fk_cidade"))
-    private Cidade cidade;
-    @Column(length = 12)
-    private String fone1;
-    @Column(length = 12)
-    private String fone2;
-    @Column(length = 120)
-    private String email;
     @Embedded
-    private AtributoPadrao atributoPadrao = new AtributoPadrao();
+    private EnderecoPadrao endereco;
+    @Embedded
+    private AtributoPadrao atributoPadrao;
 
     public Cliente() {
 
@@ -119,10 +96,16 @@ public class Cliente implements Serializable {
     }
 
     //*************************** get && setts *********************************
+    /**
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * @param id the id to set
+     */
     public void setId(Long id) {
         this.id = id;
     }
@@ -167,6 +150,20 @@ public class Cliente implements Serializable {
      */
     public void setNomeResposavel(String nomeResposavel) {
         this.nomeResposavel = nomeResposavel;
+    }
+
+    /**
+     * @return the tipoRegime
+     */
+    public DominioRegime getTipoRegime() {
+        return tipoRegime;
+    }
+
+    /**
+     * @param tipoRegime the tipoRegime to set
+     */
+    public void setTipoRegime(DominioRegime tipoRegime) {
+        this.tipoRegime = tipoRegime;
     }
 
     /**
@@ -254,143 +251,17 @@ public class Cliente implements Serializable {
     }
 
     /**
-     * @return the cep
+     * @return the endereco
      */
-    public String getCep() {
-        return cep;
+    public EnderecoPadrao getEndereco() {
+        return endereco;
     }
 
     /**
-     * @param cep the cep to set
+     * @param endereco the endereco to set
      */
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    /**
-     * @return the logradouro
-     */
-    public String getLogradouro() {
-        return logradouro;
-    }
-
-    /**
-     * @param logradouro the logradouro to set
-     */
-    public void setLogradouro(String logradouro) {
-        this.logradouro = logradouro;
-    }
-
-    /**
-     * @return the numero
-     */
-    public String getNumero() {
-        return numero;
-    }
-
-    /**
-     * @param numero the numero to set
-     */
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    /**
-     * @return the complemento
-     */
-    public String getComplemento() {
-        return complemento;
-    }
-
-    /**
-     * @param complemento the complemento to set
-     */
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
-    }
-
-    /**
-     * @return the bairro
-     */
-    public String getBairro() {
-        return bairro;
-    }
-
-    /**
-     * @param bairro the bairro to set
-     */
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-
-    /**
-     * @return the estado
-     */
-    public Estado getEstado() {
-        return estado;
-    }
-
-    /**
-     * @param estado the estado to set
-     */
-    public void setEstado(Estado estado) {
-        this.estado = estado;
-    }
-
-    /**
-     * @return the cidade
-     */
-    public Cidade getCidade() {
-        return cidade;
-    }
-
-    /**
-     * @param cidade the cidade to set
-     */
-    public void setCidade(Cidade cidade) {
-        this.cidade = cidade;
-    }
-
-    /**
-     * @return the fone1
-     */
-    public String getFone1() {
-        return fone1;
-    }
-
-    /**
-     * @param fone1 the fone1 to set
-     */
-    public void setFone1(String fone1) {
-        this.fone1 = fone1;
-    }
-
-    /**
-     * @return the fone2
-     */
-    public String getFone2() {
-        return fone2;
-    }
-
-    /**
-     * @param fone2 the fone2 to set
-     */
-    public void setFone2(String fone2) {
-        this.fone2 = fone2;
-    }
-
-    /**
-     * @return the email
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
-     * @param email the email to set
-     */
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEndereco(EnderecoPadrao endereco) {
+        this.endereco = endereco;
     }
 
     /**
@@ -405,20 +276,6 @@ public class Cliente implements Serializable {
      */
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
-    }
-
-    /**
-     * @return the tipoRegime
-     */
-    public DominioRegime getTipoRegime() {
-        return tipoRegime;
-    }
-
-    /**
-     * @param tipoRegime the tipoRegime to set
-     */
-    public void setTipoRegime(DominioRegime tipoRegime) {
-        this.tipoRegime = tipoRegime;
     }
 
 }
