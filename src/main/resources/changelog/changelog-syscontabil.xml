@@ -2,9 +2,13 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     
+    
+    
     <changeSet id="1" author="adam"   runOnChange="true">        
         <sql splitStatements="true" dbms="postgresql">
-            INSERT INTO seguranca.sistema VALUES (1, 'SysContábil', 'SYSCONTABIL');
+            INSERT INTO 
+            seguranca.sistema (id, dominio_grupo_sistema,nome_sistema)
+            VALUES (1, 'SYSCONTABIL', 'SysContábil');
         </sql>
     </changeSet>
     
@@ -73,11 +77,38 @@
         </sql>
     </changeSet>
     
-    <changeSet id="4" author="joao" runOnChange="true">        
+    <changeSet id="4" author="syscontabil-bruno-joao" runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">
+            ALTER TABLE syscontabil.cliente
+            ALTER COLUMN tipo_cliente TYPE seguranca."DominioTipoPessoa";
+            
+            ALTER TABLE syscontabil.cliente
+            ALTER COLUMN tipo_cliente SET NOT NULL;
+        </sql>
+    </changeSet>
+    
+    <changeSet id="5" author="syscontabil-bruno-joao"   runOnChange="true">        
+        <sql splitStatements="true" dbms="postgresql">
+            CREATE DOMAIN syscontabil."DominioRegime"
+            AS character varying(20)
+            CONSTRAINT "DominioRegime" CHECK (value in ('LUCROPRESUMIDO','LUCROPRESUMIDO','SIMPLESNACIONAL'));
+            ALTER DOMAIN syscontabil."DominioRegime"
+            OWNER TO interage;
+        </sql>
+    </changeSet>
+    
+    <changeSet id="6" author="syscontabil-bruno-joao" runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">
+            ALTER TABLE syscontabil.cliente
+            ALTER COLUMN tipo_regime TYPE syscontabil."DominioRegime";
+        </sql>
+    </changeSet>   
+    
+    <changeSet id="7" author="joao" runOnChange="true">        
         <sql splitStatements="true" dbms="postgresql">
             ALTER TABLE syscontabil.regra_regime_tributario
             ADD CONSTRAINT uk_regime_tributario_id UNIQUE(regime_tributario_id);
         </sql>
     </changeSet>
-    
+
 </databaseChangeLog>
