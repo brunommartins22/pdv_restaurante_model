@@ -2,8 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     
-    
-    
+        
     <changeSet id="1" author="adam"   runOnChange="true">        
         <sql splitStatements="true" dbms="postgresql">
             INSERT INTO 
@@ -77,6 +76,13 @@
         </sql>
     </changeSet>
     
+    <changeSet id="4" author="joao" runOnChange="true">        
+        <sql splitStatements="true" dbms="postgresql">
+            ALTER TABLE syscontabil.regra_regime_tributario
+            ADD CONSTRAINT uk_regime_tributario_id UNIQUE(regime_tributario_id);
+        </sql>
+    </changeSet>
+
     <changeSet id="4" author="syscontabil-bruno-joao" runOnChange="true">
         <sql splitStatements="true" dbms="postgresql">
             ALTER TABLE syscontabil.cliente

@@ -28,37 +28,41 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SessionService sessionService;
 
+    private final boolean habilitaToken = true;
+
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.csrf().disable().authorizeRequests()
-                .antMatchers("/home").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/security/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/security/cookie").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .cors()
-                .and()
-                // filtra requisições de login
-                .addFilterBefore(
-                        new JWTLoginFilter(
-                                "/api/security/login",
-                                authenticationManager(),
-                                usuarioService,
-                                sessionService
-                        ),
-                        UsernamePasswordAuthenticationFilter.class
-                )
-                .addFilterBefore(
-                        new JWTCookieFilter(
-                                "/api/security/cookie",
-                                sessionService
-                        ),
-                        UsernamePasswordAuthenticationFilter.class
-                )
-                // filtra outras requisições para verificar a presença do JWT no header
-                .addFilterBefore(new JWTAuthenticationFilter(sessionService),
-                        UsernamePasswordAuthenticationFilter.class);
+        if (habilitaToken) {
+            httpSecurity.csrf().disable().authorizeRequests()
+                    .antMatchers("/home").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/security/login").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/security/cookie").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                    .cors()
+                    .and()
+                    // filtra requisições de login
+                    .addFilterBefore(
+                            new JWTLoginFilter(
+                                    "/api/security/login",
+                                    authenticationManager(),
+                                    usuarioService,
+                                    sessionService
+                            ),
+                            UsernamePasswordAuthenticationFilter.class
+                    )
+                    .addFilterBefore(
+                            new JWTCookieFilter(
+                                    "/api/security/cookie",
+                                    sessionService
+                            ),
+                            UsernamePasswordAuthenticationFilter.class
+                    )
+                    // filtra outras requisições para verificar a presença do JWT no header
+                    .addFilterBefore(new JWTAuthenticationFilter(sessionService),
+                            UsernamePasswordAuthenticationFilter.class);
+        }
     }
 
     @Override
@@ -69,7 +73,6 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(usuarioService);
-        //authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 
