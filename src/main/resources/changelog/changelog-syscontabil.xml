@@ -83,7 +83,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="4" author="syscontabil-bruno-joao" runOnChange="true">
+    <changeSet id="5" author="syscontabil-bruno-joao" runOnChange="true">
         <sql splitStatements="true" dbms="postgresql">
             ALTER TABLE syscontabil.cliente
             ALTER COLUMN tipo_cliente TYPE seguranca."DominioTipoPessoa";
@@ -93,7 +93,7 @@
         </sql>
     </changeSet>
     
-    <changeSet id="5" author="syscontabil-bruno-joao"   runOnChange="true">        
+    <changeSet id="6" author="syscontabil-bruno-joao"   runOnChange="true">        
         <sql splitStatements="true" dbms="postgresql">
             CREATE DOMAIN syscontabil."DominioRegime"
             AS character varying(20)
@@ -103,7 +103,7 @@
         </sql>
     </changeSet>
     
-    <changeSet id="6" author="syscontabil-bruno-joao" runOnChange="true">
+    <changeSet id="7" author="syscontabil-bruno-joao" runOnChange="true">
         <sql splitStatements="true" dbms="postgresql">
             ALTER TABLE syscontabil.cliente
             ALTER COLUMN tipo_regime TYPE syscontabil."DominioRegime";
