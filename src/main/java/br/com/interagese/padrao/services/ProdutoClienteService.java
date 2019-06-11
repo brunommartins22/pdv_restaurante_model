@@ -11,6 +11,7 @@ import br.com.interagese.padrao.rest.util.TransformNativeQuery;
 import br.com.interagese.syscontabil.models.Cliente;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
 import br.com.interagese.syscontabil.models.RegraProduto;
+import br.com.interagese.syscontabil.models.RegraRegimeTributario;
 import br.com.interagese.syscontabil.models.TributoFederal;
 import br.com.interagese.syscontabil.temp.ClienteProdutoTemp;
 import java.math.BigInteger;
@@ -28,6 +29,8 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 
     @Autowired
     private RegraProdutoService regraProdutoService;
+    @Autowired
+    private RegraRegimeTributarioService regraRegimeTributarioService;
 
     public List<ClienteProdutoTemp> loadProductClient() throws Exception {
 
@@ -51,9 +54,8 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 
     public List<ProdutoCliente> loadProductClientById(BigInteger clienteId) {
         if (clienteId != null) {
-            String sql = "select o from ProdutoCliente o where o.clienteId = :clienteid order by o.nomeProduto";
+            String sql = "select o from ProdutoCliente o where o.clienteId = '" + clienteId + "' order by o.nomeProduto";
             TypedQuery<ProdutoCliente> query = em.createQuery(sql, ProdutoCliente.class);
-            query.setParameter("clienteid", clienteId);
 
             return query.getResultList();
 
@@ -62,15 +64,14 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
     }
 
     public ClienteProdutoTemp loadRuleProductClient(Cliente cliente) {
-        
 
         ClienteProdutoTemp temp = new ClienteProdutoTemp();
         temp.setClienteId(new BigInteger(cliente.getId().toString()));
         temp.setCpfCnpj(cliente.getCpfCnpj());
         temp.setNomeCliente(cliente.getRazaoSocial());
         List<ProdutoCliente> listProductClient = loadProductClientById(new BigInteger(cliente.getId().toString()));
-     
-        listProductClient.forEach((produtoCliente) -> {
+
+        for (ProdutoCliente produtoCliente : listProductClient) {
             String ncmPadrao = null;
             String cestPadrao = null;
             TributoFederal tributoFederalPadrao = null;
@@ -88,13 +89,20 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 }
 
                 tributoFederalPadrao = regraProduto.getTributoFederal();
+            }else{
+                
+                
+//                RegraRegimeTributario regraRegimeTributario = 
+                
+                
             }
 
             //*************** insert data in productClient *********************
             produtoCliente.setNcmPadrao(ncmPadrao);
             produtoCliente.setCestPadrao(cestPadrao);
             produtoCliente.setTributoFederal(tributoFederalPadrao);
-        });
+        }
+
         //******** insert update list for new result ListProductClient *********
         temp.setResultProdutoCliente(listProductClient);
 

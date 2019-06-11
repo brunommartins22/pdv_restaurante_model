@@ -21,7 +21,7 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
     public RegraProduto loadRegraProduto(BigInteger clienteId, Long ean) {
         String sql = "select o from RegraProduto o where";
         if (ean != null) {
-            sql += " o.ean = '" + ean + "'";
+            sql += " o.eanProduto = '" + ean + "'";
         } else {
             sql += " o.clienteId = '" + clienteId + "'";
         }
