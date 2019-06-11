@@ -30,7 +30,11 @@ public class RegraNcm implements Serializable {
     private Long id;
     private String codigoNcm;
     @Embedded
-    private TributoFederal tributoFederal = new TributoFederal();
+    private TributoFederal tributoFederalLucroPresumido = new TributoFederal();
+    @Embedded
+    private TributoFederal tributoFederalLucroReal = new TributoFederal();
+    @Embedded
+    private TributoFederal tributoFederalSimplesNacional = new TributoFederal();
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
@@ -94,18 +98,31 @@ public class RegraNcm implements Serializable {
         this.codigoNcm = codigoNcm;
     }
 
-    /**
-     * @return the tributoFederal
-     */
-    public TributoFederal getTributoFederal() {
-        return tributoFederal;
+    public TributoFederal getTributoFederalLucroPresumido() {
+        return tributoFederalLucroPresumido;
+    }
+
+    public void setTributoFederalLucroPresumido(TributoFederal tributoFederalLucroPresumido) {
+        this.tributoFederalLucroPresumido = tributoFederalLucroPresumido;
+    }
+
+    public TributoFederal getTributoFederalLucroReal() {
+        return tributoFederalLucroReal;
+    }
+
+    public void setTributoFederalLucroReal(TributoFederal tributoFederalLucroReal) {
+        this.tributoFederalLucroReal = tributoFederalLucroReal;
+    }
+
+    public TributoFederal getTributoFederalSimplesNacional() {
+        return tributoFederalSimplesNacional;
     }
 
     /**
-     * @param tributoFederal the tributoFederal to set
+     * @return the tributoFederal
      */
-    public void setTributoFederal(TributoFederal tributoFederal) {
-        this.tributoFederal = tributoFederal;
+    public void setTributoFederalSimplesNacional(TributoFederal tributoFederalSimplesNacional) {
+        this.tributoFederalSimplesNacional = tributoFederalSimplesNacional;
     }
 
     /**
