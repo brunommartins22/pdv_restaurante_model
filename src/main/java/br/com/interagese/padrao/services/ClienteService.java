@@ -8,6 +8,9 @@ package br.com.interagese.padrao.services;
 import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.models.Cliente;
+import br.com.interagese.syscontabil.models.RegraProduto;
+import java.util.List;
+import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,8 +19,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ClienteService extends PadraoService<Cliente> {
+    
+    
+            
+    public  boolean  verificaClienteExiste(Long IdCliente, String cpfCnpj) {       
+            String sql = "select o from cliente o where o.id <> " + IdCliente + " and o.cpfCnpj = '"+ cpfCnpj+"'";
+            TypedQuery<Cliente> query = em.createQuery(sql, Cliente.class);
+           return query.getResultList().isEmpty() ? false : true;      
+    }
 
- @Override
+    @Override
     public String getWhere(String complementoConsulta) {
         String consultaSQL = "";
 
