@@ -23,6 +23,8 @@ public class RegraNcmController extends PadraoController<RegraNcmDto> {
 
     @IsServiceDefault
     @Autowired
-    private RegraNcmService produtoClienteService;
+    private RegraNcmService RegraNcmService;
+    
+    
 
 }
