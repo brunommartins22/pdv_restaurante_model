@@ -9,11 +9,8 @@ import br.com.interagese.erplibrary.AtributoPadrao;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -24,20 +21,20 @@ import javax.persistence.Table;
 @Table(name = "regra_ncm")
 public class RegraNcm implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_ncm")
-    @SequenceGenerator(name = "gen_regra_ncm", sequenceName = "seq_regra_ncm")
-    private Long id;
-    private String codigoNcm;
+    @EmbeddedId
+    private RegraNcmPK id;
     @Embedded
-    private TributoFederal tributoFederalLucroPresumido = new TributoFederal();
-    @Embedded
-    private TributoFederal tributoFederalLucroReal = new TributoFederal();
-    @Embedded
-    private TributoFederal tributoFederalSimplesNacional = new TributoFederal();
+    private TributoFederal tributoFederal = new TributoFederal();
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
-
+    
+    public RegraNcm(){
+    }
+    
+    public RegraNcm(RegraNcmPK id){
+        this.id = id;
+    }
+    
     //**************************** Equals && HashCode **************************
     @Override
     public int hashCode() {
@@ -73,56 +70,29 @@ public class RegraNcm implements Serializable {
     /**
      * @return the id
      */
-    public Long getId() {
+    public RegraNcmPK getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(Long id) {
+    public void setId(RegraNcmPK id) {
         this.id = id;
-    }
-
-    /**
-     * @return the codigoNcm
-     */
-    public String getCodigoNcm() {
-        return codigoNcm;
-    }
-
-    /**
-     * @param codigoNcm the codigoNcm to set
-     */
-    public void setCodigoNcm(String codigoNcm) {
-        this.codigoNcm = codigoNcm;
-    }
-
-    public TributoFederal getTributoFederalLucroPresumido() {
-        return tributoFederalLucroPresumido;
-    }
-
-    public void setTributoFederalLucroPresumido(TributoFederal tributoFederalLucroPresumido) {
-        this.tributoFederalLucroPresumido = tributoFederalLucroPresumido;
-    }
-
-    public TributoFederal getTributoFederalLucroReal() {
-        return tributoFederalLucroReal;
-    }
-
-    public void setTributoFederalLucroReal(TributoFederal tributoFederalLucroReal) {
-        this.tributoFederalLucroReal = tributoFederalLucroReal;
-    }
-
-    public TributoFederal getTributoFederalSimplesNacional() {
-        return tributoFederalSimplesNacional;
     }
 
     /**
      * @return the tributoFederal
      */
-    public void setTributoFederalSimplesNacional(TributoFederal tributoFederalSimplesNacional) {
-        this.tributoFederalSimplesNacional = tributoFederalSimplesNacional;
+    public TributoFederal getTributoFederal() {
+        return tributoFederal;
+    }
+
+    /**
+     * @param tributoFederal the tributoFederal to set
+     */
+    public void setTributoFederal(TributoFederal tributoFederal) {
+        this.tributoFederal = tributoFederal;
     }
 
     /**
