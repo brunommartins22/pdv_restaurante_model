@@ -97,7 +97,7 @@
         <sql splitStatements="true" dbms="postgresql">
             CREATE DOMAIN syscontabil."DominioRegime"
             AS character varying(20)
-            CONSTRAINT "DominioRegime" CHECK (value in ('LUCROPRESUMIDO','LUCROPRESUMIDO','SIMPLESNACIONAL'));
+            CONSTRAINT "DominioRegime" CHECK (value in ('LUCROPRESUMIDO','LUCROREAL','SIMPLESNACIONAL'));
             ALTER DOMAIN syscontabil."DominioRegime"
             OWNER TO interage;
         </sql>
