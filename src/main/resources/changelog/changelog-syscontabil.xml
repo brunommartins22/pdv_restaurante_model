@@ -102,21 +102,21 @@
             OWNER TO interage;
         </sql>
     </changeSet>
-    
+        
     <changeSet id="7" author="syscontabil-bruno-joao" runOnChange="true">
         <sql splitStatements="true" dbms="postgresql">
             ALTER TABLE syscontabil.cliente
             ALTER COLUMN tipo_regime TYPE syscontabil."DominioRegime";
         </sql>
     </changeSet> 
-    <changeSet id="7" author="syscontabil-bruno-joao" runOnChange="true">
+    <changeSet id="8" author="syscontabil-bruno-joao" runOnChange="true">
         <sql splitStatements="true" dbms="postgresql">
             ALTER TABLE syscontabil.regra_regime_tributario
             ALTER COLUMN regime_tributario_id TYPE syscontabil."DominioRegime";
         </sql>
     </changeSet> 
     
-    <changeSet id="8" author="syscontabil-bruno-joao"   runOnChange="true">
+    <changeSet id="9" author="syscontabil-bruno-joao"   runOnChange="true">
         <sql splitStatements="true" dbms="postgresql">
             CREATE DOMAIN syscontabil."DominioValidacaoProduto"
             AS character varying(12)
@@ -126,7 +126,7 @@
         </sql>
     </changeSet>
     
-    <changeSet id="9" author="syscontabil-bruno-joao" runOnChange="true">
+    <changeSet id="10" author="syscontabil-bruno-joao" runOnChange="true">
         <sql splitStatements="true" dbms="postgresql">
             ALTER TABLE syscontabil.produto_cliente
             ALTER COLUMN status TYPE syscontabil."DominioValidacaoProduto";

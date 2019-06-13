@@ -8,9 +8,8 @@ package br.com.interagese.padrao.services;
 import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.models.Cliente;
-import br.com.interagese.syscontabil.models.RegraProduto;
 import java.util.List;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,13 +18,26 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ClienteService extends PadraoService<Cliente> {
-    
-    
-            
-    public  boolean  verificaClienteExiste(Long IdCliente, String cpfCnpj) {       
-            String sql = "select o from cliente o where o.id <> " + IdCliente + " and o.cpfCnpj = '"+ cpfCnpj+"'";
-            TypedQuery<Cliente> query = em.createQuery(sql, Cliente.class);
-           return query.getResultList().isEmpty() ? false : true;      
+
+    public boolean existeCpfCnpj(Cliente cliente) {
+
+        String sqlComplementar = "";
+        if (cliente.getId() != null) {
+            sqlComplementar = " and o.id <> :id ";
+        }
+
+        Query query = em.createQuery("SELECT o from Cliente o where o.cpfCnpj = :cpfCnpj " + sqlComplementar + " ");
+
+        query.setParameter("cpfCnpj", cliente.getCpfCnpj());
+
+        if (cliente.getId() != null) {
+            query.setParameter("id", cliente.getId());
+        }
+
+        List<Cliente> lista = query.getResultList();
+
+        return !lista.isEmpty();
+
     }
 
     @Override
@@ -42,9 +54,22 @@ public class ClienteService extends PadraoService<Cliente> {
 
         return consultaSQL;
     }
-    
-    
-    
-    
+
+    @Override
+    public Cliente create(Cliente obj) throws Exception {
+        if (existeCpfCnpj(obj)) {
+            addErro("CPF/CNPJ cadastrado anteriormente");
+        }
+
+        return super.create(obj);
+    }
+
+    @Override
+    public Cliente update(Cliente obj) throws Exception {
+        if (existeCpfCnpj(obj)) {
+            addErro("CPF/CNPJ cadastrado anteriormente");
+        }
+        return super.update(obj);
+    }
 
 }
