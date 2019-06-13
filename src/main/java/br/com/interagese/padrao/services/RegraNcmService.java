@@ -96,6 +96,20 @@ public class RegraNcmService extends PadraoService<RegraNcmDto>{
     }
     
     @Override
+    public RegraNcmDto findById(Object id) {
+        String consulta = "SELECT o from RegraNcm o where o.id.codigoNcm = :id";
+        
+        List<RegraNcm> listaResultNcm = em.createQuery(consulta)
+                .setParameter("id", id.toString())
+                .getResultList();
+        if(!getListaAgrupada(listaResultNcm).isEmpty()){
+            return getListaAgrupada(listaResultNcm).get(0);
+        } else {
+            return null;
+        }
+    }
+    
+    @Override
     public RegraNcmDto create(RegraNcmDto obj) throws Exception {
         try {
             setID(obj);
@@ -172,6 +186,8 @@ public class RegraNcmService extends PadraoService<RegraNcmDto>{
                 dto.setRegraNcmSimplesNacional(regraNcm);
             }
         }
+        
+        listaResult.add(dto); // adiciona o ultimo registro
         
         return listaResult;
     }
