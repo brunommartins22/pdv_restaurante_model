@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClienteService extends PadraoService<Cliente> {
 
-    public boolean existeCpfCnpj(Cliente cliente) {
+    
+    
+     public boolean existeCpfCnpj(Cliente cliente) {
 
         String sqlComplementar = "";
         if (cliente.getId() != null) {
@@ -27,7 +29,6 @@ public class ClienteService extends PadraoService<Cliente> {
         }
 
         Query query = em.createQuery("SELECT o from Cliente o where o.cpfCnpj = :cpfCnpj " + sqlComplementar + " ");
-
         query.setParameter("cpfCnpj", cliente.getCpfCnpj());
 
         if (cliente.getId() != null) {
@@ -39,6 +40,8 @@ public class ClienteService extends PadraoService<Cliente> {
         return !lista.isEmpty();
 
     }
+     
+   
 
     @Override
     public String getWhere(String complementoConsulta) {
@@ -55,7 +58,7 @@ public class ClienteService extends PadraoService<Cliente> {
         return consultaSQL;
     }
 
-    @Override
+   @Override
     public Cliente create(Cliente obj) throws Exception {
         if (existeCpfCnpj(obj)) {
             addErro("CPF/CNPJ cadastrado anteriormente");
@@ -63,6 +66,8 @@ public class ClienteService extends PadraoService<Cliente> {
 
         return super.create(obj);
     }
+
+    
 
     @Override
     public Cliente update(Cliente obj) throws Exception {
