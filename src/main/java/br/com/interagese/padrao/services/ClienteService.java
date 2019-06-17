@@ -19,16 +19,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClienteService extends PadraoService<Cliente> {
 
-    
-    
-     public boolean existeCpfCnpj(Cliente cliente) {
+    public ClienteService() {
+        order = "razaoSocial";
+    }
+
+    public boolean existeCpfCnpj(Cliente cliente) {
 
         String sqlComplementar = "";
         if (cliente.getId() != null) {
             sqlComplementar = " and o.id <> :id ";
         }
 
-        Query query = em.createQuery("SELECT o from Cliente o where o.cpfCnpj = :cpfCnpj " + sqlComplementar + " ");
+        Query query = em.createQuery("SELECT o from Cliente o where o.cpfCnpj = :cpfCnpj and o.atributoPadrao.dominioEvento <> 3 " + sqlComplementar);
         query.setParameter("cpfCnpj", cliente.getCpfCnpj());
 
         if (cliente.getId() != null) {
@@ -40,8 +42,6 @@ public class ClienteService extends PadraoService<Cliente> {
         return !lista.isEmpty();
 
     }
-     
-   
 
     @Override
     public String getWhere(String complementoConsulta) {
@@ -51,30 +51,32 @@ public class ClienteService extends PadraoService<Cliente> {
             if (Utils.somenteNumeros(complementoConsulta)) {
                 consultaSQL = "o.id = '" + complementoConsulta;
             } else {
-                consultaSQL = "o.nmCliente LIKE '%" + complementoConsulta + "%' ";
+                consultaSQL = "o.razaoSocial  LIKE '%" + complementoConsulta + "%' or "
+                            + "o.nomeFantasia LIKE '%" + complementoConsulta + "%' or"
+                            + "o.cpfCnpj = '"+complementoConsulta+"' or "
+                            + "o.rgIe    = '"+complementoConsulta+"' ";
             }
         }
-
+        setOrder("order by o.razaoSocial");
         return consultaSQL;
     }
 
-   @Override
+    @Override
     public Cliente create(Cliente obj) throws Exception {
-        if (existeCpfCnpj(obj)) {
-            addErro("CPF/CNPJ cadastrado anteriormente");
-        }
-
+        validar(obj);
         return super.create(obj);
     }
 
-    
-
     @Override
     public Cliente update(Cliente obj) throws Exception {
-        if (existeCpfCnpj(obj)) {
-            addErro("CPF/CNPJ cadastrado anteriormente");
-        }
+        validar(obj);
         return super.update(obj);
+    }
+
+    public void validar(Cliente cliente) throws Exception {
+        if (existeCpfCnpj(cliente)) {
+            addErro("CPF/CNPJ cadastrado anteriormente!");
+        }
     }
 
 }
