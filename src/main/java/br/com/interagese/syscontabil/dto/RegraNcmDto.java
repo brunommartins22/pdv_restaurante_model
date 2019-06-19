@@ -19,6 +19,9 @@ public class RegraNcmDto {
     private RegraNcm regraNcmLucroPresumido;
     private RegraNcm regraNcmLucroReal;
     private RegraNcm regraNcmSimplesNacional;
+    private String situacaoLucroPresumido = "Pendente";
+    private String situacaoLucroReal = "Pendente";
+    private String situacaoSimplesNacional = "Pendente";
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     
@@ -93,5 +96,49 @@ public class RegraNcmDto {
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
     }
+
+    /**
+     * @return the situacaoLucroPresumido
+     */
+    public String getSituacaoLucroPresumido() {
+        return situacaoLucroPresumido;
+    }
+
+    /**
+     * @param situacaoLucroPresumido the situacaoLucroPresumido to set
+     */
+    public void setSituacaoLucroPresumido(String situacaoLucroPresumido) {
+        this.situacaoLucroPresumido = situacaoLucroPresumido;
+    }
+
+    /**
+     * @return the situacaoLucroReal
+     */
+    public String getSituacaoLucroReal() {
+        return situacaoLucroReal;
+    }
+
+    /**
+     * @param situacaoLucroReal the situacaoLucroReal to set
+     */
+    public void setSituacaoLucroReal(String situacaoLucroReal) {
+        this.situacaoLucroReal = situacaoLucroReal;
+    }
+
+    /**
+     * @return the situacaoSimplesNacional
+     */
+    public String getSituacaoSimplesNacional() {
+        return situacaoSimplesNacional;
+    }
+
+    /**
+     * @param situacaoSimplesNacional the situacaoSimplesNacional to set
+     */
+    public void setSituacaoSimplesNacional(String situacaoSimplesNacional) {
+        this.situacaoSimplesNacional = situacaoSimplesNacional;
+    }
+
+    
     
 }
