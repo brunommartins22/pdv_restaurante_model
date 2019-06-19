@@ -26,6 +26,37 @@ import org.springframework.stereotype.Service;
 @Service
 public class RegraNcmService extends PadraoService<RegraNcmDto>{
    
+    public String getWhereDto(String complementoConsulta) {
+        return " o.id.codigoNcm like '" + complementoConsulta + "%' ";
+    }
+
+    public String getWhereDto(Map filtros) {
+        
+        String consulta = "";
+        
+        if(filtros.containsKey("campoFiltro") && !filtros.get("campoFiltro").equals("")){
+            consulta = " o.id.codigoNcm like '" + filtros.get("campoFiltro") + "%' ";
+        }
+        
+        if(filtros.containsKey("filtroRegimeConfigurado") && !filtros.get("filtroRegimeConfigurado").equals("")){
+            if(!consulta.equals("")){
+                consulta += " and ";
+            }
+            
+            consulta += " (select count(n) from regraNcm n where n.id.regimeTributarioId = '" + filtros.containsKey("filtroRegimeConfigurado") + "') > 0 ";
+        }
+        
+        if(filtros.containsKey("filtroRegimeNaoConfigurado") && !filtros.get("filtroRegimeNaoConfigurado").equals("")){
+            if(!consulta.equals("")){
+                consulta += " and ";
+            }
+            
+            consulta += " (select count(n) from regraNcm n where n.id.regimeTributarioId = '" + filtros.containsKey("filtroRegimeNaoConfigurado") + "') > 0 ";
+        }
+        
+        return consulta;
+    }
+    
     public List<RegraNcmDto> findRangeDto(String complementoConsulta, int apartirDe, int quantidade) {
 
         String consultaId = "SELECT distinct(o.id.codigoNcm) from RegraNcm o ";
@@ -42,7 +73,7 @@ public class RegraNcmService extends PadraoService<RegraNcmDto>{
 
 //        String sqlComplementar = "";
         if (existeAtributoPadrao) {
-            consultaId += (consulta.contains("where") ? " and " : " where ") + " o.atributoPadrao.dominioEvento <>  3";
+            consultaId += (consultaId.contains("where") ? " and " : " where ") + " o.atributoPadrao.dominioEvento <>  3";
         }
         
         consultaId += " order by o.id.codigoNcm";
@@ -67,14 +98,14 @@ public class RegraNcmService extends PadraoService<RegraNcmDto>{
        
         return listaDto;
     }
-
+    
     public List<RegraNcmDto> searchDto(Map filtros, int apartirDe, int quantidade) {
 
         String consultaId = "SELECT distinct(o.id.codigoNcm) from RegraNcm o ";
         String consulta = "SELECT o from RegraNcm o ";
         
         String consultaSQL = "";
-        consultaSQL = getWhere(filtros);
+        consultaSQL = getWhereDto(filtros);
 
         if (filtros != null && !filtros.isEmpty()) {
             consultaId += " where " + consultaSQL + " ";
@@ -103,14 +134,27 @@ public class RegraNcmService extends PadraoService<RegraNcmDto>{
         return listaDto;
     }
 
-    public String countDto(String complementoConsulta) {
-        String consultaSQL = "";
-        consultaSQL = getWhere(complementoConsulta);
-
+    public String countDto(Map filtros) {
         String consulta = "SELECT count(distinct o.id.codigoNcm) from RegraNcm o ";
-
-        if (complementoConsulta != null && !complementoConsulta.trim().equals("")) {
-            consulta += " where " + consultaSQL;
+        
+        if(filtros.containsKey("campoFiltro") && !filtros.get("campoFiltro").equals("")){
+            consulta += " where o.id.codigoNcm like '" + filtros.get("campoFiltro") + "%' ";
+        }
+        
+        if(filtros.containsKey("filtroRegimeConfigurado") && !filtros.get("filtroRegimeConfigurado").equals("")){
+            if(!consulta.equals("")){
+                consulta += (consulta.contains("where") ? " and " : " where ");
+            }
+            
+            consulta += " (select count(n) from regraNcm n where n.id.regimeTributarioId = '" + filtros.containsKey("filtroRegimeConfigurado") + "') > 0 ";
+        }
+        
+        if(filtros.containsKey("filtroRegimeNaoConfigurado") && !filtros.get("filtroRegimeNaoConfigurado").equals("")){
+            if(!consulta.equals("")){
+                consulta += (consulta.contains("where") ? " and " : " where ");
+            }
+            
+            consulta += " (select count(n) from regraNcm n where n.id.regimeTributarioId = '" + filtros.containsKey("filtroRegimeNaoConfigurado") + "') > 0 ";
         }
 
         Long l = (Long) em.createQuery(consulta).getSingleResult();

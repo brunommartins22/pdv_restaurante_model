@@ -35,15 +35,6 @@ public class RegraNcmController extends PadraoController<RegraNcm> {
     @IsServiceDefault
     @Autowired
     private RegraNcmService RegraNcmService;
-    
-    @GetMapping(path = "/dto/{apartirDe}/{quantidade}/{filtro:.+}")
-    public String findRangeDto(@PathVariable("apartirDe") int apartirDe, @PathVariable("quantidade") int quantidade,
-            @PathVariable("filtro") String filtro) {
-
-        String json = serializar(RegraNcmService.findRangeDto(filtro.equals("*") ? null : filtro, apartirDe, quantidade));
-
-        return json;
-    }
 
     @PostMapping(path = "/dto/{apartirDe}/{quantidade}")
     public String findRangeDto(@PathVariable("apartirDe") int apartirDe, @PathVariable("quantidade") int quantidade,
@@ -52,14 +43,10 @@ public class RegraNcmController extends PadraoController<RegraNcm> {
         return serializar(RegraNcmService.searchDto(filtros, apartirDe, quantidade));
     }
 
-    @GetMapping(path = "/dto/count/{filtro:.+}")
-    public String countDto(@PathVariable("filtro") String filtro) {
+    @PostMapping(path = "/dto/count")
+    public String countDto(@RequestBody Map filtros) {
 
-        if (filtro != null && filtro.equals("*")) {
-            filtro = null;
-        }
-
-        return RegraNcmService.countDto(filtro);
+        return RegraNcmService.countDto(filtros);
     }
 
     @GetMapping(path = "/dto/{id:.+}")
