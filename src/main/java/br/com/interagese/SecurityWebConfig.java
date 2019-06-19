@@ -29,6 +29,7 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     private SessionService sessionService;
 
     private final boolean habilitaToken = true;
+        
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
