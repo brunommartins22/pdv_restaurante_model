@@ -5,13 +5,11 @@
  */
 package br.com.interagese.padrao.services;
 
-import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.padrao.rest.util.TransformNativeQuery;
 import br.com.interagese.syscontabil.models.Cliente;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
 import br.com.interagese.syscontabil.models.RegraProduto;
-import br.com.interagese.syscontabil.models.RegraRegimeTributario;
 import br.com.interagese.syscontabil.models.TributoFederal;
 import br.com.interagese.syscontabil.temp.ClienteProdutoTemp;
 import java.math.BigInteger;
@@ -80,27 +78,22 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 
             if (regraProduto != null) {
 
-                if (produtoCliente.getEan() != null) {
-                    String sql = "Select o.ncm,o.cest from ProdutoGeral o where o.ean ='" + produtoCliente.getEan() + "'";
+                String sql = "Select o.ncm,o.cest from ProdutoGeral o where o.ean ='" + produtoCliente.getEan() + "'";
 
-                    Object[] o = em.createQuery(sql, Object[].class).getSingleResult();
-                    ncmPadrao = (String) o[0];
-                    cestPadrao = (String) o[1];
-                }
+                Object[] o = em.createQuery(sql, Object[].class).getSingleResult();
+                ncmPadrao = (String) o[0];
+                cestPadrao = (String) o[1];
 
                 tributoFederalPadrao = regraProduto.getTributoFederal();
-            }else{
-                
-                
+            } else {
+
 //                RegraRegimeTributario regraRegimeTributario = 
-                
-                
             }
 
             //*************** insert data in productClient *********************
-            produtoCliente.setNcmPadrao(ncmPadrao);
-            produtoCliente.setCestPadrao(cestPadrao);
-            produtoCliente.setTributoFederal(tributoFederalPadrao);
+            produtoCliente.setNcmPadrao(ncmPadrao == null || ncmPadrao.isEmpty() ? produtoCliente.getNcmPadrao() : ncmPadrao);
+            produtoCliente.setCestPadrao(cestPadrao == null || cestPadrao.isEmpty() ? produtoCliente.getCestPadrao() : cestPadrao);
+            produtoCliente.setTributoFederal(tributoFederalPadrao == null ? produtoCliente.getTributoFederal() : tributoFederalPadrao);
         }
 
         //******** insert update list for new result ListProductClient *********
