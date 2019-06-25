@@ -131,7 +131,60 @@
             ALTER TABLE syscontabil.produto_cliente
             ALTER COLUMN status TYPE syscontabil."DominioValidacaoProduto";
         </sql>
-    </changeSet>     
+    </changeSet>
+    
+    <changeSet id="11" author="joao" runOnChange="true">        
+        <sql splitStatements="true" dbms="postgresql">
+            INSERT INTO seguranca.permissao VALUES ('2.01.01', '     Excessão por Regime', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.01.01', '         Incluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.01.02', '         Alterar', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.01.03', '         Excluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.02', '     Excessão por NCM', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.02.01', '         Incluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.02.02', '         Alterar', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.02.03', '         Excluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.03', '     Excessão por CNAE', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.03.01', '         Incluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.03.02', '         Alterar', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.03.03', '         Excluir', 'PROCESSO');
+        </sql>
+    </changeSet>
+    
+    <changeSet id="12" author="joao"   runOnChange="true">        
+        <sql splitStatements="true" dbms="postgresql">
+            
+            INSERT INTO seguranca.permissao_sistema VALUES (25, '2.01.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (26, '2.01.01.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (27, '2.01.01.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (28, '2.01.01.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (29, '2.01.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (30, '2.01.02.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (31, '2.01.02.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (32, '2.01.02.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (33, '2.01.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (34, '2.01.03.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (35, '2.01.03.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (36, '2.01.03.03', 1);
+        </sql>
+    </changeSet>
+    
+    <changeSet id="13" author="joao"   runOnChange="true">        
+        <sql splitStatements="true" dbms="postgresql">
+            
+            INSERT INTO seguranca.usuario_permissao VALUES (25, 1, '2.01.01', 1);
+            INSERT INTO seguranca.usuario_permissao VALUES (26, 1, '2.01.01.01', 1);
+            INSERT INTO seguranca.usuario_permissao VALUES (27, 1, '2.01.01.02', 1);
+            INSERT INTO seguranca.usuario_permissao VALUES (28, 1, '2.01.01.03', 1);
+            INSERT INTO seguranca.usuario_permissao VALUES (29, 1, '2.01.02', 1);
+            INSERT INTO seguranca.usuario_permissao VALUES (30, 1, '2.01.02.01', 1);
+            INSERT INTO seguranca.usuario_permissao VALUES (31, 1, '2.01.02.02', 1);
+            INSERT INTO seguranca.usuario_permissao VALUES (32, 1, '2.01.02.03', 1);
+            INSERT INTO seguranca.usuario_permissao VALUES (33, 1, '2.01.03', 1);
+            INSERT INTO seguranca.usuario_permissao VALUES (34, 1, '2.01.03.01', 1);
+            INSERT INTO seguranca.usuario_permissao VALUES (35, 1, '2.01.03.02', 1);
+            INSERT INTO seguranca.usuario_permissao VALUES (36, 1, '2.01.03.03', 1);
+        </sql>
+    </changeSet>      
     
     
 </databaseChangeLog>
