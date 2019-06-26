@@ -11,6 +11,16 @@
         </sql>
     </changeSet>
     
+    <changeSet id="1" author="joao"   runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from seguranca.empresa where id = 1</sqlCheck>
+        </preConditions>        
+        <sql splitStatements="true" dbms="postgresql">
+            INSERT INTO 
+            seguranca.empresa (id, razao_social, cnpj_cpf, ie_rg, tipo_pessoa, rgcodusu, rgusuario, rgdata, rgevento)
+            VALUES (1, 'TESTE', '00.000.000/0000-00', '0', 'JURIDICA', 1, 'INTER', now(), 1);
+        </sql>
+    </changeSet>
     
     <changeSet id="2" author="adam"   runOnChange="true">        
         <sql splitStatements="true" dbms="postgresql">
@@ -166,25 +176,6 @@
             INSERT INTO seguranca.permissao_sistema VALUES (35, '2.01.03.02', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (36, '2.01.03.03', 1);
         </sql>
-    </changeSet>
-    
-    <changeSet id="13" author="joao"   runOnChange="true">        
-        <sql splitStatements="true" dbms="postgresql">
-            
-            INSERT INTO seguranca.usuario_permissao VALUES (25, 1, '2.01.01', 1);
-            INSERT INTO seguranca.usuario_permissao VALUES (26, 1, '2.01.01.01', 1);
-            INSERT INTO seguranca.usuario_permissao VALUES (27, 1, '2.01.01.02', 1);
-            INSERT INTO seguranca.usuario_permissao VALUES (28, 1, '2.01.01.03', 1);
-            INSERT INTO seguranca.usuario_permissao VALUES (29, 1, '2.01.02', 1);
-            INSERT INTO seguranca.usuario_permissao VALUES (30, 1, '2.01.02.01', 1);
-            INSERT INTO seguranca.usuario_permissao VALUES (31, 1, '2.01.02.02', 1);
-            INSERT INTO seguranca.usuario_permissao VALUES (32, 1, '2.01.02.03', 1);
-            INSERT INTO seguranca.usuario_permissao VALUES (33, 1, '2.01.03', 1);
-            INSERT INTO seguranca.usuario_permissao VALUES (34, 1, '2.01.03.01', 1);
-            INSERT INTO seguranca.usuario_permissao VALUES (35, 1, '2.01.03.02', 1);
-            INSERT INTO seguranca.usuario_permissao VALUES (36, 1, '2.01.03.03', 1);
-        </sql>
-    </changeSet>      
-    
+    </changeSet>  
     
 </databaseChangeLog>

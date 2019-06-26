@@ -6,7 +6,7 @@
 package br.com.interagese.padrao.services;
 
 import br.com.interagese.padrao.rest.util.PadraoService;
-import br.com.interagese.syscontabil.models.RegraRegimeTributario;
+import br.com.interagese.syscontabil.models.CenarioRegimeTributarioPK;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,6 +14,6 @@ import org.springframework.stereotype.Service;
  * @author Bruno Martins
  */
 @Service
-public class RegraRegimeTributarioService extends PadraoService<RegraRegimeTributario>{
+public class RegraRegimeTributarioService extends PadraoService<CenarioRegimeTributarioPK>{
     
 }
