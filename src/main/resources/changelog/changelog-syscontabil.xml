@@ -161,6 +161,9 @@
     </changeSet>
     
     <changeSet id="12" author="joao"   runOnChange="true">        
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from seguranca.permissao_sistema where id = 25</sqlCheck>
+        </preConditions>
         <sql splitStatements="true" dbms="postgresql">
             
             INSERT INTO seguranca.permissao_sistema VALUES (25, '2.01.01', 1);
