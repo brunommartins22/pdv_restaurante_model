@@ -11,6 +11,16 @@
         </sql>
     </changeSet>
     
+    <changeSet id="1" author="joao"   runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from seguranca.empresa where id = 1</sqlCheck>
+        </preConditions>        
+        <sql splitStatements="true" dbms="postgresql">
+            INSERT INTO 
+            seguranca.empresa (id, razao_social, cnpj_cpf, ie_rg, tipo_pessoa, rgcodusu, rgusuario, rgdata, rgevento)
+            VALUES (1, 'TESTE', '00.000.000/0000-00', '0', 'JURIDICA', 1, 'INTER', now(), 1);
+        </sql>
+    </changeSet>
     
     <changeSet id="2" author="adam"   runOnChange="true">        
         <sql splitStatements="true" dbms="postgresql">
@@ -131,7 +141,44 @@
             ALTER TABLE syscontabil.produto_cliente
             ALTER COLUMN status TYPE syscontabil."DominioValidacaoProduto";
         </sql>
-    </changeSet>     
+    </changeSet>
     
+    <changeSet id="11" author="joao" runOnChange="true">        
+        <sql splitStatements="true" dbms="postgresql">
+            INSERT INTO seguranca.permissao VALUES ('2.01.01', '     Excessão por Regime', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.01.01', '         Incluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.01.02', '         Alterar', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.01.03', '         Excluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.02', '     Excessão por NCM', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.02.01', '         Incluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.02.02', '         Alterar', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.02.03', '         Excluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.03', '     Excessão por CNAE', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.03.01', '         Incluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.03.02', '         Alterar', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.03.03', '         Excluir', 'PROCESSO');
+        </sql>
+    </changeSet>
+    
+    <changeSet id="12" author="joao"   runOnChange="true">        
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from seguranca.permissao_sistema where id = 25</sqlCheck>
+        </preConditions>
+        <sql splitStatements="true" dbms="postgresql">
+            
+            INSERT INTO seguranca.permissao_sistema VALUES (25, '2.01.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (26, '2.01.01.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (27, '2.01.01.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (28, '2.01.01.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (29, '2.01.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (30, '2.01.02.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (31, '2.01.02.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (32, '2.01.02.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (33, '2.01.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (34, '2.01.03.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (35, '2.01.03.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (36, '2.01.03.03', 1);
+        </sql>
+    </changeSet>  
     
 </databaseChangeLog>
