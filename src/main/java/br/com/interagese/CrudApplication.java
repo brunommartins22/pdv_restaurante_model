@@ -1,6 +1,6 @@
 package br.com.interagese;
 
-import br.com.interagese.padrao.rest.util.MultiDatasourceConfiguration;
+import br.com.interagese.padrao.rest.util.configuration.MultiDatasourceConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
