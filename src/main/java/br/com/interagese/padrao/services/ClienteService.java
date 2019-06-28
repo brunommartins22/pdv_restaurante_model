@@ -49,7 +49,7 @@ public class ClienteService extends PadraoService<Cliente> {
 
         if (complementoConsulta != null && !complementoConsulta.trim().equals("")) {
             if (Utils.somenteNumeros(complementoConsulta)) {
-                consultaSQL = "o.id = '" + complementoConsulta;
+                consultaSQL = "o.id = " + complementoConsulta;
             } else {
                 consultaSQL = "o.razaoSocial  LIKE '%" + complementoConsulta + "%' or "
                             + "o.nomeFantasia LIKE '%" + complementoConsulta + "%' or"

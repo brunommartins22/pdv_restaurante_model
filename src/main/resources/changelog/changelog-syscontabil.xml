@@ -8,6 +8,8 @@
             INSERT INTO 
             seguranca.sistema (id, dominio_grupo_sistema,nome_sistema)
             VALUES (1, 'SYSCONTABIL', 'SysContábil');
+            VALUES (2, 'ERP', 'Financeiro');
+            
         </sql>
     </changeSet>
     
@@ -24,25 +26,30 @@
     
     <changeSet id="2" author="adam"   runOnChange="true">        
         <sql splitStatements="true" dbms="postgresql">
+            
+            INSERT INTO seguranca.permissao VALUES ('1', 'Cadastro', null);
             INSERT INTO seguranca.permissao VALUES ('1.01', 'Cadastro de Cliente', 'CADASTRO');
-            INSERT INTO seguranca.permissao VALUES ('1', 'Cadastro', 'CADASTRO');
             INSERT INTO seguranca.permissao VALUES ('1.01.01', '     Incluir', 'CADASTRO');
             INSERT INTO seguranca.permissao VALUES ('1.01.02', '     Alterar', 'CADASTRO');
-            INSERT INTO seguranca.permissao VALUES ('1.01.03', '     Excluir', 'CADASTRO');
+            INSERT INTO seguranca.permissao VALUES ('1.01.03', '     Excluir', 'CADASTRO');            
             INSERT INTO seguranca.permissao VALUES ('1.02', 'Cadastro de Cidade', 'CADASTRO');
             INSERT INTO seguranca.permissao VALUES ('1.02.01', '     Incluir', 'CADASTRO');
             INSERT INTO seguranca.permissao VALUES ('1.02.02', '     Alterar', 'CADASTRO');
-            INSERT INTO seguranca.permissao VALUES ('1.02.03', '     Excluir', 'CADASTRO');
+            INSERT INTO seguranca.permissao VALUES ('1.02.03', '     Excluir', 'CADASTRO');            
             INSERT INTO seguranca.permissao VALUES ('1.03', 'Cadastro de Usuário', 'CADASTRO');
             INSERT INTO seguranca.permissao VALUES ('1.03.01', '     Incluir', 'CADASTRO');
             INSERT INTO seguranca.permissao VALUES ('1.03.02', '     Alterar', 'CADASTRO');
             INSERT INTO seguranca.permissao VALUES ('1.03.03', '     Excluir', 'CADASTRO');
-            INSERT INTO seguranca.permissao VALUES ('1.03.04', '     Conceder Permissão', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('1.03.04', '     Conceder Permissão', 'PROCESSO');            
             INSERT INTO seguranca.permissao VALUES ('1.04', 'Cadastro de Empresa', 'CADASTRO');
             INSERT INTO seguranca.permissao VALUES ('1.04.01', '     Incluir', 'CADASTRO');
             INSERT INTO seguranca.permissao VALUES ('1.04.02', '     Alterar', 'CADASTRO');
-            INSERT INTO seguranca.permissao VALUES ('1.04.03', '     Excluir', 'CADASTRO');
-            INSERT INTO seguranca.permissao VALUES ('2', 'Processos', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('1.04.03', '     Excluir', 'CADASTRO');            
+            INSERT INTO seguranca.permissao VALUES ('1.05', 'Cadastro de Produto Geral', 'CADASTRO');
+            INSERT INTO seguranca.permissao VALUES ('1.05.01', '     Incluir', 'CADASTRO');
+            INSERT INTO seguranca.permissao VALUES ('1.05.02', '     Alterar', 'CADASTRO');
+            INSERT INTO seguranca.permissao VALUES ('1.05.03', '     Excluir', 'CADASTRO');            
+            INSERT INTO seguranca.permissao VALUES ('2', 'Processos', null);
             INSERT INTO seguranca.permissao VALUES ('2.01', 'Regra de tributação', 'PROCESSO');
             INSERT INTO seguranca.permissao VALUES ('2.02', 'Produtos do Cliente', 'PROCESSO');
             INSERT INTO seguranca.permissao VALUES ('2.02.01', '     Excessão por NCM', 'PROCESSO');
@@ -58,31 +65,36 @@
             -- Dependencies: 185
             -- Data for Name: permissao_sistema; Type: TABLE DATA; Schema: seguranca; Owner: interage
             --
-
-            INSERT INTO seguranca.permissao_sistema VALUES (1, '1.01', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (2, '1', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (1, '1', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (2, '1.01', 1);            
             INSERT INTO seguranca.permissao_sistema VALUES (3, '1.01.01', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (4, '1.01.02', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (5, '1.01.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (5, '1.01.03', 1);            
             INSERT INTO seguranca.permissao_sistema VALUES (6, '1.02', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (7, '1.02.01', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (8, '1.02.02', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (9, '1.02.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (9, '1.02.03', 1);            
             INSERT INTO seguranca.permissao_sistema VALUES (10, '1.03', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (11, '1.03.01', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (12, '1.03.02', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (13, '1.03.03', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (14, '1.03.04', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (14, '1.03.04', 1);            
             INSERT INTO seguranca.permissao_sistema VALUES (15, '1.04', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (16, '1.04.01', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (17, '1.04.02', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (18, '1.04.03', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (19, '2', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (20, '2.01', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (21, '2.02', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (22, '2.02.01', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (23, '2.02.02', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (24, '2.02.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (18, '1.04.03', 1);    
+            
+            INSERT INTO seguranca.permissao_sistema VALUES (19, '1.05', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (20, '1.05.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (21, '1.05.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (22, '1.05.03', 1);
+            
+            INSERT INTO seguranca.permissao_sistema VALUES (23, '2', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (24, '2.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (25, '2.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (26, '2.02.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (27, '2.02.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (28, '2.02.03', 1);
         </sql>
     </changeSet>
     
