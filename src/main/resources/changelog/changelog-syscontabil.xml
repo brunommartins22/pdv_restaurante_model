@@ -191,6 +191,25 @@
             INSERT INTO seguranca.permissao_sistema VALUES (35, '2.01.03.02', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (36, '2.01.03.03', 1);
         </sql>
-    </changeSet>  
+    </changeSet>
+    
+    
+    <changeSet id="12" author="renatosm"   runOnChange="true">        
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT count(*)
+                FROM pg_catalog.pg_constraint con
+                where con.conname = 'produto_geral_chk_1'</sqlCheck>
+        </preConditions>
+        <sql splitStatements="true" dbms="postgresql">            
+            ALTER TABLE syscontabil.produto_geral
+            ADD CONSTRAINT produto_geral_chk_1 CHECK (length(ean::varchar) = 8
+            or length(ean::varchar) = 12
+            or length(ean::varchar) = 13
+            or length(ean::varchar) = 14);
+        </sql>
+    </changeSet>
+    
+      
+        
     
 </databaseChangeLog>

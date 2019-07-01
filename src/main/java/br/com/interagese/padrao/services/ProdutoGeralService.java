@@ -23,16 +23,18 @@ public class ProdutoGeralService extends PadraoService<ProdutoGeral> {
 
         if (complementoConsulta != null && !complementoConsulta.trim().equals("")) {
             if (Utils.somenteNumeros(complementoConsulta)) {
-               /* consultaSQL = "o.id  = " + complementoConsulta +" or "
-                            + "o.ean = " + complementoConsulta;*/
+                consultaSQL = "o.id  = " + complementoConsulta +" or "
+                             +"o.ean =" + complementoConsulta + " or "
+                             +"o.ncm  LIKE '%" + complementoConsulta + "%' or "
+                             +"o.cest LIKE '%" + complementoConsulta + "' ";
                 
             } else {
-                consultaSQL =  "o.id  = " + complementoConsulta +" or "+
-                               "o.ean = " + complementoConsulta +" or "+
-                               "o.ncm  LIKE '%" + complementoConsulta + "%' or "+
-                               "o.cest LIKE '%" + complementoConsulta + "' ";
+                consultaSQL =  "o.nomeProduto  LIKE '%" + complementoConsulta + "%' ";
+                               
             }
         }
+        
+        System.out.println("consultaSQL: " +consultaSQL);
         setOrder("order by o.id");
         return consultaSQL;
     }
