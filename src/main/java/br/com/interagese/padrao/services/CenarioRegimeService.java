@@ -7,7 +7,7 @@ package br.com.interagese.padrao.services;
 
 import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.padrao.rest.util.PadraoService;
-import br.com.interagese.syscontabil.models.Cenario;
+import br.com.interagese.syscontabil.models.CenarioRegimeTributario;
 import java.util.List;
 import javax.persistence.Query;
 import org.springframework.stereotype.Service;
@@ -17,25 +17,21 @@ import org.springframework.stereotype.Service;
  * @author Bruno Martins
  */
 @Service
-public class CenarioService extends PadraoService<Cenario> {
+public class CenarioRegimeService extends PadraoService<CenarioRegimeTributario> {
 
-    public boolean existeNome(Cenario cenario) {
-
-        String sqlComplementar = "";
-        if (cenario.getId() != null) {
-            sqlComplementar = " and o.id <> :id ";
-        }
-
-        Query query = em.createQuery("SELECT o from Cenario o where o.nomeCenario = :nome and o.atributoPadrao.dominioEvento <> 3 " + sqlComplementar);
-        query.setParameter("nome", cenario.getNomeCenario());
+    public boolean existeId(CenarioRegimeTributario cenario) {
 
         if (cenario.getId() != null) {
+            Query query = em.createQuery("SELECT o from CenarioRegimeTributario o where o.id = :id and o.atributoPadrao.dominioEvento <> 3 ");
+
             query.setParameter("id", cenario.getId());
+
+            List<CenarioRegimeTributario> lista = query.getResultList();
+
+            return !lista.isEmpty();
         }
-
-        List<Cenario> lista = query.getResultList();
-
-        return !lista.isEmpty();
+        
+        return true;
 
     }
 
@@ -47,28 +43,27 @@ public class CenarioService extends PadraoService<Cenario> {
             if (Utils.somenteNumeros(complementoConsulta)) {
                 consultaSQL = "o.id = '" + complementoConsulta;
             } else {
-                consultaSQL = "o.nomeCenario  LIKE '%" + complementoConsulta + "%' ";
+                consultaSQL = "o.id.regimeTributarioId = '" + complementoConsulta + "' ";
             }
         }
-        setOrder("order by o.nomeCenario");
+        setOrder("order by o.id.cenarioId");
         return consultaSQL;
     }
-
+    
     @Override
-    public Cenario create(Cenario obj) throws Exception {
+    public CenarioRegimeTributario create(CenarioRegimeTributario obj) throws Exception {
         validar(obj);
         return super.create(obj);
     }
 
     @Override
-    public Cenario update(Cenario obj) throws Exception {
-        validar(obj);
+    public CenarioRegimeTributario update(CenarioRegimeTributario obj) throws Exception {
         return super.update(obj);
     }
 
-    public void validar(Cenario cenario) throws Exception {
-        if (existeNome(cenario)) {
-            addErro("Nome de Cenario cadastrado anteriormente!");
+    public void validar(CenarioRegimeTributario cenario) throws Exception {
+        if (existeId(cenario)) {
+            addErro("Cenario de Regime Tributario cadastrado anteriormente!");
         }
     }
 
