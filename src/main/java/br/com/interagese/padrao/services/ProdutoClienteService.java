@@ -34,6 +34,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 
         String sql = "SELECT "
                 + "  c.id AS CODIGO,"
+                + "  c.tipo_regime as REGIME,"
                 + "  c.cpf_cnpj AS CPF_CNPJ,"
                 + "  c.razao_social AS CLIENTE,"
                 + "  (SELECT count(*) from syscontabil.produto_cliente pc WHERE pc.cliente_id = c.id AND pc.status='PENDENTE') AS PENDENTE,"
@@ -65,6 +66,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 
         ClienteProdutoTemp temp = new ClienteProdutoTemp();
         temp.setClienteId(new BigInteger(cliente.getId().toString()));
+        temp.setRegime(cliente.getTipoRegime().getDescricao());
         temp.setCpfCnpj(cliente.getCpfCnpj());
         temp.setNomeCliente(cliente.getRazaoSocial());
         List<ProdutoCliente> listProductClient = loadProductClientById(new BigInteger(cliente.getId().toString()));
