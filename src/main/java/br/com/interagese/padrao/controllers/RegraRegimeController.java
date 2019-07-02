@@ -5,13 +5,18 @@
  */
 package br.com.interagese.padrao.controllers;
 
+import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.syscontabil.models.RegraRegimeTributario;
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
 import br.com.interagese.padrao.services.RegraRegimeService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,5 +31,10 @@ public class RegraRegimeController extends PadraoController<RegraRegimeTributari
     @IsServiceDefault
     @Autowired
     private RegraRegimeService service;   
-
+    
+    @GetMapping(path = "/{id:.+}")
+    public String findById(@PathVariable(name = "id") String id) {
+        return serializar(service.findById(id));
+    }
+    
 }

@@ -28,7 +28,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
     @Autowired
     private RegraProdutoService regraProdutoService;
     @Autowired
-    private RegraRegimeTributarioService regraRegimeTributarioService;
+    private RegraRegimeService regraRegimeTributarioService;
 
     public List<ClienteProdutoTemp> loadProductClient() throws Exception {
 
