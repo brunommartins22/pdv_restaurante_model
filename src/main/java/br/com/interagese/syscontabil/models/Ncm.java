@@ -7,19 +7,11 @@ package br.com.interagese.syscontabil.models;
 
 import br.com.interagese.erplibrary.AtributoPadrao;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -31,19 +23,9 @@ import javax.persistence.Table;
 public class Ncm implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_ncm")
-    @SequenceGenerator(name = "gen_ncm", sequenceName = "seq_ncm")
-    private Long id;
-    @Column(length = 12, nullable = false, unique = true)
-    private Long codigoNcm;
+    private String codigoNcm;
     @Column(length = 12, nullable = false, unique = true)
     private String nomeNcm;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(foreignKey = @ForeignKey(name = "ncm_fk_cenario_estadual"))
-    private List<CenarioEstadual> listCenariosEstaduais;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(foreignKey = @ForeignKey(name = "ncm_fk_cenario_federal"))
-    private List<CenarioFederal> listCenariosFederais;
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
@@ -51,7 +33,7 @@ public class Ncm implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.getId());
+        hash = 79 * hash + Objects.hashCode(this.getCodigoNcm());
         return hash;
     }
 
@@ -67,7 +49,7 @@ public class Ncm implements Serializable {
             return false;
         }
         final Ncm other = (Ncm) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.codigoNcm, other.codigoNcm)) {
             return false;
         }
         return true;
@@ -75,29 +57,22 @@ public class Ncm implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.interagese.syscontabil.models.Ncm{" + "id=" + getId() + '}';
+        return "br.com.interagese.syscontabil.models.Ncm{" + "id=" + getCodigoNcm() + '}';
     }
 
     //*************************** get && setts *********************************
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return the codigoNcm
      */
-    public Long getCodigoNcm() {
+    public String getCodigoNcm() {
         return codigoNcm;
     }
 
     /**
      * @param codigoNcm the codigoNcm to set
      */
-    public void setCodigoNcm(Long codigoNcm) {
+    public void setCodigoNcm(String codigoNcm) {
         this.codigoNcm = codigoNcm;
     }
 
@@ -113,34 +88,6 @@ public class Ncm implements Serializable {
      */
     public void setNomeNcm(String nomeNcm) {
         this.nomeNcm = nomeNcm;
-    }
-
-    /**
-     * @return the listCenariosEstaduais
-     */
-    public List<CenarioEstadual> getListCenariosEstaduais() {
-        return listCenariosEstaduais;
-    }
-
-    /**
-     * @param listCenariosEstaduais the listCenariosEstaduais to set
-     */
-    public void setListCenariosEstaduais(List<CenarioEstadual> listCenariosEstaduais) {
-        this.listCenariosEstaduais = listCenariosEstaduais;
-    }
-
-    /**
-     * @return the listCenariosFederais
-     */
-    public List<CenarioFederal> getListCenariosFederais() {
-        return listCenariosFederais;
-    }
-
-    /**
-     * @param listCenariosFederais the listCenariosFederais to set
-     */
-    public void setListCenariosFederais(List<CenarioFederal> listCenariosFederais) {
-        this.listCenariosFederais = listCenariosFederais;
     }
 
     /**

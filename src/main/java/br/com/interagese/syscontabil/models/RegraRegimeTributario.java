@@ -13,24 +13,18 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
  *
- * @author Bruno Martins
+ * @author Joao
  */
 @Entity
 @Table(name = "regra_regime_tributario")
 public class RegraRegimeTributario implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_regime_tributario")
-    @SequenceGenerator(name = "gen_regra_regime_tributario", sequenceName = "seq_regra_regime_tributario")
-    private Long id;
     @Enumerated(EnumType.STRING)
     private DominioRegime regimeTributarioId;
     @Embedded
@@ -42,7 +36,7 @@ public class RegraRegimeTributario implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 97 * hash + Objects.hashCode(this.getId());
+        hash = 97 * hash + Objects.hashCode(this.getRegimeTributarioId());
         return hash;
     }
 
@@ -58,7 +52,7 @@ public class RegraRegimeTributario implements Serializable {
             return false;
         }
         final RegraRegimeTributario other = (RegraRegimeTributario) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.regimeTributarioId, other.regimeTributarioId)) {
             return false;
         }
         return true;
@@ -66,23 +60,10 @@ public class RegraRegimeTributario implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.interagese.syscontabil.models.RegraRegimeTributario{" + "id=" + getId() + '}';
+        return "br.com.interagese.syscontabil.models.RegraRegimeTributario{" + "id=" + getRegimeTributarioId() + '}';
     }
 
     //****************************** get && setts ******************************
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return the atributoPadrao
