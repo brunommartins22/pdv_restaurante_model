@@ -8,6 +8,7 @@ package br.com.interagese.padrao.services;
 import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.syscontabil.models.RegraRegimeTributario;
 import br.com.interagese.padrao.rest.util.PadraoService;
+import br.com.interagese.syscontabil.domains.DominioRegime;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,6 +33,13 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
         }
 
         return consultaSQL;
+    }
+    
+    @Override
+    public RegraRegimeTributario findById(Object id) {
+        RegraRegimeTributario o = (RegraRegimeTributario) em.createQuery("SELECT o from RegraRegimeTributario o where o.regimeTributarioId = :regime ").setParameter("regime", DominioRegime.valueOf(id.toString())).getSingleResult();
+        
+        return o;
     }
 
 }
