@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
 
     //************************ create business rules ***************************
-   
     @Override
     public String getWhere(String complementoConsulta) {
         String consultaSQL = "";
@@ -34,12 +33,20 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
 
         return consultaSQL;
     }
-    
+
     @Override
     public RegraRegimeTributario findById(Object id) {
         RegraRegimeTributario o = (RegraRegimeTributario) em.createQuery("SELECT o from RegraRegimeTributario o where o.regimeTributarioId = :regime ").setParameter("regime", DominioRegime.valueOf(id.toString())).getSingleResult();
-        
+
         return o;
+    }
+
+    public RegraRegimeTributario loadRegraRegimeTributario(String regime) {
+        String sql = "select * from syscontabil.regra_regime_tributario where regime_tributario_id = :regime";
+
+        RegraRegimeTributario regimeTributario = (RegraRegimeTributario) em.createNativeQuery(sql).setParameter("regime", regime).getSingleResult();
+        
+        return regimeTributario;
     }
 
 }
