@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api/cenario-ncm")
 public class CenarioNcmController extends PadraoController<CenarioNcm> {
-
+    
     @IsServiceDefault
     @Autowired
     private CenarioNcmService service;   
