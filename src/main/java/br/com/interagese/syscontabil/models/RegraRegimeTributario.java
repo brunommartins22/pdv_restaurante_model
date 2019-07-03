@@ -30,6 +30,8 @@ public class RegraRegimeTributario implements Serializable {
     @Embedded
     private TributoFederal tributoFederal = new TributoFederal();
     @Embedded
+    private TributoEstadual tributoEstadual = new TributoEstadual();
+    @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
     //************************* Equals && HashCode *****************************
@@ -64,7 +66,6 @@ public class RegraRegimeTributario implements Serializable {
     }
 
     //****************************** get && setts ******************************
-
     /**
      * @return the atributoPadrao
      */
@@ -105,6 +106,20 @@ public class RegraRegimeTributario implements Serializable {
      */
     public void setRegimeTributarioId(DominioRegime regimeTributarioId) {
         this.regimeTributarioId = regimeTributarioId;
+    }
+
+    /**
+     * @return the tributoEstadual
+     */
+    public TributoEstadual getTributoEstadual() {
+        return tributoEstadual;
+    }
+
+    /**
+     * @param tributoEstadual the tributoEstadual to set
+     */
+    public void setTributoEstadual(TributoEstadual tributoEstadual) {
+        this.tributoEstadual = tributoEstadual;
     }
 
 }

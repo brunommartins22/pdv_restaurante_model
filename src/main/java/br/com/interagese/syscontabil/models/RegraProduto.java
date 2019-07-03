@@ -38,6 +38,8 @@ public class RegraProduto implements Serializable {
     @Embedded
     private TributoFederal tributoFederal = new TributoFederal();
     @Embedded
+    private TributoEstadual tributoEstadual = new TributoEstadual();
+    @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
     //**************************** Equals && HashCode **************************
@@ -154,6 +156,20 @@ public class RegraProduto implements Serializable {
      */
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
+    }
+
+    /**
+     * @return the tributoEstadual
+     */
+    public TributoEstadual getTributoEstadual() {
+        return tributoEstadual;
+    }
+
+    /**
+     * @param tributoEstadual the tributoEstadual to set
+     */
+    public void setTributoEstadual(TributoEstadual tributoEstadual) {
+        this.tributoEstadual = tributoEstadual;
     }
 
 }
