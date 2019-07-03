@@ -17,6 +17,7 @@ import java.util.List;
 public class ClienteProdutoTemp {
 
     private BigInteger clienteId;
+    private String regime;
     private String cpfCnpj;
     private String nomeCliente;
     private BigInteger qtdRegistrosPendentes;
@@ -124,6 +125,20 @@ public class ClienteProdutoTemp {
      */
     public void setResultProdutoCliente(List<ProdutoCliente> resultProdutoCliente) {
         this.resultProdutoCliente = resultProdutoCliente;
+    }
+
+    /**
+     * @return the regime
+     */
+    public String getRegime() {
+        return regime;
+    }
+
+    /**
+     * @param regime the regime to set
+     */
+    public void setRegime(String regime) {
+        this.regime = regime;
     }
 
 }

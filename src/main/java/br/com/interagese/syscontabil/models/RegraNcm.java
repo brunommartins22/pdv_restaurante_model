@@ -26,15 +26,17 @@ public class RegraNcm implements Serializable {
     @Embedded
     private TributoFederal tributoFederal = new TributoFederal();
     @Embedded
+    private TributoEstadual tributoEstadual = new TributoEstadual();
+    @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
-    
-    public RegraNcm(){
+
+    public RegraNcm() {
     }
-    
-    public RegraNcm(RegraNcmPK id){
+
+    public RegraNcm(RegraNcmPK id) {
         this.id = id;
     }
-    
+
     //**************************** Equals && HashCode **************************
     @Override
     public int hashCode() {
@@ -107,6 +109,20 @@ public class RegraNcm implements Serializable {
      */
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
+    }
+
+    /**
+     * @return the tributoEstadual
+     */
+    public TributoEstadual getTributoEstadual() {
+        return tributoEstadual;
+    }
+
+    /**
+     * @param tributoEstadual the tributoEstadual to set
+     */
+    public void setTributoEstadual(TributoEstadual tributoEstadual) {
+        this.tributoEstadual = tributoEstadual;
     }
 
 }
