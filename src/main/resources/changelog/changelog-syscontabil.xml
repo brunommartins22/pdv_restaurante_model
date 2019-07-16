@@ -203,7 +203,7 @@
     </changeSet>
     
     
-    <changeSet id="12" author="renatosm"   runOnChange="true">        
+    <changeSet id="13" author="renatosm"   runOnChange="true">        
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT count(*)
                 FROM pg_catalog.pg_constraint con
@@ -215,6 +215,23 @@
             or length(ean::varchar) = 12
             or length(ean::varchar) = 13
             or length(ean::varchar) = 14);
+        </sql>
+    </changeSet>
+    
+    <changeSet id="14" author="syscontabil-bruno-joao"   runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">
+            CREATE DOMAIN syscontabil."DominioRegras"
+            AS character varying(12)
+            CONSTRAINT "DominioRegras" CHECK (value in ('PRODUTO','NCM','REGIME'));
+            ALTER DOMAIN syscontabil."DominioRegras"
+            OWNER TO interage;
+        </sql>
+    </changeSet>
+    
+    <changeSet id="15" author="syscontabil-bruno-joao" runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">
+            ALTER TABLE syscontabil.produto_cliente
+            ALTER COLUMN regras TYPE syscontabil."DominioRegras";
         </sql>
     </changeSet>
     

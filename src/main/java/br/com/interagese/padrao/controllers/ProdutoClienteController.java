@@ -14,6 +14,8 @@ import br.com.interagese.syscontabil.models.ProdutoCliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,7 +36,7 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
     //**************************************************************************
     @GetMapping(path = "loadClientProductAll")
     public String loadClientProductAll() {
-         
+
         try {
             return serializar(produtoClienteService.loadProductClient());
         } catch (Exception ex) {
@@ -51,5 +53,6 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
 
         return "";
     }
+
 
 }
