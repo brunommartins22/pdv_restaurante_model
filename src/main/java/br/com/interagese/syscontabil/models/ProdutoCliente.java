@@ -6,6 +6,7 @@
 package br.com.interagese.syscontabil.models;
 
 import br.com.interagese.erplibrary.AtributoPadrao;
+import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.domains.DominioValidacaoProduto;
 import java.io.Serializable;
 import java.util.Objects;
@@ -50,6 +51,8 @@ public class ProdutoCliente implements Serializable {
     private String cestPadrao;
     @Enumerated(EnumType.STRING)
     private DominioValidacaoProduto status;
+    @Enumerated(EnumType.STRING)
+    private DominioRegras regras;
     @Embedded
     private TributoFederalCliente tributoFederalCliente;
     @Embedded
@@ -302,6 +305,20 @@ public class ProdutoCliente implements Serializable {
      */
     public void setDominioValidacaoProduto(DominioValidacaoProduto status) {
         this.status = status;
+    }
+
+    /**
+     * @return the regras
+     */
+    public DominioRegras getRegras() {
+        return regras;
+    }
+
+    /**
+     * @param regras the regras to set
+     */
+    public void setRegras(DominioRegras regras) {
+        this.regras = regras;
     }
    
 }
