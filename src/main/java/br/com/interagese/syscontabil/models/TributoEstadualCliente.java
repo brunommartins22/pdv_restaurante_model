@@ -16,7 +16,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class TributoEstadualCliente implements Serializable {
 
-    @Column(length = 12)
+    @Column(length = 3)
     private String cstIcmsEntradaCliente;
     @Column(length = 12)
     private Double aliquotaIcmsEntradaCliente;
@@ -26,7 +26,7 @@ public class TributoEstadualCliente implements Serializable {
     private Double reducaoBaseCalculoIcmsEntradaCliente;
     @Column(length = 12)
     private Double reducaoBaseCalculoIcmsEntradaSTCliente;
-    @Column(length = 12)
+    @Column(length = 3)
     private String cstIcmsSaidaCliente;
     @Column(length = 12)
     private Double aliquotaIcmsSaidaCliente;

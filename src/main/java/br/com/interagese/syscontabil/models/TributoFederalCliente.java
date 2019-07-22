@@ -16,27 +16,27 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class TributoFederalCliente implements Serializable {
 
-    @Column(length = 2)
+    @Column(length = 3)
     private String cstPisEntradaCliente;
     @Column(length = 12)
     private Double aliquotaPisEntradaCliente;
-    @Column(length = 2)
+    @Column(length = 3)
     private String cstPisSaidaCliente;
     @Column(length = 12)
     private Double aliquotaPisSaidaCliente;
-    @Column(length = 2)
+    @Column(length = 3)
     private String cstCofinsEntradaCliente;
     @Column(length = 12)
     private Double aliquotaCofinsEntradaCliente;
-    @Column(length = 2)
+    @Column(length = 3)
     private String cstCofinsSaidaCliente;
     @Column(length = 12)
     private Double aliquotaCofinsSaidaCliente;
-    @Column(length = 12)
+    @Column(length = 3)
     private String cstIpiEntradaCliente;
     @Column(length = 12)
     private Double aliquotaIpiEntradaCliente;
-    @Column(length = 2)
+    @Column(length = 3)
     private String cstIpiSaidaCliente;
     @Column(length = 12)
     private Double aliquotaIpiSaidaCliente;

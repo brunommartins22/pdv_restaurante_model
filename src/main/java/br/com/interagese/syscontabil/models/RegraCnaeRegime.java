@@ -34,7 +34,7 @@ public class RegraCnaeRegime implements Serializable {
     @Column(length = 12)
     private Long cnaeID;
     @Embedded
-    private TributoFederal tributoFederal = new TributoFederal();
+    private TributoFederalPadrao tributoFederalPadrao = new TributoFederalPadrao();
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
@@ -66,7 +66,7 @@ public class RegraCnaeRegime implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.interagese.syscontabil.models.RegraCnaeRegime{" + "id=" + id + '}';
+        return "br.com.interagese.syscontabil.models.RegraCnaeRegime{" + "id=" + getId() + '}';
     }
     
     
@@ -116,17 +116,17 @@ public class RegraCnaeRegime implements Serializable {
     }
 
     /**
-     * @return the tributoFederal
+     * @return the tributoFederalPadrao
      */
-    public TributoFederal getTributoFederal() {
-        return tributoFederal;
+    public TributoFederalPadrao getTributoFederalPadrao() {
+        return tributoFederalPadrao;
     }
 
     /**
-     * @param tributoFederal the tributoFederal to set
+     * @param tributoFederalPadrao the tributoFederalPadrao to set
      */
-    public void setTributoFederal(TributoFederal tributoFederal) {
-        this.tributoFederal = tributoFederal;
+    public void setTributoFederalPadrao(TributoFederalPadrao tributoFederalPadrao) {
+        this.tributoFederalPadrao = tributoFederalPadrao;
     }
 
     /**
@@ -142,4 +142,7 @@ public class RegraCnaeRegime implements Serializable {
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
     }
+
+  
+   
 }

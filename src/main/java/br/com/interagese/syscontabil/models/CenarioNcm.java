@@ -24,7 +24,7 @@ public class CenarioNcm implements Serializable {
     @EmbeddedId
     private CenarioNcmPK id;
     @Embedded
-    private TributoFederal tributoFederal = new TributoFederal();
+    private TributoFederalPadrao tributoFederal = new TributoFederalPadrao();
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     
@@ -84,14 +84,14 @@ public class CenarioNcm implements Serializable {
     /**
      * @return the tributoFederal
      */
-    public TributoFederal getTributoFederal() {
+    public TributoFederalPadrao getTributoFederal() {
         return tributoFederal;
     }
 
     /**
      * @param tributoFederal the tributoFederal to set
      */
-    public void setTributoFederal(TributoFederal tributoFederal) {
+    public void setTributoFederal(TributoFederalPadrao tributoFederal) {
         this.tributoFederal = tributoFederal;
     }
 

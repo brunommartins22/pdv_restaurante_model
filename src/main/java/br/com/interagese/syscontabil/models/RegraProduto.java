@@ -36,9 +36,9 @@ public class RegraProduto implements Serializable {
     @Column(length = 20)
     private Long eanProduto;
     @Embedded
-    private TributoFederal tributoFederal = new TributoFederal();
+    private TributoFederalPadrao tributoFederalPadrao = new TributoFederalPadrao();
     @Embedded
-    private TributoEstadual tributoEstadual = new TributoEstadual();
+    private TributoEstadualPadrao tributoEstadualPadrao = new TributoEstadualPadrao();
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
@@ -74,6 +74,7 @@ public class RegraProduto implements Serializable {
     }
 
     //**************************** get && setts ********************************
+
     /**
      * @return the id
      */
@@ -131,17 +132,31 @@ public class RegraProduto implements Serializable {
     }
 
     /**
-     * @return the tributoFederal
+     * @return the tributoFederalPadrao
      */
-    public TributoFederal getTributoFederal() {
-        return tributoFederal;
+    public TributoFederalPadrao getTributoFederalPadrao() {
+        return tributoFederalPadrao;
     }
 
     /**
-     * @param tributoFederal the tributoFederal to set
+     * @param tributoFederalPadrao the tributoFederalPadrao to set
      */
-    public void setTributoFederal(TributoFederal tributoFederal) {
-        this.tributoFederal = tributoFederal;
+    public void setTributoFederalPadrao(TributoFederalPadrao tributoFederalPadrao) {
+        this.tributoFederalPadrao = tributoFederalPadrao;
+    }
+
+    /**
+     * @return the tributoEstadualPadrao
+     */
+    public TributoEstadualPadrao getTributoEstadualPadrao() {
+        return tributoEstadualPadrao;
+    }
+
+    /**
+     * @param tributoEstadualPadrao the tributoEstadualPadrao to set
+     */
+    public void setTributoEstadualPadrao(TributoEstadualPadrao tributoEstadualPadrao) {
+        this.tributoEstadualPadrao = tributoEstadualPadrao;
     }
 
     /**
@@ -158,18 +173,6 @@ public class RegraProduto implements Serializable {
         this.atributoPadrao = atributoPadrao;
     }
 
-    /**
-     * @return the tributoEstadual
-     */
-    public TributoEstadual getTributoEstadual() {
-        return tributoEstadual;
-    }
-
-    /**
-     * @param tributoEstadual the tributoEstadual to set
-     */
-    public void setTributoEstadual(TributoEstadual tributoEstadual) {
-        this.tributoEstadual = tributoEstadual;
-    }
-
+    
+   
 }

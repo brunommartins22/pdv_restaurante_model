@@ -22,7 +22,7 @@ public class CenarioRegimeTributario implements Serializable {
     @Id
     private CenarioRegimeTributarioPK id ;
     @Embedded
-    private TributoFederal tributoFederal = new TributoFederal();
+    private TributoFederalPadrao tributoFederal = new TributoFederalPadrao();
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
@@ -65,11 +65,11 @@ public class CenarioRegimeTributario implements Serializable {
         this.id = id;
     }
 
-    public TributoFederal getTributoFederal() {
+    public TributoFederalPadrao getTributoFederal() {
         return tributoFederal;
     }
 
-    public void setTributoFederal(TributoFederal tributoFederal) {
+    public void setTributoFederal(TributoFederalPadrao tributoFederal) {
         this.tributoFederal = tributoFederal;
     }
 

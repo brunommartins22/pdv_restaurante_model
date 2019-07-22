@@ -36,9 +36,9 @@ public class RegraCnae implements Serializable {
     @Enumerated(EnumType.STRING)
     private DominioRegime dominioRegime;
     @Embedded
-    private TributoEstadual tributoEstadual = new TributoEstadual();
+    private TributoEstadualPadrao tributoEstadualPadrao = new TributoEstadualPadrao();
     @Embedded
-    private TributoFederal tributoFederal = new TributoFederal();
+    private TributoFederalPadrao tributoFederalPadrao = new TributoFederalPadrao();
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
@@ -84,20 +84,6 @@ public class RegraCnae implements Serializable {
     }
 
     /**
-     * @return the denominacao
-     */
-    public String getDenominacao() {
-        return denominacao;
-    }
-
-    /**
-     * @param denominacao the denominacao to set
-     */
-    public void setDenominacao(String denominacao) {
-        this.denominacao = denominacao;
-    }
-
-    /**
      * @return the codigoCnae
      */
     public String getCodigoCnae() {
@@ -109,6 +95,20 @@ public class RegraCnae implements Serializable {
      */
     public void setCodigoCnae(String codigoCnae) {
         this.codigoCnae = codigoCnae;
+    }
+
+    /**
+     * @return the denominacao
+     */
+    public String getDenominacao() {
+        return denominacao;
+    }
+
+    /**
+     * @param denominacao the denominacao to set
+     */
+    public void setDenominacao(String denominacao) {
+        this.denominacao = denominacao;
     }
 
     /**
@@ -126,31 +126,31 @@ public class RegraCnae implements Serializable {
     }
 
     /**
-     * @return the tributoEstadual
+     * @return the tributoEstadualPadrao
      */
-    public TributoEstadual getTributoEstadual() {
-        return tributoEstadual;
+    public TributoEstadualPadrao getTributoEstadualPadrao() {
+        return tributoEstadualPadrao;
     }
 
     /**
-     * @param tributoEstadual the tributoEstadual to set
+     * @param tributoEstadualPadrao the tributoEstadualPadrao to set
      */
-    public void setTributoEstadual(TributoEstadual tributoEstadual) {
-        this.tributoEstadual = tributoEstadual;
+    public void setTributoEstadualPadrao(TributoEstadualPadrao tributoEstadualPadrao) {
+        this.tributoEstadualPadrao = tributoEstadualPadrao;
     }
 
     /**
-     * @return the tributoFederal
+     * @return the tributoFederalPadrao
      */
-    public TributoFederal getTributoFederal() {
-        return tributoFederal;
+    public TributoFederalPadrao getTributoFederalPadrao() {
+        return tributoFederalPadrao;
     }
 
     /**
-     * @param tributoFederal the tributoFederal to set
+     * @param tributoFederalPadrao the tributoFederalPadrao to set
      */
-    public void setTributoFederal(TributoFederal tributoFederal) {
-        this.tributoFederal = tributoFederal;
+    public void setTributoFederalPadrao(TributoFederalPadrao tributoFederalPadrao) {
+        this.tributoFederalPadrao = tributoFederalPadrao;
     }
 
     /**
@@ -167,4 +167,5 @@ public class RegraCnae implements Serializable {
         this.atributoPadrao = atributoPadrao;
     }
 
+   
 }

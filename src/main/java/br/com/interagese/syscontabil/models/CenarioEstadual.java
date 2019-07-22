@@ -36,7 +36,7 @@ public class CenarioEstadual implements Serializable {
     @Column(length = 12)
     private String cfop;
    @Embedded
-   private TributoEstadual tributoEstadual = new TributoEstadual();
+   private TributoEstadualPadrao tributoEstadual = new TributoEstadualPadrao();
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
@@ -125,14 +125,14 @@ public class CenarioEstadual implements Serializable {
     /**
      * @return the tributoEstadual
      */
-    public TributoEstadual getTributoEstadual() {
+    public TributoEstadualPadrao getTributoEstadual() {
         return tributoEstadual;
     }
 
     /**
      * @param tributoEstadual the tributoEstadual to set
      */
-    public void setTributoEstadual(TributoEstadual tributoEstadual) {
+    public void setTributoEstadual(TributoEstadualPadrao tributoEstadual) {
         this.tributoEstadual = tributoEstadual;
     }
 
