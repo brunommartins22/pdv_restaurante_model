@@ -5,6 +5,7 @@
  */
 package br.com.interagese.padrao.services;
 
+import br.com.interagese.padrao.rest.domains.DominioEvento;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.padrao.rest.util.TransformNativeQuery;
 import br.com.interagese.syscontabil.domains.DominioRegras;
@@ -21,6 +22,7 @@ import br.com.interagese.syscontabil.models.TributoFederalHistorico;
 import br.com.interagese.syscontabil.models.TributoFederalPadrao;
 import br.com.interagese.syscontabil.temp.ClienteProdutoTemp;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,10 +175,10 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
             //***************** validation produto geral ***********************
             if (!produtoCliente.isIsProdutoGeral()) {
                 if (produtoCliente.getNcmPadrao() == null || produtoCliente.getNcmPadrao().equals("")) {
-                    throw new Exception("Ncm (Sugerido) não informado !!");
+                    addErro("Ncm (Sugerido) não informado !!");
                 }
                 if (produtoCliente.getCestPadrao() == null || produtoCliente.getCestPadrao().equals("")) {
-                    throw new Exception("Cest (Sugerido) não informado !!");
+                    addErro("Cest (Sugerido) não informado !!");
                 }
 
                 ProdutoGeral geral = new ProdutoGeral();
@@ -184,6 +186,10 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 geral.setNomeProduto(produtoCliente.getNomeProduto());
                 geral.setNcm(produtoCliente.getNcmPadrao());
                 geral.setCest(produtoCliente.getCestPadrao());
+                geral.getAtributoPadrao().setDataAlteracao(new Date());
+                geral.getAtributoPadrao().setIdUsuario(1L);
+                geral.getAtributoPadrao().setNomeUsuario("ADMIN");
+                geral.getAtributoPadrao().setDominioEvento(DominioEvento.I);
 
                 produtoGeralService.create(geral);
 
