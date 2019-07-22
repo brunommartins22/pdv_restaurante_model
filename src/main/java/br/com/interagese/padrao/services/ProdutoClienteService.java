@@ -11,11 +11,14 @@ import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.domains.DominioValidacaoProduto;
 import br.com.interagese.syscontabil.models.Cliente;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
+import br.com.interagese.syscontabil.models.ProdutoGeral;
 import br.com.interagese.syscontabil.models.RegraNcm;
 import br.com.interagese.syscontabil.models.RegraProduto;
 import br.com.interagese.syscontabil.models.RegraRegimeTributario;
-import br.com.interagese.syscontabil.models.TributoEstadual;
-import br.com.interagese.syscontabil.models.TributoFederal;
+import br.com.interagese.syscontabil.models.TributoEstadualHistorico;
+import br.com.interagese.syscontabil.models.TributoEstadualPadrao;
+import br.com.interagese.syscontabil.models.TributoFederalHistorico;
+import br.com.interagese.syscontabil.models.TributoFederalPadrao;
 import br.com.interagese.syscontabil.temp.ClienteProdutoTemp;
 import java.math.BigInteger;
 import java.util.List;
@@ -36,6 +39,8 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
     private RegraRegimeService regraRegimeTributarioService;
     @Autowired
     private RegraNcmService regraNcmService;
+    @Autowired
+    private ProdutoGeralService produtoGeralService;
 
     public List<ClienteProdutoTemp> loadProductClient() throws Exception {
 
@@ -69,7 +74,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         return null;
     }
 
-    public ClienteProdutoTemp loadRuleProductClient(Cliente cliente) {
+    public ClienteProdutoTemp loadProductClientRule(Cliente cliente) throws Exception {
 
         ClienteProdutoTemp temp = new ClienteProdutoTemp();
         temp.setClienteId(new BigInteger(cliente.getId().toString()));
@@ -79,62 +84,81 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         List<ProdutoCliente> listProductClient = loadProductClientById(new BigInteger(cliente.getId().toString()));
 
         for (ProdutoCliente produtoCliente : listProductClient) {
-            TributoFederal tributoFederalPadrao = null;
-            TributoEstadual tributoEstadualPadrao = null;
+            int cont = 1;
+            String ncmPadrao = "";
+            String cestPadrao = "";
+            boolean isProdutoGeral = true;
+            TributoFederalPadrao tributoFederalPadrao = null;
+            TributoEstadualPadrao tributoEstadualPadrao = null;
 
             //******************************************************************
-            String sql = "Select o.ncm,o.cest from ProdutoGeral o where o.ean ='" + produtoCliente.getEan() + "'";
+            switch (cont) {
+                case 1: {
+                    if (produtoCliente.getEan() != null) {
+                        String sql = "Select o.ncm,o.cest from syscontabil.produto_geral o where o.ean ='" + produtoCliente.getEan() + "'";
 
-            Object[] o = em.createQuery(sql, Object[].class).getSingleResult();
-            String ncmPadrao = (String) o[0];
-            String cestPadrao = (String) o[1];
+                        List<Object[]> lista = em.createNativeQuery(sql).getResultList();
 
-            //************************ Rule Product ****************************
-            RegraProduto regraProduto = regraProdutoService.loadRegraProduto(new BigInteger(cliente.getId().toString()), produtoCliente.getEan());
-
-            if (regraProduto != null) {
-                tributoFederalPadrao = regraProduto.getTributoFederal();
-                tributoEstadualPadrao = regraProduto.getTributoEstadual();
-                produtoCliente.setRegras(DominioRegras.PRODUTO);
-
-            } else {
-
-                if (produtoCliente.getNcmCliente() != null) {
-                    //************************ Rule Ncm ****************************
-
-                    RegraNcm regraNcm = regraNcmService.loadRegraNcm(produtoCliente.getNcmCliente(), cliente.getTipoRegime().getDescricao());
-
-                    if (regraNcm != null) {
-                        tributoFederalPadrao = regraNcm.getTributoFederal();
-                        tributoEstadualPadrao = regraNcm.getTributoEstadual();
-                        produtoCliente.setRegras(DominioRegras.NCM);
-
-                    } else {
-
-                        if (cliente.getTipoRegime() != null) {
-                            //************************ Rule Regime Tributário ****************************
-
-                            RegraRegimeTributario regimeTributario = regraRegimeTributarioService.loadRegraRegimeTributario(cliente.getTipoRegime().getDescricao());
-
-                            if (regimeTributario != null) {
-                                tributoFederalPadrao = regimeTributario.getTributoFederal();
-                                tributoEstadualPadrao = regimeTributario.getTributoEstadual();
-                                produtoCliente.setRegras(DominioRegras.REGIME);
+                        if (!lista.isEmpty()) {
+                            for (Object[] o : lista) {
+                                ncmPadrao = (String) o[0];
+                                cestPadrao = (String) o[1];
                             }
+                        } else {
+                            isProdutoGeral = false;
+                        }
+                        //************************ Product Rule ****************************
 
+                        RegraProduto regraProduto = regraProdutoService.loadRegraProduto(new BigInteger(cliente.getId().toString()), produtoCliente.getEan());
+
+                        if (regraProduto != null) {
+                            tributoFederalPadrao = regraProduto.getTributoFederalPadrao();
+                            tributoEstadualPadrao = regraProduto.getTributoEstadualPadrao();
+                            produtoCliente.setRegras(DominioRegras.PRODUTO);
+                            break;
                         }
 
                     }
+                    cont++;
 
                 }
+                case 2: {
+                    if (produtoCliente.getNcmCliente() != null) {
+                        //************************ Ncm Rule ****************************
 
+                        RegraNcm regraNcm = regraNcmService.loadRegraNcm(produtoCliente.getNcmCliente(), cliente.getTipoRegime().toString());
+
+                        if (regraNcm != null) {
+                            tributoFederalPadrao = regraNcm.getTributoFederalPadrao();
+                            tributoEstadualPadrao = regraNcm.getTributoEstadualPadrao();
+                            produtoCliente.setRegras(DominioRegras.NCM);
+                            break;
+                        }
+                    }
+                    cont++;
+                }
+                case 3: {
+                    if (cliente.getTipoRegime() != null) {
+                        //************************ Regime Tributário Rule ****************************
+
+                        RegraRegimeTributario regimeTributario = regraRegimeTributarioService.loadRegraRegimeTributario(cliente.getTipoRegime().toString());
+
+                        if (regimeTributario != null) {
+                            tributoFederalPadrao = regimeTributario.getTributoFederalPadrao();
+                            tributoEstadualPadrao = regimeTributario.getTributoEstadualPadrao();
+                            produtoCliente.setRegras(DominioRegras.REGIME);
+                        }
+
+                    }
+                }
             }
 
             //*************** insert data in productClient *********************
-            produtoCliente.setNcmPadrao(ncmPadrao == null || ncmPadrao.isEmpty() ? produtoCliente.getNcmPadrao() : ncmPadrao);
-            produtoCliente.setCestPadrao(cestPadrao == null || cestPadrao.isEmpty() ? produtoCliente.getCestPadrao() : cestPadrao);
-            produtoCliente.setTributoFederal(tributoFederalPadrao == null ? produtoCliente.getTributoFederal() : tributoFederalPadrao);
-            produtoCliente.setTributoEstadual(tributoEstadualPadrao == null ? produtoCliente.getTributoEstadual() : tributoEstadualPadrao);
+            produtoCliente.setIsProdutoGeral(isProdutoGeral);
+            produtoCliente.setNcmPadrao(ncmPadrao == null ? "" : ncmPadrao);
+            produtoCliente.setCestPadrao(cestPadrao == null ? "" : cestPadrao);
+            produtoCliente.setTributoFederalPadrao(tributoFederalPadrao == null ? new TributoFederalPadrao() : tributoFederalPadrao);
+            produtoCliente.setTributoEstadualPadrao(tributoEstadualPadrao == null ? new TributoEstadualPadrao() : tributoEstadualPadrao);
         }
 
         //******** insert update list for new result ListProductClient *********
@@ -143,74 +167,147 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         return temp;
     }
 
-    public void confirmarRoleClient(ProdutoCliente produtoCliente) throws Exception {
+    public void confirmClientRule(ProdutoCliente produtoCliente) throws Exception {
         if (produtoCliente != null) {
-            switch (produtoCliente.getRegras()) {
-                case PRODUTO: {
 
-                    break;
+            //***************** validation produto geral ***********************
+            if (!produtoCliente.isIsProdutoGeral()) {
+                if (produtoCliente.getNcmPadrao() == null || produtoCliente.getNcmPadrao().equals("")) {
+                    throw new Exception("Ncm (Sugerido) não informado !!");
                 }
-                case NCM: {
+                if (produtoCliente.getCestPadrao() == null || produtoCliente.getCestPadrao().equals("")) {
+                    throw new Exception("Cest (Sugerido) não informado !!");
+                }
 
-                    break;
-                }
-                case REGIME: {
+                ProdutoGeral geral = new ProdutoGeral();
+                geral.setEan(produtoCliente.getEan());
+                geral.setNomeProduto(produtoCliente.getNomeProduto());
+                geral.setNcm(produtoCliente.getNcmPadrao());
+                geral.setCest(produtoCliente.getCestPadrao());
 
-                    break;
-                }
+                produtoGeralService.create(geral);
+
             }
 
             produtoCliente.setNcmCliente(produtoCliente.getNcmPadrao());
             produtoCliente.setCestCliente(produtoCliente.getCestPadrao());
 
             if (produtoCliente.getTributoEstadualCliente() != null) {
+                if (produtoCliente.getTributoEstadualHistorico() == null) {
+                    produtoCliente.setTributoEstadualHistorico(new TributoEstadualHistorico());
+                }
                 //****************************** ICMS **************************
                 //****************************** Tributos de Entrada **********************************
-                produtoCliente.getTributoEstadualCliente().setCstIcmsEntradaCliente(produtoCliente.getTributoEstadualCliente().getCstIcmsEntradaCliente());
-                produtoCliente.getTributoEstadualCliente().setAliquotaIcmsEntradaCliente(produtoCliente.getTributoEstadual().getAliquotaIcmsEntrada());
-                produtoCliente.getTributoEstadualCliente().setAliquotaIcmsEntradaSTCliente(produtoCliente.getTributoEstadual().getAliquotaIcmsEntradaST());
-                produtoCliente.getTributoEstadualCliente().setReducaoBaseCalculoIcmsEntradaCliente(produtoCliente.getTributoEstadual().getReducaoBaseCalculoIcmsEntrada());
-                produtoCliente.getTributoEstadualCliente().setReducaoBaseCalculoIcmsEntradaSTCliente(produtoCliente.getTributoEstadual().getReducaoBaseCalculoIcmsEntradaST());
+                //****************************** Historical Entry *************************************
+                produtoCliente.getTributoEstadualHistorico().setCstIcmsEntradaHistorico(produtoCliente.getTributoEstadualCliente().getCstIcmsEntradaCliente());
+                produtoCliente.getTributoEstadualHistorico().setAliquotaIcmsEntradaHistorico(produtoCliente.getTributoEstadualCliente().getAliquotaIcmsEntradaCliente());
+                produtoCliente.getTributoEstadualHistorico().setAliquotaIcmsEntradaSTHistorico(produtoCliente.getTributoEstadualCliente().getAliquotaIcmsEntradaSTCliente());
+                produtoCliente.getTributoEstadualHistorico().setReducaoBaseCalculoIcmsEntradaHistorico(produtoCliente.getTributoEstadualCliente().getReducaoBaseCalculoIcmsEntradaCliente());
+                produtoCliente.getTributoEstadualHistorico().setReducaoBaseCalculoIcmsEntradaSTHistorico(produtoCliente.getTributoEstadualCliente().getReducaoBaseCalculoIcmsEntradaSTCliente());
+                //****************************** Update Client Entry **********************************
+                produtoCliente.getTributoEstadualCliente().setCstIcmsEntradaCliente(produtoCliente.getTributoEstadualPadrao().getCstIcmsEntradaPadrao());
+                produtoCliente.getTributoEstadualCliente().setAliquotaIcmsEntradaCliente(produtoCliente.getTributoEstadualPadrao().getAliquotaIcmsEntradaPadrao());
+                produtoCliente.getTributoEstadualCliente().setAliquotaIcmsEntradaSTCliente(produtoCliente.getTributoEstadualPadrao().getAliquotaIcmsEntradaSTPadrao());
+                produtoCliente.getTributoEstadualCliente().setReducaoBaseCalculoIcmsEntradaCliente(produtoCliente.getTributoEstadualPadrao().getReducaoBaseCalculoIcmsEntradaPadrao());
+                produtoCliente.getTributoEstadualCliente().setReducaoBaseCalculoIcmsEntradaSTCliente(produtoCliente.getTributoEstadualPadrao().getReducaoBaseCalculoIcmsEntradaSTPadrao());
                 //****************************** Tributos de Saída ************************************
-                produtoCliente.getTributoEstadualCliente().setCstIcmsSaidaCliente(produtoCliente.getTributoEstadual().getCstIcmsSaida());
-                produtoCliente.getTributoEstadualCliente().setAliquotaIcmsSaidaCliente(produtoCliente.getTributoEstadual().getAliquotaIcmsSaida());
-                produtoCliente.getTributoEstadualCliente().setAliquotaIcmsSaidaSTCliente(produtoCliente.getTributoEstadual().getAliquotaIcmsSaidaST());
-                produtoCliente.getTributoEstadualCliente().setReducaoBaseCalculoIcmsSaidaCliente(produtoCliente.getTributoEstadual().getReducaoBaseCalculoIcmsSaida());
-                produtoCliente.getTributoEstadualCliente().setReducaoBaseCalculoIcmsSaidaSTCliente(produtoCliente.getTributoEstadual().getReducaoBaseCalculoIcmsSaidaST());
+                //****************************** Historical Exit **************************************
+                produtoCliente.getTributoEstadualHistorico().setCstIcmsSaidaHistorico(produtoCliente.getTributoEstadualCliente().getCstIcmsSaidaCliente());
+                produtoCliente.getTributoEstadualHistorico().setAliquotaIcmsSaidaHistorico(produtoCliente.getTributoEstadualCliente().getAliquotaIcmsSaidaCliente());
+                produtoCliente.getTributoEstadualHistorico().setAliquotaIcmsSaidaSTHistorico(produtoCliente.getTributoEstadualCliente().getAliquotaIcmsSaidaSTCliente());
+                produtoCliente.getTributoEstadualHistorico().setReducaoBaseCalculoIcmsSaidaHistorico(produtoCliente.getTributoEstadualCliente().getReducaoBaseCalculoIcmsSaidaCliente());
+                produtoCliente.getTributoEstadualHistorico().setReducaoBaseCalculoIcmsSaidaSTHistorico(produtoCliente.getTributoEstadualCliente().getReducaoBaseCalculoIcmsSaidaSTCliente());
+                //****************************** Update Client Exit ***********************************
+                produtoCliente.getTributoEstadualCliente().setCstIcmsSaidaCliente(produtoCliente.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                produtoCliente.getTributoEstadualCliente().setAliquotaIcmsSaidaCliente(produtoCliente.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
+                produtoCliente.getTributoEstadualCliente().setAliquotaIcmsSaidaSTCliente(produtoCliente.getTributoEstadualPadrao().getAliquotaIcmsSaidaSTPadrao());
+                produtoCliente.getTributoEstadualCliente().setReducaoBaseCalculoIcmsSaidaCliente(produtoCliente.getTributoEstadualPadrao().getReducaoBaseCalculoIcmsSaidaPadrao());
+                produtoCliente.getTributoEstadualCliente().setReducaoBaseCalculoIcmsSaidaSTCliente(produtoCliente.getTributoEstadualPadrao().getReducaoBaseCalculoIcmsSaidaSTPadrao());
             }
             if (produtoCliente.getTributoFederalCliente() != null) {
+                if (produtoCliente.getTributoFederalHistorico() == null) {
+                    produtoCliente.setTributoFederalHistorico(new TributoFederalHistorico());
+                }
                 //************************* Pis ********************************
                 //****************************** Tributos de Entrada **********************************
-                produtoCliente.getTributoFederalCliente().setCstPisEntradaCliente(produtoCliente.getTributoFederal().getCstPisEntrada());
-                produtoCliente.getTributoFederalCliente().setAliquotaPisEntradaCliente(produtoCliente.getTributoFederal().getAliquotaPisEntrada());
+                //****************************** Historical Entry *************************************
+                produtoCliente.getTributoFederalHistorico().setCstPisEntradaHistorico(produtoCliente.getTributoFederalCliente().getCstPisEntradaCliente());
+                produtoCliente.getTributoFederalHistorico().setAliquotaPisEntradaHistorico(produtoCliente.getTributoFederalCliente().getAliquotaPisEntradaCliente());
+                //****************************** Update Client Entry **********************************
+                produtoCliente.getTributoFederalCliente().setCstPisEntradaCliente(produtoCliente.getTributoFederalPadrao().getCstPisEntradaPadrao());
+                produtoCliente.getTributoFederalCliente().setAliquotaPisEntradaCliente(produtoCliente.getTributoFederalPadrao().getAliquotaPisEntradaPadrao());
                 //****************************** Tributos de Saída ************************************
-                produtoCliente.getTributoFederalCliente().setCstPisSaidaCliente(produtoCliente.getTributoFederal().getCstPisSaida());
-                produtoCliente.getTributoFederalCliente().setAliquotaPisSaidaCliente(produtoCliente.getTributoFederal().getAliquotaPisSaida());
+                //****************************** Historical Exit **************************************
+                produtoCliente.getTributoFederalHistorico().setCstPisSaidaHistorico(produtoCliente.getTributoFederalCliente().getCstPisSaidaCliente());
+                produtoCliente.getTributoFederalHistorico().setAliquotaPisSaidaHistorico(produtoCliente.getTributoFederalCliente().getAliquotaPisSaidaCliente());
+                //****************************** Update Client Exit ***********************************
+                produtoCliente.getTributoFederalCliente().setCstPisSaidaCliente(produtoCliente.getTributoFederalPadrao().getCstPisSaidaPadrao());
+                produtoCliente.getTributoFederalCliente().setAliquotaPisSaidaCliente(produtoCliente.getTributoFederalPadrao().getAliquotaPisSaidaPadrao());
                 //************************* Cofins *****************************
                 //****************************** Tributos de Entrada **********************************
-                produtoCliente.getTributoFederalCliente().setCstCofinsEntradaCliente(produtoCliente.getTributoFederal().getCstCofinsEntrada());
-                produtoCliente.getTributoFederalCliente().setAliquotaCofinsEntradaCliente(produtoCliente.getTributoFederal().getAliquotaCofinsEntrada());
+                //****************************** Historical Entry *************************************
+                produtoCliente.getTributoFederalHistorico().setCstCofinsEntradaHistorico(produtoCliente.getTributoFederalCliente().getCstCofinsEntradaCliente());
+                produtoCliente.getTributoFederalHistorico().setAliquotaCofinsEntradaHistorico(produtoCliente.getTributoFederalCliente().getAliquotaCofinsEntradaCliente());
+                //****************************** Update Client Entry **********************************
+                produtoCliente.getTributoFederalCliente().setCstCofinsEntradaCliente(produtoCliente.getTributoFederalPadrao().getCstCofinsEntradaPadrao());
+                produtoCliente.getTributoFederalCliente().setAliquotaCofinsEntradaCliente(produtoCliente.getTributoFederalPadrao().getAliquotaCofinsEntradaPadrao());
                 //****************************** Tributos de Saída ************************************
-                produtoCliente.getTributoFederalCliente().setCstCofinsSaidaCliente(produtoCliente.getTributoFederal().getCstCofinsSaida());
-                produtoCliente.getTributoFederalCliente().setAliquotaCofinsSaidaCliente(produtoCliente.getTributoFederal().getAliquotaCofinsSaida());
+                //****************************** Historical Exit **************************************
+                produtoCliente.getTributoFederalHistorico().setCstCofinsSaidaHistorico(produtoCliente.getTributoFederalCliente().getCstCofinsSaidaCliente());
+                produtoCliente.getTributoFederalHistorico().setAliquotaCofinsSaidaHistorico(produtoCliente.getTributoFederalCliente().getAliquotaCofinsSaidaCliente());
+                //****************************** Update Client Exit ***********************************
+                produtoCliente.getTributoFederalCliente().setCstCofinsSaidaCliente(produtoCliente.getTributoFederalPadrao().getCstCofinsSaidaPadrao());
+                produtoCliente.getTributoFederalCliente().setAliquotaCofinsSaidaCliente(produtoCliente.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao());
                 //**************************** Ipi *****************************
                 //****************************** Tributos de Entrada **********************************
-                produtoCliente.getTributoFederalCliente().setCstIpiEntradaCliente(produtoCliente.getTributoFederal().getCstIpiEntrada());
-                produtoCliente.getTributoFederalCliente().setAliquotaIpiEntradaCliente(produtoCliente.getTributoFederal().getAliquotaIpiEntrada());
+                //****************************** Historical Entry *************************************
+                produtoCliente.getTributoFederalHistorico().setCstIpiEntradaHistorico(produtoCliente.getTributoFederalCliente().getCstIpiEntradaCliente());
+                produtoCliente.getTributoFederalHistorico().setAliquotaIpiEntradaHistorico(produtoCliente.getTributoFederalCliente().getAliquotaIpiEntradaCliente());
+                //****************************** Update Client Entry **********************************
+                produtoCliente.getTributoFederalCliente().setCstIpiEntradaCliente(produtoCliente.getTributoFederalPadrao().getCstIpiEntradaPadrao());
+                produtoCliente.getTributoFederalCliente().setAliquotaIpiEntradaCliente(produtoCliente.getTributoFederalPadrao().getAliquotaIpiEntradaPadrao());
                 //****************************** Tributos de Saída ************************************
-                produtoCliente.getTributoFederalCliente().setCstIpiSaidaCliente(produtoCliente.getTributoFederal().getCstIpiSaida());
-                produtoCliente.getTributoFederalCliente().setAliquotaIpiSaidaCliente(produtoCliente.getTributoFederal().getAliquotaIpiSaida());
+                //****************************** Historical Exit **************************************
+                produtoCliente.getTributoFederalHistorico().setCstIpiSaidaHistorico(produtoCliente.getTributoFederalCliente().getCstIpiSaidaCliente());
+                produtoCliente.getTributoFederalHistorico().setAliquotaIpiSaidaHistorico(produtoCliente.getTributoFederalCliente().getAliquotaIpiSaidaCliente());
+                //****************************** Update Client Exit ***********************************
+                produtoCliente.getTributoFederalCliente().setCstIpiSaidaCliente(produtoCliente.getTributoFederalPadrao().getCstIpiSaidaPadrao());
+                produtoCliente.getTributoFederalCliente().setAliquotaIpiSaidaCliente(produtoCliente.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
             }
-            
-            produtoCliente.setDominioValidacaoProduto(DominioValidacaoProduto.VALIDADO);
+
+            produtoCliente.setStatus(DominioValidacaoProduto.VALIDADO);
 
         }
     }
 
     @Override
     public ProdutoCliente update(ProdutoCliente obj) throws Exception {
-        confirmarRoleClient(obj);
+        confirmClientRule(obj);
         return super.update(obj);
+    }
+
+    public boolean generatedRolesByProductClient(ProdutoCliente obj) throws Exception {
+        if (obj != null) {
+            switch (obj.getRegras()) {
+                case PRODUTO: {
+                    RegraProduto regraProduto = new RegraProduto();
+
+                    break;
+                }
+                case NCM: {
+                    RegraNcm regraNcm = new RegraNcm();
+
+                    break;
+                }
+                case REGIME: {
+                    RegraRegimeTributario regimeTributario = new RegraRegimeTributario();
+
+                    break;
+                }
+            }
+        }
+
+        return true;
     }
 
 }

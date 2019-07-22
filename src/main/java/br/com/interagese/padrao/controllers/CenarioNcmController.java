@@ -5,11 +5,11 @@
  */
 package br.com.interagese.padrao.controllers;
 
-import br.com.interagese.syscontabil.models.CenarioRegimeTributario;
+import br.com.interagese.syscontabil.models.CenarioNcm;
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
-import br.com.interagese.padrao.services.CenarioRegimeService;
-import br.com.interagese.syscontabil.models.CenarioRegimeTributarioPK;
+import br.com.interagese.padrao.services.CenarioNcmService;
+import br.com.interagese.syscontabil.models.CenarioNcmPK;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,15 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
  * @author adam
  */
 @RestController
-@RequestMapping(path = "/api/cenario-regime")
-public class CenarioRegimeController extends PadraoController<CenarioRegimeTributario> {
-
+@RequestMapping(path = "/api/cenario-ncm")
+public class CenarioNcmController extends PadraoController<CenarioNcm> {
+    
     @IsServiceDefault
     @Autowired
-    private CenarioRegimeService service;   
+    private CenarioNcmService service;   
     
     @PostMapping(path = "/findById")
-    public String findById(@RequestBody CenarioRegimeTributarioPK id) {
+    public String findById(@RequestBody CenarioNcmPK id) {
         return serializar(service.findById(id));
     }
     

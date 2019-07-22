@@ -5,11 +5,12 @@
  */
 package br.com.interagese.padrao.services;
 
-import br.com.interagese.erplibrary.Utils;
+import br.com.interagese.padrao.rest.util.FiltroParametro;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.models.Cliente;
 import java.util.List;
 import javax.persistence.Query;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class ClienteService extends PadraoService<Cliente> {
 
     public ClienteService() {
-        order = "razaoSocial";
+        order = " order by o.razaoSocial";
     }
 
     public boolean existeCpfCnpj(Cliente cliente) {
@@ -44,20 +45,25 @@ public class ClienteService extends PadraoService<Cliente> {
     }
 
     @Override
-    public String getWhere(String complementoConsulta) {
-        String consultaSQL = "";
+    public String getWhere(FiltroParametro filtroParametro) {
+        String consultaSQL = " 1 = 1";
 
-        if (complementoConsulta != null && !complementoConsulta.trim().equals("")) {
-            if (Utils.somenteNumeros(complementoConsulta)) {
-                consultaSQL = "o.id = " + complementoConsulta;
-            } else {
-                consultaSQL = "o.razaoSocial  LIKE '%" + complementoConsulta + "%' or "
-                            + "o.nomeFantasia LIKE '%" + complementoConsulta + "%' or"
-                            + "o.cpfCnpj = '"+complementoConsulta+"' or "
-                            + "o.rgIe    = '"+complementoConsulta+"' ";
-            }
+        if (filtroParametro.getFilter("codigo") != null && !StringUtils.isEmpty(filtroParametro.getFilter("codigo").getValue())) {
+            String valor = filtroParametro.getFilter("codigo").getValue();
+            consultaSQL += " and o.id = " + valor + "";
         }
-        setOrder("order by o.razaoSocial");
+
+        if (filtroParametro.getFilter("nomeCliente") != null) {
+            String valor = filtroParametro.getFilter("nomeCliente").getValue();
+            consultaSQL += " and (o.razaoSocial  LIKE '%" + valor + "%' or "
+                    + "o.nomeFantasia LIKE '%" + valor + "%' )";
+        }
+
+        if (filtroParametro.getFilter("tipoPessoa") != null) {
+            String valor = filtroParametro.getFilter("tipoPessoa").getValue();
+            consultaSQL += " and o.tipoCliente = '" + valor + "'";
+        }
+
         return consultaSQL;
     }
 

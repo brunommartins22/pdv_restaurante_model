@@ -9,6 +9,7 @@ import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.syscontabil.models.RegraRegimeTributario;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.domains.DominioRegime;
+import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Service;
 
 /**
@@ -44,9 +45,9 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
     public RegraRegimeTributario loadRegraRegimeTributario(String regime) {
         String sql = "select * from syscontabil.regra_regime_tributario where regime_tributario_id = :regime";
 
-        RegraRegimeTributario regimeTributario = (RegraRegimeTributario) em.createNativeQuery(sql).setParameter("regime", regime).getSingleResult();
-        
-        return regimeTributario;
+        TypedQuery<RegraRegimeTributario> lista = (TypedQuery<RegraRegimeTributario>) em.createNativeQuery(sql,RegraRegimeTributario.class).setParameter("regime", regime);
+
+        return lista.getResultList().isEmpty() ? null : lista.getSingleResult();
     }
 
 }

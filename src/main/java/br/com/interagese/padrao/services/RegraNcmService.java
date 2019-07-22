@@ -12,7 +12,7 @@ import br.com.interagese.syscontabil.domains.DominioRegime;
 import br.com.interagese.syscontabil.dto.RegraNcmDto;
 import br.com.interagese.syscontabil.models.RegraNcm;
 import br.com.interagese.syscontabil.models.RegraNcmPK;
-import br.com.interagese.syscontabil.models.TributoFederal;
+import br.com.interagese.syscontabil.models.TributoFederalPadrao;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -276,13 +276,13 @@ public class RegraNcmService extends PadraoService<RegraNcmDto> {
             RegraNcmDto dto = new RegraNcmDto();
             dto.setRegraNcmLucroPresumido(new RegraNcm());
             dto.getRegraNcmLucroPresumido().setId(new RegraNcmPK());
-            dto.getRegraNcmLucroPresumido().setTributoFederal(new TributoFederal());
+            dto.getRegraNcmLucroPresumido().setTributoFederalPadrao(new TributoFederalPadrao());
             dto.setRegraNcmLucroReal(new RegraNcm());
             dto.getRegraNcmLucroReal().setId(new RegraNcmPK());
-            dto.getRegraNcmLucroReal().setTributoFederal(new TributoFederal());
+            dto.getRegraNcmLucroReal().setTributoFederalPadrao(new TributoFederalPadrao());
             dto.setRegraNcmSimplesNacional(new RegraNcm());
             dto.getRegraNcmSimplesNacional().setId(new RegraNcmPK());
-            dto.getRegraNcmSimplesNacional().setTributoFederal(new TributoFederal());
+            dto.getRegraNcmSimplesNacional().setTributoFederalPadrao(new TributoFederalPadrao());
 
             for (RegraNcm regraNcm : listaResultNcm) {
 
@@ -353,11 +353,11 @@ public class RegraNcmService extends PadraoService<RegraNcmDto> {
 
         String sql = "select * from syscontabil.regra_ncm where codigo_ncm = :ncm and regime_tributario_id = :regime";
 
-        RegraNcm ncm = (RegraNcm) em.createNativeQuery(sql)
+        TypedQuery<RegraNcm> lista = (TypedQuery<RegraNcm>) em.createNativeQuery(sql,RegraNcm.class)
                 .setParameter("ncm", codigoNcm)
-                .setParameter("regime", regime).getSingleResult();
-        
-        return ncm;
+                .setParameter("regime", regime);
+
+        return lista.getResultList().isEmpty() ? null : lista.getSingleResult();
     }
 
 }

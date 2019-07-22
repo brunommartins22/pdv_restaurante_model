@@ -12,9 +12,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(excludeFilters = @ComponentScan.Filter(
         type = FilterType.ASSIGNABLE_TYPE, classes = {MultiDatasourceConfiguration.class}))
 public class CrudApplication {
-    
+
     public static void main(String[] args) {
         SpringApplication.run(CrudApplication.class, args);
     }
-    
 }
