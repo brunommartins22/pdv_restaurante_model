@@ -12,7 +12,7 @@ import br.com.interagese.padrao.rest.util.DominioPadrao;
  * @author Bruno Martins
  */
 public enum DominioRegime implements DominioPadrao {
-    LUCROREAL("Lucro Real"), LUCROPRESUMIDO("Lucro Presumido"), SIMPLESNACIONAL("Simples Nacional");
+    LUCROREAL("LUCRO REAL"), LUCROPRESUMIDO("LUCRO PRESUMIDO"), SIMPLESNACIONAL("SIMPLES NACIONAL");
 
     private String descricao;
 
