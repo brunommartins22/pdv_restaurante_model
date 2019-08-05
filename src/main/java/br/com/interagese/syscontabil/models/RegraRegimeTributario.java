@@ -26,7 +26,7 @@ public class RegraRegimeTributario implements Serializable {
 
     @Id
     @Enumerated(EnumType.STRING)
-    private DominioRegime regimeTributarioId;
+    private DominioRegime id;
     @Embedded
     private TributoFederalPadrao tributoFederalPadrao = new TributoFederalPadrao();
     @Embedded
@@ -38,7 +38,7 @@ public class RegraRegimeTributario implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 97 * hash + Objects.hashCode(this.getRegimeTributarioId());
+        hash = 97 * hash + Objects.hashCode(this.getId());
         return hash;
     }
 
@@ -54,7 +54,7 @@ public class RegraRegimeTributario implements Serializable {
             return false;
         }
         final RegraRegimeTributario other = (RegraRegimeTributario) obj;
-        if (!Objects.equals(this.regimeTributarioId, other.regimeTributarioId)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return true;
@@ -62,23 +62,23 @@ public class RegraRegimeTributario implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.interagese.syscontabil.models.RegraRegimeTributario{" + "id=" + getRegimeTributarioId() + '}';
+        return "br.com.interagese.syscontabil.models.RegraRegimeTributario{" + "id=" + getId() + '}';
     }
 
     //****************************** get && setts ******************************
 
     /**
-     * @return the regimeTributarioId
+     * @return the id
      */
-    public DominioRegime getRegimeTributarioId() {
-        return regimeTributarioId;
+    public DominioRegime getId() {
+        return id;
     }
 
     /**
-     * @param regimeTributarioId the regimeTributarioId to set
+     * @param id the id to set
      */
-    public void setRegimeTributarioId(DominioRegime regimeTributarioId) {
-        this.regimeTributarioId = regimeTributarioId;
+    public void setId(DominioRegime id) {
+        this.id = id;
     }
 
     /**
