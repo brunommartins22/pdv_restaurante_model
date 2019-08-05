@@ -37,7 +37,7 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
 
     @Override
     public RegraRegimeTributario findById(Object id) {
-        RegraRegimeTributario o = (RegraRegimeTributario) em.createQuery("SELECT o from RegraRegimeTributario o where o.regimeTributarioId = :regime ").setParameter("regime", DominioRegime.valueOf(id.toString())).getSingleResult();
+        RegraRegimeTributario o = (RegraRegimeTributario) em.createQuery("SELECT o from RegraRegimeTributario o where o.id = :regime ").setParameter("regime", DominioRegime.valueOf(id.toString())).getSingleResult();
 
         return o;
     }
