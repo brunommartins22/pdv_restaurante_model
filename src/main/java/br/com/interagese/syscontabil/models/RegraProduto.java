@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -35,6 +36,8 @@ public class RegraProduto implements Serializable {
     private String codigoProduto;
     @Column(length = 20)
     private Long eanProduto;
+    @Column
+    private Long cenarioId;
     @Embedded
     private TributoFederalPadrao tributoFederalPadrao = new TributoFederalPadrao();
     @Embedded
@@ -42,6 +45,13 @@ public class RegraProduto implements Serializable {
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
+    @Transient
+    private String nomeCliente;
+    @Transient
+    private String nomeProduto;
+    @Transient
+    private String nomeCenario;
+    
     //**************************** Equals && HashCode **************************
     @Override
     public int hashCode() {
@@ -171,6 +181,38 @@ public class RegraProduto implements Serializable {
      */
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
+    }
+
+    public Long getCenarioId() {
+        return cenarioId;
+    }
+
+    public void setCenarioId(Long cenarioId) {
+        this.cenarioId = cenarioId;
+    }
+
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
+    }
+
+    public String getNomeProduto() {
+        return nomeProduto;
+    }
+
+    public void setNomeProduto(String nomeProduto) {
+        this.nomeProduto = nomeProduto;
+    }
+
+    public String getNomeCenario() {
+        return nomeCenario;
+    }
+
+    public void setNomeCenario(String nomeCenario) {
+        this.nomeCenario = nomeCenario;
     }
 
     
