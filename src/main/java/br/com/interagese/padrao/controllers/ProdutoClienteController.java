@@ -9,7 +9,7 @@ import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
 import br.com.interagese.padrao.services.ClienteService;
 import br.com.interagese.padrao.services.ProdutoClienteService;
-import br.com.interagese.syscontabil.temp.ClienteProdutoTemp;
+import br.com.interagese.syscontabil.dto.ClienteProdutoDto;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +46,7 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
     public String loadClientSelected(@PathVariable Long clienteId) {
         try {
 
-            ClienteProdutoTemp temp = produtoClienteService.loadProductClientRule(clienteService.findById(clienteId));
+            ClienteProdutoDto temp = produtoClienteService.loadProductClientRule(clienteService.findById(clienteId));
 
             return serializar(temp);
 
@@ -54,5 +54,5 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
             return returnException(ex);
         }
     }
-    
+
 }
