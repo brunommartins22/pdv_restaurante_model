@@ -6,20 +6,16 @@
 package br.com.interagese.syscontabil.models;
 
 import br.com.interagese.erplibrary.AtributoPadrao;
-import br.com.interagese.syscontabil.domains.DominioRegras;
-import br.com.interagese.syscontabil.domains.DominioValidacaoProduto;
-import br.com.interagese.syscontabil.dto.TributoEstadualDto;
-import br.com.interagese.syscontabil.dto.TributoFederalDto;
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -36,8 +32,8 @@ public class ProdutoCliente implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_produto_cliente")
     @SequenceGenerator(name = "gen_produto_cliente", sequenceName = "seq_produto_cliente")
     private Long id;
-    @Column(nullable = false)
-    private Long clienteId;
+    @ManyToOne
+    private Cliente cliente;
     @Column(length = 255)
     private String nomeProduto;
     @Column(length = 120)
@@ -49,35 +45,16 @@ public class ProdutoCliente implements Serializable {
     @Transient
     @Column(length = 8)
     private String ncmPadrao;
-    @Column(length = 8)
-    private String ncmHistorico;
     @Column(length = 7)
     private String cestCliente;
     @Transient
     @Column(length = 7)
     private String cestPadrao;
-    @Column(length = 7)
-    private String cestHistorico;
-    @Enumerated(EnumType.STRING)
-    private DominioValidacaoProduto status;
-    @Enumerated(EnumType.STRING)
-    private DominioRegras regras;
-    @Embedded
-    private TributoFederalCliente tributoFederalCliente;
-    @Transient
-    private TributoFederalPadrao tributoFederalPadrao;
-    @Embedded
-    private TributoFederalHistorico tributoFederalHistorico;
-    @Embedded
-    private TributoEstadualCliente tributoEstadualCliente;
-    @Transient
-    private TributoEstadualPadrao tributoEstadualPadrao;
-    @Embedded
-    private TributoEstadualHistorico tributoEstadualHistorico;
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     @Transient
     private boolean isProdutoGeral;
+    
 
     //************************* Equals && Hashcode *****************************
     @Override
@@ -111,6 +88,7 @@ public class ProdutoCliente implements Serializable {
     }
 
     //**************************** get && setts ********************************
+
     /**
      * @return the id
      */
@@ -126,17 +104,17 @@ public class ProdutoCliente implements Serializable {
     }
 
     /**
-     * @return the clienteId
+     * @return the cliente
      */
-    public Long getClienteId() {
-        return clienteId;
+    public Cliente getCliente() {
+        return cliente;
     }
 
     /**
-     * @param clienteId the clienteId to set
+     * @param cliente the cliente to set
      */
-    public void setClienteId(Long clienteId) {
-        this.clienteId = clienteId;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     /**
@@ -238,90 +216,6 @@ public class ProdutoCliente implements Serializable {
     }
 
     /**
-     * @return the status
-     */
-    public DominioValidacaoProduto getStatus() {
-        return status;
-    }
-
-    /**
-     * @param status the status to set
-     */
-    public void setStatus(DominioValidacaoProduto status) {
-        this.status = status;
-    }
-
-    /**
-     * @return the regras
-     */
-    public DominioRegras getRegras() {
-        return regras;
-    }
-
-    /**
-     * @param regras the regras to set
-     */
-    public void setRegras(DominioRegras regras) {
-        this.regras = regras;
-    }
-
-    /**
-     * @return the tributoFederalCliente
-     */
-    public TributoFederalCliente getTributoFederalCliente() {
-        return tributoFederalCliente;
-    }
-
-    /**
-     * @param tributoFederalCliente the tributoFederalCliente to set
-     */
-    public void setTributoFederalCliente(TributoFederalCliente tributoFederalCliente) {
-        this.tributoFederalCliente = tributoFederalCliente;
-    }
-
-    /**
-     * @return the tributoFederalPadrao
-     */
-    public TributoFederalPadrao getTributoFederalPadrao() {
-        return tributoFederalPadrao;
-    }
-
-    /**
-     * @param tributoFederalPadrao the tributoFederalPadrao to set
-     */
-    public void setTributoFederalPadrao(TributoFederalPadrao tributoFederalPadrao) {
-        this.tributoFederalPadrao = tributoFederalPadrao;
-    }
-
-    /**
-     * @return the tributoEstadualCliente
-     */
-    public TributoEstadualCliente getTributoEstadualCliente() {
-        return tributoEstadualCliente;
-    }
-
-    /**
-     * @param tributoEstadualCliente the tributoEstadualCliente to set
-     */
-    public void setTributoEstadualCliente(TributoEstadualCliente tributoEstadualCliente) {
-        this.tributoEstadualCliente = tributoEstadualCliente;
-    }
-
-    /**
-     * @return the tributoEstadualPadrao
-     */
-    public TributoEstadualPadrao getTributoEstadualPadrao() {
-        return tributoEstadualPadrao;
-    }
-
-    /**
-     * @param tributoEstadualPadrao the tributoEstadualPadrao to set
-     */
-    public void setTributoEstadualPadrao(TributoEstadualPadrao tributoEstadualPadrao) {
-        this.tributoEstadualPadrao = tributoEstadualPadrao;
-    }
-
-    /**
      * @return the atributoPadrao
      */
     public AtributoPadrao getAtributoPadrao() {
@@ -348,61 +242,5 @@ public class ProdutoCliente implements Serializable {
     public void setIsProdutoGeral(boolean isProdutoGeral) {
         this.isProdutoGeral = isProdutoGeral;
     }
-
-    /**
-     * @return the ncmHistorico
-     */
-    public String getNcmHistorico() {
-        return ncmHistorico;
-    }
-
-    /**
-     * @param ncmHistorico the ncmHistorico to set
-     */
-    public void setNcmHistorico(String ncmHistorico) {
-        this.ncmHistorico = ncmHistorico;
-    }
-
-    /**
-     * @return the cestHistorico
-     */
-    public String getCestHistorico() {
-        return cestHistorico;
-    }
-
-    /**
-     * @param cestHistorico the cestHistorico to set
-     */
-    public void setCestHistorico(String cestHistorico) {
-        this.cestHistorico = cestHistorico;
-    }
-
-    /**
-     * @return the tributoFederalHistorico
-     */
-    public TributoFederalHistorico getTributoFederalHistorico() {
-        return tributoFederalHistorico;
-    }
-
-    /**
-     * @param tributoFederalHistorico the tributoFederalHistorico to set
-     */
-    public void setTributoFederalHistorico(TributoFederalHistorico tributoFederalHistorico) {
-        this.tributoFederalHistorico = tributoFederalHistorico;
-    }
-
-    /**
-     * @return the tributoEstadualHistorico
-     */
-    public TributoEstadualHistorico getTributoEstadualHistorico() {
-        return tributoEstadualHistorico;
-    }
-
-    /**
-     * @param tributoEstadualHistorico the tributoEstadualHistorico to set
-     */
-    public void setTributoEstadualHistorico(TributoEstadualHistorico tributoEstadualHistorico) {
-        this.tributoEstadualHistorico = tributoEstadualHistorico;
-    }
-
+   
 }

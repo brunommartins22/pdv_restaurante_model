@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.interagese.syscontabil.temp;
+package br.com.interagese.syscontabil.dto;
 
 import br.com.interagese.syscontabil.models.ProdutoCliente;
 import java.math.BigInteger;
@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Bruno Martins
  */
-public class ClienteProdutoTemp {
+public class ClienteProdutoDto {
 
     private BigInteger clienteId;
     private String regime;
