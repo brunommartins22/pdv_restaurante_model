@@ -29,6 +29,13 @@ import javax.persistence.Table;
 @Table(name = "arquivos_processar")
 public class ArquivosProcessar implements Serializable {
 
+    /**
+     * @return the statusArquivo
+     */
+    public DominioStatusArquivo getStatusArquivo() {
+        return statusArquivo;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_arquivos_processar")
     @SequenceGenerator(name = "gen_arquivos_processar", sequenceName = "seq_arquivos_processar")
