@@ -44,9 +44,6 @@ public class ArquivosProcessar implements Serializable {
     @ManyToOne
     private Cliente cliente;
     
-    @ManyToOne
-    private Cenario cenario;
-    
     @Column(length = 200, nullable = false)
     private String nome;
     
@@ -123,14 +120,6 @@ public class ArquivosProcessar implements Serializable {
         this.cliente = cliente;
     }
 
-    public Cenario getCenario() {
-        return cenario;
-    }
-
-    public void setCenario(Cenario cenario) {
-        this.cenario = cenario;
-    }
-
     public String getNome() {
         return nome;
     }
@@ -177,6 +166,14 @@ public class ArquivosProcessar implements Serializable {
 
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
+    }
+
+    public Long getNumeroRegistros() {
+        return numeroRegistros;
+    }
+
+    public void setNumeroRegistros(Long numeroRegistros) {
+        this.numeroRegistros = numeroRegistros;
     }
 
     
