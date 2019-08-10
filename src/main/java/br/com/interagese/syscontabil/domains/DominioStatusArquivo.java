@@ -12,7 +12,7 @@ import br.com.interagese.padrao.rest.util.DominioPadrao;
  * @author Bruno Martins
  */
 public enum DominioStatusArquivo implements DominioPadrao {
-    PENDENTE("Pendente"), EMADAMENTO("Em Andamento"), PARALIZADO("Paralizado"), FINALIZADO("Finalizado");
+    PENDENTE("Pendente"), EMANDAMENTO("Em Andamento"), PARALIZADO("Paralizado"), FINALIZADO("Finalizado");
 
     private String descricao;
 

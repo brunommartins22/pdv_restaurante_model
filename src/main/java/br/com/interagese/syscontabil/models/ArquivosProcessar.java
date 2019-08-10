@@ -20,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -65,7 +66,13 @@ public class ArquivosProcessar implements Serializable {
     
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
-
+    
+    @Transient
+    private String descricaoStatus;
+    
+    @Transient
+    private Double percentualProcessado;
+    
     public ArquivosProcessar() {
         this.statusArquivo = DominioStatusArquivo.PENDENTE;
         this.numeroRegistrosProcessados = 0L;
@@ -174,6 +181,22 @@ public class ArquivosProcessar implements Serializable {
 
     public void setNumeroRegistros(Long numeroRegistros) {
         this.numeroRegistros = numeroRegistros;
+    }
+
+    public String getDescricaoStatus() {
+        return descricaoStatus;
+    }
+
+    public void setDescricaoStatus(String descricaoStatus) {
+        this.descricaoStatus = descricaoStatus;
+    }
+
+    public Double getPercentualProcessado() {
+        return percentualProcessado;
+    }
+
+    public void setPercentualProcessado(Double percentualProcessado) {
+        this.percentualProcessado = percentualProcessado;
     }
 
     
