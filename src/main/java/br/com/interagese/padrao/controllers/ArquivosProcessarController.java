@@ -56,18 +56,12 @@ public class ArquivosProcessarController extends PadraoController<ArquivosProces
         Cliente cliente = (Cliente) Utils.deserializar(clienteJson, Cliente.class);
         AtributoPadrao rg = (AtributoPadrao) Utils.deserializar(atributoPadraoJson, AtributoPadrao.class);
         
-        //try {
-            
-       // } catch (IOException e) {
-            //return ResponseEntity.badRequest().body("Não foi possível ler o json");
-        //}
-
-        // System.out.println(cliente);
-        // System.out.println(file.getOriginalFilename());
+        File diretorio = new File("C:/Syscontabil");
+        if (!diretorio.exists()) { 
+            diretorio.mkdirs();
+        }
         
         String caminhoUpload = configuracaoService.findById(1L).getCaminhoUpload();
-        
-        file.transferTo(new File(caminhoUpload + "/" + file.getOriginalFilename()));
         
         ArquivosProcessar arquivo = new ArquivosProcessar();
         
