@@ -31,6 +31,12 @@ public class ArquivosProcessarService extends PadraoService<ArquivosProcessar> {
             }
         }
         
+        if(!consultaSQL.trim().equals("")){
+            consultaSQL += " and";
+        }
+        
+        consultaSQL += " o.statusArquivo <> 'FINALIZADO' ";
+        
         return consultaSQL;
     }
     
