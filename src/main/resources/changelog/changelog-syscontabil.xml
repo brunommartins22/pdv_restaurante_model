@@ -251,5 +251,11 @@
             ALTER COLUMN status_arquivo TYPE syscontabil."DominioStatusArquivo";
         </sql>
     </changeSet>
+    <changeSet id="16" author="joao" runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">
+            INSERT INTO SYSCONTABIL.CONFIGURACAO(id, caminho_upload) VALUES (1, 'C:/Syscontabil');
+        </sql>
+    </changeSet>
+        
     
 </databaseChangeLog>
