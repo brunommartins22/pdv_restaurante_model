@@ -26,8 +26,9 @@ public class CenarioService extends PadraoService<Cenario> {
             sqlComplementar = " and o.id <> :id ";
         }
 
-        Query query = em.createQuery("SELECT o from Cenario o where o.nomeCenario = :nome and o.atributoPadrao.dominioEvento <> 3 " + sqlComplementar);
-        query.setParameter("nome", cenario.getNomeCenario());
+        Query query = em.createQuery("SELECT o from Cenario o where o.estado = :estado and o.nomeCenario = :nome and o.atributoPadrao.dominioEvento <> 3 " + sqlComplementar);
+        query.setParameter("nome", cenario.getNomeCenario())
+                .setParameter("estado", cenario.getEstado());
 
         if (cenario.getId() != null) {
             query.setParameter("id", cenario.getId());
@@ -68,7 +69,7 @@ public class CenarioService extends PadraoService<Cenario> {
 
     public void validar(Cenario cenario) throws Exception {
         if (existeNome(cenario)) {
-            addErro("Nome de Cenario cadastrado anteriormente!");
+            addErro("Nome do Cenário cadastrado anteriormente para este estado!");
         }
     }
 
