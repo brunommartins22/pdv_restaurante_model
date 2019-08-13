@@ -41,9 +41,11 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 + "  c.tipo_regime as REGIME,"
                 + "  c.cpf_cnpj AS CPF_CNPJ,"
                 + "  c.razao_social AS CLIENTE,"
-                + "  (SELECT count(*) from syscontabil.produto_cliente pc WHERE pc.cliente_id = c.id AND pc.status='PENDENTE') AS PENDENTE,"
-                + "  (SELECT COUNT(*) FROM syscontabil.produto_cliente PC WHERE PC.cliente_id = C.ID AND pc.status='VALIDADO') AS VALIDADO "
-                + "FROM syscontabil.cliente c ";
+                //+ "  (SELECT count(*) from syscontabil.produto_cliente pc WHERE pc.cliente_id = c.id AND pc.status='PENDENTE') AS PENDENTE,"
+                //+ "  (SELECT COUNT(*) FROM syscontabil.produto_cliente PC WHERE PC.cliente_id = C.ID AND pc.status='VALIDADO') AS VALIDADO "
+                + "  (SELECT count(*) from syscontabil.produto_cliente pc WHERE pc.cliente_id = c.id) AS PENDENTE,"
+                + "  (SELECT COUNT(*) FROM syscontabil.produto_cliente PC WHERE PC.cliente_id = C.ID) AS VALIDADO "
+                + " FROM syscontabil.cliente c ";
 
         List<Object[]> result = em.createNativeQuery(sql).getResultList();
 
@@ -57,7 +59,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 
     public List<ProdutoCliente> loadProductClientById(BigInteger clienteId) {
         if (clienteId != null) {
-            String sql = "select o from ProdutoCliente o where o.clienteId = '" + clienteId + "' order by o.nomeProduto";
+            String sql = "select o from ProdutoCliente o where o.cliente.id = '" + clienteId + "' order by o.nomeProduto";
             TypedQuery<ProdutoCliente> query = em.createQuery(sql, ProdutoCliente.class);
 
             return query.getResultList();
