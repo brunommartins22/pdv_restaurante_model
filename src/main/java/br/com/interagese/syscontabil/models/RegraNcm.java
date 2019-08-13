@@ -17,6 +17,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -33,17 +34,13 @@ public class RegraNcm implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_ncm")
     @SequenceGenerator(name = "gen_regra_ncm", sequenceName = "seq_regra_ncm")
     private Long id;
-    
     @Column(length = 8, nullable = false)
     private String ncm;
-    
     @Column(length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
     private DominioRegime regimeTributario;
-    
-    @Column
-    private Long cenarioId;
-    
+    @ManyToOne
+    private Cenario cenario;
     @Embedded
     private TributoFederalPadrao tributoFederalPadrao = new TributoFederalPadrao();
     @Embedded
@@ -53,12 +50,6 @@ public class RegraNcm implements Serializable {
 
     @Transient
     private String nomeRegime;
-    
-    @Transient
-    private String nomeCenario;
-    
-    public RegraNcm() {
-    }
 
     //**************************** Equals && HashCode **************************
     @Override
@@ -90,11 +81,15 @@ public class RegraNcm implements Serializable {
     public String toString() {
         return "br.com.interagese.syscontabil.models.RegraNcm{" + "id=" + getId() + '}';
     }
+    //********************************* gett && setts **************************
 
+    /**
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
-    
+
     /**
      * @param id the id to set
      */
@@ -131,59 +126,73 @@ public class RegraNcm implements Serializable {
     }
 
     /**
-     * @return the cenarioId
+     * @return the cenario
      */
-    public Long getCenarioId() {
-        return cenarioId;
+    public Cenario getCenario() {
+        return cenario;
     }
 
     /**
-     * @param cenarioId the cenarioId to set
+     * @param cenario the cenario to set
      */
-    public void setCenarioId(Long cenarioId) {
-        this.cenarioId = cenarioId;
+    public void setCenario(Cenario cenario) {
+        this.cenario = cenario;
     }
-    
+
+    /**
+     * @return the tributoFederalPadrao
+     */
     public TributoFederalPadrao getTributoFederalPadrao() {
         return tributoFederalPadrao;
     }
 
+    /**
+     * @param tributoFederalPadrao the tributoFederalPadrao to set
+     */
     public void setTributoFederalPadrao(TributoFederalPadrao tributoFederalPadrao) {
         this.tributoFederalPadrao = tributoFederalPadrao;
     }
 
+    /**
+     * @return the tributoEstadualPadrao
+     */
     public TributoEstadualPadrao getTributoEstadualPadrao() {
         return tributoEstadualPadrao;
     }
 
+    /**
+     * @param tributoEstadualPadrao the tributoEstadualPadrao to set
+     */
     public void setTributoEstadualPadrao(TributoEstadualPadrao tributoEstadualPadrao) {
         this.tributoEstadualPadrao = tributoEstadualPadrao;
     }
 
+    /**
+     * @return the atributoPadrao
+     */
     public AtributoPadrao getAtributoPadrao() {
         return atributoPadrao;
     }
 
+    /**
+     * @param atributoPadrao the atributoPadrao to set
+     */
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
     }
 
+    /**
+     * @return the nomeRegime
+     */
     public String getNomeRegime() {
         return nomeRegime;
     }
 
+    /**
+     * @param nomeRegime the nomeRegime to set
+     */
     public void setNomeRegime(String nomeRegime) {
         this.nomeRegime = nomeRegime;
     }
-
-    public String getNomeCenario() {
-        return nomeCenario;
-    }
-
-    public void setNomeCenario(String nomeCenario) {
-        this.nomeCenario = nomeCenario;
-    }
-
     
-  
 }

@@ -17,6 +17,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -33,29 +34,21 @@ public class RegraRegimeTributario implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_regime")
     @SequenceGenerator(name = "gen_regra_regime", sequenceName = "seq_regra_regime")
     private Long id;
-    
     @Column(length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
     private DominioRegime regimeTributario;
-    
-    @Column
-    private Long cenarioId;
-    
+    @ManyToOne
+    private Cenario cenario;
     @Embedded
     private TributoFederalPadrao tributoFederalPadrao = new TributoFederalPadrao();
-    
     @Embedded
     private TributoEstadualPadrao tributoEstadualPadrao = new TributoEstadualPadrao();
-    
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
     @Transient
     private String nomeRegime;
-    
-    @Transient
-    private String nomeCenario;
-    
+
     //************************* Equals && HashCode *****************************
     @Override
     public int hashCode() {
@@ -92,7 +85,7 @@ public class RegraRegimeTributario implements Serializable {
     /**
      * @return the id
      */
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -118,17 +111,17 @@ public class RegraRegimeTributario implements Serializable {
     }
 
     /**
-     * @return the cenarioId
+     * @return the cenario
      */
-    public Long getCenarioId() {
-        return cenarioId;
+    public Cenario getCenario() {
+        return cenario;
     }
 
     /**
-     * @param cenarioId the cenarioId to set
+     * @param cenario the cenario to set
      */
-    public void setCenarioId(Long cenarioId) {
-        this.cenarioId = cenarioId;
+    public void setCenario(Cenario cenario) {
+        this.cenario = cenario;
     }
 
     /**
@@ -173,23 +166,18 @@ public class RegraRegimeTributario implements Serializable {
         this.atributoPadrao = atributoPadrao;
     }
 
+    /**
+     * @return the nomeRegime
+     */
     public String getNomeRegime() {
         return nomeRegime;
     }
 
+    /**
+     * @param nomeRegime the nomeRegime to set
+     */
     public void setNomeRegime(String nomeRegime) {
         this.nomeRegime = nomeRegime;
     }
-
-    public String getNomeCenario() {
-        return nomeCenario;
-    }
-
-    public void setNomeCenario(String nomeCenario) {
-        this.nomeCenario = nomeCenario;
-    }
-
     
-   
-
 }

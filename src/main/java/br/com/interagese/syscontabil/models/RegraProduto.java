@@ -14,9 +14,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  *
@@ -30,14 +30,14 @@ public class RegraProduto implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_produto")
     @SequenceGenerator(name = "gen_regra_produto", sequenceName = "seq_regra_produto")
     private Long id;
-    @Column(length = 12)
-    private Long clienteId;
+    @ManyToOne
+    private Cliente cliente;
     @Column(length = 12)
     private String codigoProduto;
     @Column(length = 20)
     private Long eanProduto;
-    @Column
-    private Long cenarioId;
+    @ManyToOne
+    private Cenario cenario;
     @Embedded
     private TributoFederalPadrao tributoFederalPadrao = new TributoFederalPadrao();
     @Embedded
@@ -45,13 +45,6 @@ public class RegraProduto implements Serializable {
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
-    @Transient
-    private String nomeCliente;
-    @Transient
-    private String nomeProduto;
-    @Transient
-    private String nomeCenario;
-    
     //**************************** Equals && HashCode **************************
     @Override
     public int hashCode() {
@@ -84,7 +77,6 @@ public class RegraProduto implements Serializable {
     }
 
     //**************************** get && setts ********************************
-
     /**
      * @return the id
      */
@@ -100,17 +92,17 @@ public class RegraProduto implements Serializable {
     }
 
     /**
-     * @return the clienteId
+     * @return the cliente
      */
-    public Long getClienteId() {
-        return clienteId;
+    public Cliente getCliente() {
+        return cliente;
     }
 
     /**
-     * @param clienteId the clienteId to set
+     * @param cliente the cliente to set
      */
-    public void setClienteId(Long clienteId) {
-        this.clienteId = clienteId;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     /**
@@ -139,6 +131,20 @@ public class RegraProduto implements Serializable {
      */
     public void setEanProduto(Long eanProduto) {
         this.eanProduto = eanProduto;
+    }
+
+    /**
+     * @return the cenario
+     */
+    public Cenario getCenario() {
+        return cenario;
+    }
+
+    /**
+     * @param cenario the cenario to set
+     */
+    public void setCenario(Cenario cenario) {
+        this.cenario = cenario;
     }
 
     /**
@@ -183,38 +189,4 @@ public class RegraProduto implements Serializable {
         this.atributoPadrao = atributoPadrao;
     }
 
-    public Long getCenarioId() {
-        return cenarioId;
-    }
-
-    public void setCenarioId(Long cenarioId) {
-        this.cenarioId = cenarioId;
-    }
-
-    public String getNomeCliente() {
-        return nomeCliente;
-    }
-
-    public void setNomeCliente(String nomeCliente) {
-        this.nomeCliente = nomeCliente;
-    }
-
-    public String getNomeProduto() {
-        return nomeProduto;
-    }
-
-    public void setNomeProduto(String nomeProduto) {
-        this.nomeProduto = nomeProduto;
-    }
-
-    public String getNomeCenario() {
-        return nomeCenario;
-    }
-
-    public void setNomeCenario(String nomeCenario) {
-        this.nomeCenario = nomeCenario;
-    }
-
-    
-   
 }
