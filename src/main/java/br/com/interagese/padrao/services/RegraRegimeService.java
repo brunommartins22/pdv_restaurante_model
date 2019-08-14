@@ -8,6 +8,7 @@ package br.com.interagese.padrao.services;
 import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.syscontabil.models.RegraRegimeTributario;
 import br.com.interagese.padrao.rest.util.PadraoService;
+import br.com.interagese.syscontabil.domains.DominioRegime;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Service;
@@ -46,9 +47,9 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
      * CORRIGIR SQL DE CONSULTA
      */
     public RegraRegimeTributario loadRegraRegimeTributario(String regime) {
-        String sql = "select * from syscontabil.regra_regime_tributario where regime_tributario_id = :regime";
+        String sql = "select * from syscontabil.regra_regime_tributario where regime_tributario = :regime";
 
-        TypedQuery<RegraRegimeTributario> lista = (TypedQuery<RegraRegimeTributario>) em.createNativeQuery(sql, RegraRegimeTributario.class).setParameter("regime", regime);
+        TypedQuery<RegraRegimeTributario> lista = (TypedQuery<RegraRegimeTributario>) em.createNativeQuery(sql, RegraRegimeTributario.class).setParameter("regime", DominioRegime.valueOf(regime));
 
         return lista.getResultList().isEmpty() ? null : lista.getSingleResult();
     }
@@ -60,6 +61,11 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
         if (!result.isEmpty()) {
             result.forEach((rt) -> {
                 rt.setNomeRegime(rt.getRegimeTributario().getDescricao());
+                if(rt.getCenario() == null){
+                    rt.setNomeCenario("Todos");
+                } else {
+                    rt.setNomeCenario(rt.getCenario().getNomeCenario());
+                }
             });
         }
 

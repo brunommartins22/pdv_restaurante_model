@@ -6,6 +6,7 @@
 package br.com.interagese.padrao.services;
 
 import br.com.interagese.padrao.rest.util.PadraoService;
+import br.com.interagese.syscontabil.domains.DominioRegime;
 
 import br.com.interagese.syscontabil.models.RegraNcm;
 import java.util.List;
@@ -26,6 +27,11 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
         if (!result.isEmpty()) {
             result.forEach((rt) -> {
                 rt.setNomeRegime(rt.getRegimeTributario().getDescricao());
+                if(rt.getCenario() == null){
+                    rt.setNomeCenario("Todos");
+                } else {
+                    rt.setNomeCenario(rt.getCenario().getNomeCenario());
+                }
             });
         }
 
@@ -37,11 +43,11 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
      */
     public RegraNcm loadRegraNcm(String codigoNcm, String regime) {
 
-        String sql = "select * from syscontabil.regra_ncm where codigo_ncm = :ncm and regime_tributario_id = :regime";
+        String sql = "select * from syscontabil.regra_ncm where codigo_ncm = :ncm and regime_tributario = :regime";
 
         TypedQuery<RegraNcm> lista = (TypedQuery<RegraNcm>) em.createNativeQuery(sql, RegraNcm.class)
                 .setParameter("ncm", codigoNcm)
-                .setParameter("regime", regime);
+                .setParameter("regime", DominioRegime.valueOf(regime));
 
         return lista.getResultList().isEmpty() ? null : lista.getSingleResult();
     }

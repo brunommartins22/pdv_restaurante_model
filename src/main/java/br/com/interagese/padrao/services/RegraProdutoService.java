@@ -9,7 +9,6 @@ import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.models.RegraProduto;
 import java.math.BigInteger;
 import javax.persistence.TypedQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,7 +27,7 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
         if (ean != null) {
             sql += " o.eanProduto = '" + ean + "'";
         } else {
-            sql += " o.clienteId = '" + clienteId + "'";
+            sql += " o.cliente.id = '" + clienteId + "'";
         }
 
         TypedQuery<RegraProduto> query = em.createQuery(sql, RegraProduto.class);
