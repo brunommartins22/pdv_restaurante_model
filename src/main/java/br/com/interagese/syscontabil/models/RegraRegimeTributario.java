@@ -48,6 +48,8 @@ public class RegraRegimeTributario implements Serializable {
 
     @Transient
     private String nomeRegime;
+    @Transient
+    private String nomeCenario;
 
     //************************* Equals && HashCode *****************************
     @Override
@@ -178,6 +180,14 @@ public class RegraRegimeTributario implements Serializable {
      */
     public void setNomeRegime(String nomeRegime) {
         this.nomeRegime = nomeRegime;
+    }
+
+    public String getNomeCenario() {
+        return nomeCenario;
+    }
+
+    public void setNomeCenario(String nomeCenario) {
+        this.nomeCenario = nomeCenario;
     }
     
 }
