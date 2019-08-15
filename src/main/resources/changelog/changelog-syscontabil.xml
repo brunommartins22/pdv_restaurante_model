@@ -274,6 +274,15 @@
             USING btree (estado_cuf, nome_cenario);
         </sql>
     </changeSet>
+    
+    <changeSet id="cliente cnpj tamanho 20" author="adam" runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">            
+            ALTER TABLE syscontabil.cliente
+            ALTER COLUMN cpf_cnpj TYPE VARCHAR(20) COLLATE pg_catalog."default"
+        </sql>
+    </changeSet>
+    
+    
 
 
 </databaseChangeLog>
