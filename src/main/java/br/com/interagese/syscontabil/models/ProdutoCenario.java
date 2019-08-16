@@ -37,10 +37,9 @@ public class ProdutoCenario implements Serializable {
     private ProdutoCliente produtoCliente;
     @ManyToOne
     private Cenario cenario;
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private DominioRegras dominioRegras;
-    @Column(length = 20, nullable = false)
+    @Column(length = 20)
     private Long regraId;
     @Embedded
     private TributoFederalCliente tributoFederalCliente = new TributoFederalCliente();
@@ -87,7 +86,6 @@ public class ProdutoCenario implements Serializable {
     }
 
     //**************************** get && setts ********************************
-
     /**
      * @return the id
      */
@@ -241,5 +239,5 @@ public class ProdutoCenario implements Serializable {
     public void setDivergente(boolean divergente) {
         this.divergente = divergente;
     }
-    
+
 }

@@ -42,19 +42,16 @@ public class ProdutoCliente implements Serializable {
     private Long ean;
     @Column(length = 8)
     private String ncmCliente;
-    @Transient
     @Column(length = 8)
     private String ncmPadrao;
     @Column(length = 7)
     private String cestCliente;
-    @Transient
     @Column(length = 7)
     private String cestPadrao;
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     @Transient
     private boolean isProdutoGeral;
-    
 
     //************************* Equals && Hashcode *****************************
     @Override
@@ -88,7 +85,6 @@ public class ProdutoCliente implements Serializable {
     }
 
     //**************************** get && setts ********************************
-
     /**
      * @return the id
      */
@@ -242,5 +238,5 @@ public class ProdutoCliente implements Serializable {
     public void setIsProdutoGeral(boolean isProdutoGeral) {
         this.isProdutoGeral = isProdutoGeral;
     }
-   
+
 }
