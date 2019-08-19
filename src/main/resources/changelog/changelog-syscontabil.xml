@@ -274,6 +274,86 @@
             USING btree (estado_cuf, nome_cenario);
         </sql>
     </changeSet>
+    
+    <changeSet id="cliente cnpj tamanho 20" author="adam" runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">            
+            ALTER TABLE syscontabil.cliente
+            ALTER COLUMN cpf_cnpj TYPE VARCHAR(20) COLLATE pg_catalog."default"
+        </sql>
+    </changeSet>
+    
+    <changeSet id="adicionar regra_ncm_uk_01" author="joao" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*)
+                FROM pg_catalog.pg_indexes con
+                where
+                con.schemaname = 'syscontabil'
+                and con.tablename = 'regra_ncm'
+                and con.indexname = 'regra_ncm_uk_01'
+            </sqlCheck>
+        </preConditions>
+        <sql splitStatements="true" dbms="postgresql">
+            CREATE UNIQUE INDEX regra_ncm_uk_01 ON syscontabil.regra_ncm
+            USING btree (ncm, regime_tributario, cenario_id);
+        </sql>
+    </changeSet>
+    
+    <changeSet id="adicionar regra_produto_uk_01" author="joao" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*)
+                FROM pg_catalog.pg_indexes con
+                where
+                con.schemaname = 'syscontabil'
+                and con.tablename = 'regra_produto'
+                and con.indexname = 'regra_produto_uk_01'
+            </sqlCheck>
+        </preConditions>
+        <sql splitStatements="true" dbms="postgresql">
+            CREATE UNIQUE INDEX regra_produto_uk_01 ON syscontabil.regra_produto
+            USING btree (ean_produto, cenario_id);
+        </sql>
+    </changeSet>
+    
+    <changeSet id="adicionar regra_produto_uk_02" author="joao" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*)
+                FROM pg_catalog.pg_indexes con
+                where
+                con.schemaname = 'syscontabil'
+                and con.tablename = 'regra_produto'
+                and con.indexname = 'regra_produto_uk_02'
+            </sqlCheck>
+        </preConditions>
+        <sql splitStatements="true" dbms="postgresql">
+            CREATE UNIQUE INDEX regra_produto_uk_02 ON syscontabil.regra_produto
+            USING btree (codigo_produto, cliente_id, cenario_id);
+        </sql>
+    </changeSet>
+    
+    <changeSet id="adicionar regra_regime_tributario_uk_01" author="joao" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*)
+                FROM pg_catalog.pg_indexes con
+                where
+                con.schemaname = 'syscontabil'
+                and con.tablename = 'regra_regime_tributario'
+                and con.indexname = 'regra_regime_tributario_uk_01'
+            </sqlCheck>
+        </preConditions>
+        <sql splitStatements="true" dbms="postgresql">
+            CREATE UNIQUE INDEX regra_regime_tributario_uk_01 ON syscontabil.regra_regime_tributario
+            USING btree (regime_tributario, cenario_id);
+        </sql>
+    </changeSet>
 
+    <changeSet id="remover not null regime tributario regra ncm" author="joao" runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">
+            ALTER TABLE syscontabil.regra_ncm ALTER COLUMN regime_tributario DROP NOT NULL;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

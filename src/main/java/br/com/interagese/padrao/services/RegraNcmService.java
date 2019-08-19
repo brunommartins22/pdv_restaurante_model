@@ -10,6 +10,7 @@ import br.com.interagese.syscontabil.domains.DominioRegime;
 
 import br.com.interagese.syscontabil.models.RegraNcm;
 import java.util.List;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,12 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
 
         if (!result.isEmpty()) {
             result.forEach((rt) -> {
-                rt.setNomeRegime(rt.getRegimeTributario().getDescricao());
+                if(rt.getRegimeTributario()== null){
+                    rt.setNomeRegime("Todos");
+                } else {
+                    rt.setNomeRegime(rt.getRegimeTributario().getDescricao());
+                }
+                
                 if(rt.getCenario() == null){
                     rt.setNomeCenario("Todos");
                 } else {
@@ -52,4 +58,61 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
         return lista.getResultList().isEmpty() ? null : lista.getSingleResult();
     }
 
+    public boolean existeNcmRegimeCenario(RegraNcm regraNcm) {
+
+        String sqlComplementar = "";
+        if (regraNcm.getId() != null) {
+            sqlComplementar = " and o.id <> :id ";
+        }
+
+        if (regraNcm.getRegimeTributario() != null) {
+            sqlComplementar += " and o.regimeTributario = :regime ";
+        } else {
+            sqlComplementar += " and o.regimeTributario is null ";
+        }
+        
+        if (regraNcm.getCenario() != null) {
+            sqlComplementar += " and o.cenario.id = :cenarioId ";
+        } else {
+            sqlComplementar += " and o.cenario.id is null ";
+        }
+        
+        Query query = em.createQuery("SELECT o from RegraNcm o where o.ncm = :ncm and o.atributoPadrao.dominioEvento <> 3 " + sqlComplementar);
+        query.setParameter("ncm", regraNcm.getNcm());
+
+        if (regraNcm.getRegimeTributario()!= null) {
+            query.setParameter("regime", regraNcm.getRegimeTributario());
+        }
+        
+        if (regraNcm.getCenario() != null) {
+            query.setParameter("cenarioId", regraNcm.getCenario().getId());
+        }
+        
+        if (regraNcm.getId() != null) {
+            query.setParameter("id", regraNcm.getId());
+        }
+
+        List<RegraNcm> lista = query.getResultList();
+
+        return !lista.isEmpty();
+
+    }
+    
+    @Override
+    public RegraNcm create(RegraNcm obj) throws Exception {
+        validar(obj);
+        return super.create(obj);
+    }
+    
+    @Override
+    public RegraNcm update(RegraNcm obj) throws Exception {
+        validar(obj);
+        return super.update(obj);
+    }
+
+    public void validar(RegraNcm regraNcm) throws Exception {
+        if (existeNcmRegimeCenario(regraNcm)) {
+            addErro("Ja existe uma regra para o ncm, regime tributário e cenário informados!");
+        }
+    }
 }

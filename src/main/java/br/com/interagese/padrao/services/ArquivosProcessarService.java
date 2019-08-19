@@ -27,15 +27,16 @@ public class ArquivosProcessarService extends PadraoService<ArquivosProcessar> {
             if (Utils.somenteNumeros(complementoConsulta)) {
                 consultaSQL = "o.id = '" + complementoConsulta;
             } else {
-                consultaSQL = "o.regime_tributario = '" + complementoConsulta + "' ";
+                consultaSQL = "o.statusArquivo = '" + complementoConsulta + "' ";
             }
         }
         
-        if(!consultaSQL.trim().equals("")){
-            consultaSQL += " and";
+        if (complementoConsulta != null && !complementoConsulta.trim().equals("FINALIZADO")) {
+            if(!consultaSQL.trim().equals("")){
+                consultaSQL += " and";
+            }
+            consultaSQL += " o.statusArquivo <> 'FINALIZADO' ";
         }
-        
-        consultaSQL += " o.statusArquivo <> 'FINALIZADO' ";
         
         return consultaSQL;
     }
@@ -52,6 +53,10 @@ public class ArquivosProcessarService extends PadraoService<ArquivosProcessar> {
                     ap.setPercentualProcessado((ap.getNumeroRegistrosProcessados() * 100.0)/ap.getNumeroRegistros());
                 }
                 
+                if (ap.getDataFimProcesso() != null && ap.getDataInicioProcesso() != null){
+                    Long duracao = ap.getDataFimProcesso().getTime() - ap.getDataInicioProcesso().getTime();
+                    ap.setDuracaoProcesso(((duracao.doubleValue())/1000.00));
+                }
             }
         }
         

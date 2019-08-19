@@ -76,7 +76,7 @@ public class ArquivosProcessarController extends PadraoController<ArquivosProces
         linhaLeitura.skip(f.length());
         Integer qtdLinha = linhaLeitura.getLineNumber();
         
-        arquivo.setNumeroRegistros(qtdLinha.longValue());
+        arquivo.setNumeroRegistros(qtdLinha.longValue()-1L);
         arquivo.setNumeroRegistrosProcessados(0L);
         arquivo.setUltimoRegistroProcessado(0L);
         
