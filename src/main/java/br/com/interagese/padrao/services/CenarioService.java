@@ -10,6 +10,7 @@ import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.models.Cenario;
 import java.util.List;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Service;
 
 /**
@@ -72,5 +73,6 @@ public class CenarioService extends PadraoService<Cenario> {
             addErro("Nome do Cenário cadastrado anteriormente para este estado!");
         }
     }
+
 
 }
