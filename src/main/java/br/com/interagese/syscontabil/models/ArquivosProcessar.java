@@ -8,6 +8,7 @@ package br.com.interagese.syscontabil.models;
 import br.com.interagese.erplibrary.AtributoPadrao;
 import br.com.interagese.syscontabil.domains.DominioStatusArquivo;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -20,6 +21,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 /**
@@ -67,11 +70,25 @@ public class ArquivosProcessar implements Serializable {
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    private Date dataInicioProcesso;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    private Date dataFimProcesso;
+    
+    @Column
+    private String erros;
+    
     @Transient
     private String descricaoStatus;
     
     @Transient
     private Double percentualProcessado;
+    
+    @Transient
+    private Double duracaoProcesso;
     
     public ArquivosProcessar() {
         this.statusArquivo = DominioStatusArquivo.PENDENTE;
@@ -199,6 +216,36 @@ public class ArquivosProcessar implements Serializable {
         this.percentualProcessado = percentualProcessado;
     }
 
-    
-   
+    public String getErros() {
+        return erros;
+    }
+
+    public void setErros(String erros) {
+        this.erros = erros;
+    }
+
+    public Double getDuracaoProcesso() {
+        return duracaoProcesso;
+    }
+
+    public void setDuracaoProcesso(Double duracaoProcesso) {
+        this.duracaoProcesso = duracaoProcesso;
+    }
+
+    public Date getDataInicioProcesso() {
+        return dataInicioProcesso;
+    }
+
+    public void setDataInicioProcesso(Date dataInicioProcesso) {
+        this.dataInicioProcesso = dataInicioProcesso;
+    }
+
+    public Date getDataFimProcesso() {
+        return dataFimProcesso;
+    }
+
+    public void setDataFimProcesso(Date dataFimProcesso) {
+        this.dataFimProcesso = dataFimProcesso;
+    }
+
 }

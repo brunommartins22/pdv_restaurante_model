@@ -36,7 +36,7 @@ public class RegraNcm implements Serializable {
     private Long id;
     @Column(length = 8, nullable = false)
     private String ncm;
-    @Column(length = 20, nullable = false)
+    @Column(length = 20)
     @Enumerated(EnumType.STRING)
     private DominioRegime regimeTributario;
     @ManyToOne
