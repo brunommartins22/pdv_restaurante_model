@@ -10,11 +10,13 @@ import br.com.interagese.syscontabil.domains.DominioRegime;
 import br.com.interagese.syscontabil.domains.DominioRegras;
 
 import br.com.interagese.syscontabil.models.RegraNcm;
+import br.com.interagese.syscontabil.models.RegraNcmHistorico;
 import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import br.com.interagese.erplibrary.Utils;
 
 /**
  *
@@ -25,6 +27,8 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
 
     @Autowired
     private ProdutoCenarioService produtoCenarioService;
+    @Autowired
+    private RegraNcmHistoricoService regraNcmHistoricoService;
     
     @Override
     public List<RegraNcm> findRange(String complementoConsulta, int apartirDe, int quantidade, String ordernacao) {
@@ -124,6 +128,11 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
     public RegraNcm create(RegraNcm obj) throws Exception {
         validar(obj);
         RegraNcm regra = super.create(obj);
+        
+        String json = Utils.serializar((Object) obj, null);
+        RegraNcmHistorico h = (RegraNcmHistorico) Utils.deserializar(json , RegraNcmHistorico.class);
+        regraNcmHistoricoService.create(h);
+        
         produtoCenarioService.changeRule(DominioRegras.NCM, regra);
         return regra;
     }
