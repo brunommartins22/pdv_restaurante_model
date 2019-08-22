@@ -13,7 +13,6 @@ import br.com.interagese.syscontabil.models.RegraProduto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,17 +22,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
 
-    @Autowired
-    private RegraProdutoService regraProdutoService;
-    @Autowired
-    private RegraRegimeService regraRegimeTributarioService;
-    @Autowired
-    private RegraNcmService regraNcmService;
-    
-    public List<ProdutoCenario> loadProdutoCenarioByCliente(Long idCliente) {
-        String sql = "SELECT o FROM ProdutoCenario o where o.produtoCliente.cliente.id = :cliente";
+    public List<ProdutoCenario> loadProdutoCenarioByClienteById(Long idCliente, Long idCenario) {
+        String sql = "SELECT o FROM ProdutoCenario o where o.produtoCliente.cliente.id = :cliente and o.cenario.id = :id";
 
-        List<ProdutoCenario> result = em.createQuery(sql).setParameter("cliente", idCliente).getResultList();
+        List<ProdutoCenario> result = em.createQuery(sql).setParameter("cliente", idCliente).setParameter("id", idCenario).getResultList();
 
         return result;
     }
