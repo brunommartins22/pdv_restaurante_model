@@ -20,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -53,6 +54,10 @@ public class ProdutoCenario implements Serializable {
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     @Column(nullable = false)
     private boolean divergente;
+    @Transient
+    private String status;
+
+   
 
     //************************ equals && hashcode ******************************
     @Override
@@ -238,6 +243,20 @@ public class ProdutoCenario implements Serializable {
      */
     public void setDivergente(boolean divergente) {
         this.divergente = divergente;
+    }
+
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

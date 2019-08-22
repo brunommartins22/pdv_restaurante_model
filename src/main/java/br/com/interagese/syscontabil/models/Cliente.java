@@ -10,7 +10,10 @@ import br.com.interagese.erplibrary.EnderecoPadrao;
 import br.com.interagese.rest.domain.DominioTipoPessoa;
 import br.com.interagese.syscontabil.domains.DominioRegime;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -19,6 +22,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -59,6 +64,8 @@ public class Cliente implements Serializable {
     private EnderecoPadrao endereco;
     @Embedded
     private AtributoPadrao atributoPadrao;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Cenario> cenarios;
 
     public Cliente() {
 
@@ -276,6 +283,23 @@ public class Cliente implements Serializable {
      */
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
+    }
+
+    /**
+     * @return the cenarios
+     */
+    public List<Cenario> getCenarios() {
+        if (cenarios == null) {
+            cenarios = new ArrayList<>();
+        }
+        return cenarios;
+    }
+
+    /**
+     * @param cenarios the cenarios to set
+     */
+    public void setCenarios(List<Cenario> cenarios) {
+        this.cenarios = cenarios;
     }
 
 }
