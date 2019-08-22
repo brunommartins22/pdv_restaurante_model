@@ -9,11 +9,12 @@ import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.padrao.rest.util.TransformNativeQuery;
 import br.com.interagese.syscontabil.dto.ClienteProdutoDto;
 import br.com.interagese.syscontabil.dto.ProdutoClienteDto;
+import br.com.interagese.syscontabil.models.Cenario;
 import br.com.interagese.syscontabil.models.Cliente;
+import br.com.interagese.syscontabil.models.ProdutoCenario;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
-import br.com.interagese.syscontabil.models.TributoEstadualPadrao;
-import br.com.interagese.syscontabil.models.TributoFederalPadrao;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,15 +72,17 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         return null;
     }
 
-    public ProdutoClienteDto loadProductClientRule(Cliente cliente) throws Exception {
+    public List<ProdutoCenario> loadProductClientRule(Long clienteId, Long cenarioId) throws Exception {
+        List<ProdutoCenario> result = produtoCenarioService.loadProdutoCenarioByClienteById(clienteId, cenarioId);
+        if (result == null || result.isEmpty()) {
+            throw new Exception("Nenhum registro encontrado na base de dados !!");
+        }else{
+            result.forEach((produtoCenario) -> {
+                produtoCenario.setStatus(produtoCenario.isDivergente()?"Pendente":"Validado");
+            });
+        }
+        return result;
 
-        ProdutoClienteDto pcd = new ProdutoClienteDto();
-        pcd.setCliente(cliente);
-        pcd.setProdutos(produtoCenarioService.loadProdutoCenarioByCliente(cliente.getId()));
-        pcd.getProdutos().forEach((pc) -> {
-            pcd.getCenarios().add(pc.getCenario());
-        });
-                
 //        
 //        
 //        
@@ -172,8 +175,6 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 //
 //        //******** insert update list for new result ListProductClient *********
 //        temp.setResultProdutoCliente(listProductClient);
-
-        return pcd;
     }
 
     public void confirmClientRule(ProdutoCliente produtoCliente) throws Exception {

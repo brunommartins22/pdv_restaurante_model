@@ -17,10 +17,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
 
-    public List<ProdutoCenario> loadProdutoCenarioByCliente(Long idCliente) {
-        String sql = "SELECT o FROM ProdutoCenario o where o.produtoCliente.cliente.id = :cliente";
+    public List<ProdutoCenario> loadProdutoCenarioByClienteById(Long idCliente, Long idCenario) {
+        String sql = "SELECT o FROM ProdutoCenario o where o.produtoCliente.cliente.id = :cliente and o.cenario.id = :id";
 
-        List<ProdutoCenario> result = em.createQuery(sql).setParameter("cliente", idCliente).getResultList();
+        List<ProdutoCenario> result = em.createQuery(sql).setParameter("cliente", idCliente).setParameter("id", idCenario).getResultList();
 
         return result;
     }
