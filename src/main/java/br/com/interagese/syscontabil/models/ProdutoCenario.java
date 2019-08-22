@@ -53,6 +53,12 @@ public class ProdutoCenario implements Serializable {
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     @Column(nullable = false)
     private boolean divergente;
+    @Column(nullable = false)
+    private boolean confirmado;
+
+    public ProdutoCenario() {
+        this.confirmado = false;
+    }
 
     //************************ equals && hashcode ******************************
     @Override
@@ -238,6 +244,14 @@ public class ProdutoCenario implements Serializable {
      */
     public void setDivergente(boolean divergente) {
         this.divergente = divergente;
+    }
+
+    public boolean isConfirmado() {
+        return confirmado;
+    }
+
+    public void setConfirmado(boolean confirmado) {
+        this.confirmado = confirmado;
     }
 
 }

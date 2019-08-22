@@ -32,7 +32,7 @@ public class RegraNcm implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_ncm")
-    @SequenceGenerator(name = "gen_regra_ncm", sequenceName = "seq_regra_ncm")
+    @SequenceGenerator(name = "gen_regra_ncm", sequenceName = "seq_regra_ncm", allocationSize = 1)
     private Long id;
     @Column(length = 8, nullable = false)
     private String ncm;
@@ -41,6 +41,8 @@ public class RegraNcm implements Serializable {
     private DominioRegime regimeTributario;
     @ManyToOne
     private Cenario cenario;
+    @ManyToOne
+    private Cliente cliente;
     @Embedded
     private TributoFederalPadrao tributoFederalPadrao = new TributoFederalPadrao();
     @Embedded
@@ -48,10 +50,15 @@ public class RegraNcm implements Serializable {
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
+    @Column
+    private String embasamentoJuridico;
+    
     @Transient
     private String nomeRegime;
     @Transient
     private String nomeCenario;
+    @Transient
+    private String nomeCliente;
 
     //**************************** Equals && HashCode **************************
     @Override
@@ -203,6 +210,30 @@ public class RegraNcm implements Serializable {
 
     public void setNomeCenario(String nomeCenario) {
         this.nomeCenario = nomeCenario;
+    }
+
+    public String getEmbasamentoJuridico() {
+        return embasamentoJuridico;
+    }
+
+    public void setEmbasamentoJuridico(String embasamentoJuridico) {
+        this.embasamentoJuridico = embasamentoJuridico;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
     }
     
 }
