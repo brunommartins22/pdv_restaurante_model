@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -28,7 +29,7 @@ public class RegraProduto implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_produto")
-    @SequenceGenerator(name = "gen_regra_produto", sequenceName = "seq_regra_produto")
+    @SequenceGenerator(name = "gen_regra_produto", sequenceName = "seq_regra_produto", allocationSize = 1)
     private Long id;
     @ManyToOne
     private Cliente cliente;
@@ -45,6 +46,16 @@ public class RegraProduto implements Serializable {
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
+    @Column
+    private String embasamentoJuridico;
+    
+    @Transient
+    private String nomeProduto;
+    @Transient
+    private String nomeCliente;
+    @Transient
+    private String nomeCenario;
+    
     //**************************** Equals && HashCode **************************
     @Override
     public int hashCode() {
@@ -187,6 +198,38 @@ public class RegraProduto implements Serializable {
      */
     public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
         this.atributoPadrao = atributoPadrao;
+    }
+
+    public String getNomeProduto() {
+        return nomeProduto;
+    }
+
+    public void setNomeProduto(String nomeProduto) {
+        this.nomeProduto = nomeProduto;
+    }
+
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
+    }
+
+    public String getNomeCenario() {
+        return nomeCenario;
+    }
+
+    public void setNomeCenario(String nomeCenario) {
+        this.nomeCenario = nomeCenario;
+    }
+
+    public String getEmbasamentoJuridico() {
+        return embasamentoJuridico;
+    }
+
+    public void setEmbasamentoJuridico(String embasamentoJuridico) {
+        this.embasamentoJuridico = embasamentoJuridico;
     }
 
 }

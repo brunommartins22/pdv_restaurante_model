@@ -32,7 +32,7 @@ public class RegraRegimeTributario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_regime")
-    @SequenceGenerator(name = "gen_regra_regime", sequenceName = "seq_regra_regime")
+    @SequenceGenerator(name = "gen_regra_regime", sequenceName = "seq_regra_regime", allocationSize = 1)
     private Long id;
     @Column(length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
