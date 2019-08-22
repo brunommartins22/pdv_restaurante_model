@@ -6,11 +6,14 @@
 package br.com.interagese.padrao.services;
 
 import br.com.interagese.padrao.rest.util.PadraoService;
+import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.models.RegraProduto;
+import br.com.interagese.syscontabil.models.ProdutoGeral;
 import java.math.BigInteger;
 import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,7 +23,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class RegraProdutoService extends PadraoService<RegraProduto> {
 
- 
+    @Autowired
+    private ProdutoGeralService pgs;
+    @Autowired
+    private ProdutoCenarioService produtoCenarioService;
+    
     /**
      * CORRIGIR SQL DE CONSULTA
      */
@@ -50,10 +57,11 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
             sqlComplementar += " and o.eanProduto is null ";
         }
         
-        if (regraProduto.getCliente()!= null) {
+        if (regraProduto.getCliente()!= null && regraProduto.getCliente().getId() != null) {
             sqlComplementar += " and o.cliente.id = :clienteId ";
         } else {
             sqlComplementar += " and o.cliente.id is null ";
+            regraProduto.setCliente(null);
         }
         
         if (regraProduto.getCodigoProduto()!= null) {
@@ -74,7 +82,7 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
             query.setParameter("ean", regraProduto.getEanProduto());
         }
         
-        if (regraProduto.getCliente() != null) {
+        if (regraProduto.getCliente()!= null && regraProduto.getCliente().getId() != null) {
             query.setParameter("clienteId", regraProduto.getCliente().getId());
         }
         
@@ -99,6 +107,8 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
     @Override
     public RegraProduto create(RegraProduto obj) throws Exception {
         validar(obj);
+        RegraProduto regra = super.create(obj);
+        produtoCenarioService.changeRule(DominioRegras.PRODUTO, regra);
         return super.create(obj);
     }
     
@@ -112,5 +122,35 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
         if (existeProdutoCenario(regraProduto)) {
             addErro("Ja existe uma regra para o produto e cenário informados!");
         }
+    }
+    
+    @Override
+    public List<RegraProduto> findRange(String complementoConsulta, int apartirDe, int quantidade, String ordernacao) {
+        List<RegraProduto> result = super.findRange(complementoConsulta, apartirDe, quantidade, ordernacao); //To change body of generated methods, choose Tools | Templates.
+
+        if (!result.isEmpty()) {
+            result.forEach((rt) -> {
+                if(rt.getCodigoProduto() == null){
+                    rt.setNomeProduto("Todos");
+                } else {
+                    ProdutoGeral pro = pgs.findById(rt.getCodigoProduto());
+                    rt.setNomeProduto(pro.getNomeProduto());
+                }
+                
+                if(rt.getCliente() == null){
+                    rt.setNomeCliente("Todos");
+                } else {
+                    rt.setNomeCliente(rt.getCliente().getRazaoSocial());
+                }
+                
+                if(rt.getCenario() == null){
+                    rt.setNomeCenario("Todos");
+                } else {
+                    rt.setNomeCenario(rt.getCenario().getNomeCenario());
+                }
+            });
+        }
+
+        return result;
     }
 }

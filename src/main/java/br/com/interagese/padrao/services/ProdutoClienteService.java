@@ -7,6 +7,7 @@ package br.com.interagese.padrao.services;
 
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.padrao.rest.util.TransformNativeQuery;
+import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.dto.ClienteProdutoDto;
 import br.com.interagese.syscontabil.dto.ProdutoClienteDto;
 import br.com.interagese.syscontabil.models.Cenario;
@@ -16,6 +17,7 @@ import br.com.interagese.syscontabil.models.ProdutoCliente;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

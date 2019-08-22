@@ -7,11 +7,13 @@ package br.com.interagese.padrao.services;
 
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.domains.DominioRegime;
+import br.com.interagese.syscontabil.domains.DominioRegras;
 
 import br.com.interagese.syscontabil.models.RegraNcm;
 import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,6 +23,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class RegraNcmService extends PadraoService<RegraNcm> {
 
+    @Autowired
+    private ProdutoCenarioService produtoCenarioService;
+    
     @Override
     public List<RegraNcm> findRange(String complementoConsulta, int apartirDe, int quantidade, String ordernacao) {
         List<RegraNcm> result = super.findRange(complementoConsulta, apartirDe, quantidade, ordernacao); //To change body of generated methods, choose Tools | Templates.
@@ -37,6 +42,12 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
                     rt.setNomeCenario("Todos");
                 } else {
                     rt.setNomeCenario(rt.getCenario().getNomeCenario());
+                }
+                
+                if(rt.getCliente() == null){
+                    rt.setNomeCliente("Todos");
+                } else {
+                    rt.setNomeCliente(rt.getCliente().getRazaoSocial());
                 }
             });
         }
@@ -77,6 +88,13 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
             sqlComplementar += " and o.cenario.id is null ";
         }
         
+        if (regraNcm.getCliente()!= null && regraNcm.getCliente().getId() != null) {
+            sqlComplementar += " and o.cliente.id = :clienteId ";
+        } else {
+            sqlComplementar += " and o.cliente.id is null ";
+            regraNcm.setCliente(null);
+        }
+        
         Query query = em.createQuery("SELECT o from RegraNcm o where o.ncm = :ncm and o.atributoPadrao.dominioEvento <> 3 " + sqlComplementar);
         query.setParameter("ncm", regraNcm.getNcm());
 
@@ -92,6 +110,10 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
             query.setParameter("id", regraNcm.getId());
         }
 
+        if (regraNcm.getCliente()!= null && regraNcm.getCliente().getId() != null) {
+            query.setParameter("clienteId", regraNcm.getCliente().getId());
+        }
+        
         List<RegraNcm> lista = query.getResultList();
 
         return !lista.isEmpty();
@@ -101,7 +123,9 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
     @Override
     public RegraNcm create(RegraNcm obj) throws Exception {
         validar(obj);
-        return super.create(obj);
+        RegraNcm regra = super.create(obj);
+        produtoCenarioService.changeRule(DominioRegras.NCM, regra);
+        return regra;
     }
     
     @Override
@@ -112,7 +136,7 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
 
     public void validar(RegraNcm regraNcm) throws Exception {
         if (existeNcmRegimeCenario(regraNcm)) {
-            addErro("Ja existe uma regra para o ncm, regime tributário e cenário informados!");
+            addErro("Ja existe uma regra para o ncm, regime tributário, cenário e cliente informados!");
         }
     }
 }
