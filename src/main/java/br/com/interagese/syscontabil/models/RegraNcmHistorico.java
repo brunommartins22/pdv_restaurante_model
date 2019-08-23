@@ -27,7 +27,7 @@ import javax.persistence.Transient;
  * @author Bruno Martins
  */
 @Entity
-@Table(name = "regra_ncm")
+@Table(name = "regra_ncm_historico")
 public class RegraNcmHistorico implements Serializable {
 
     @Id
@@ -236,6 +236,14 @@ public class RegraNcmHistorico implements Serializable {
 
     public void setNomeCliente(String nomeCliente) {
         this.nomeCliente = nomeCliente;
+    }
+
+    public RegraNcm getRegraNcm() {
+        return regraNcm;
+    }
+
+    public void setRegraNcm(RegraNcm regraNcm) {
+        this.regraNcm = regraNcm;
     }
     
 }

@@ -24,7 +24,7 @@ import javax.persistence.Transient;
  * @author Bruno Martins
  */
 @Entity
-@Table(name = "regra_produto")
+@Table(name = "regra_produto_historico")
 public class RegraProdutoHistorico implements Serializable {
 
     @Id
