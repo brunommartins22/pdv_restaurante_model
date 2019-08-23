@@ -131,6 +131,8 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
         
         String json = Utils.serializar((Object) obj, null);
         RegraNcmHistorico h = (RegraNcmHistorico) Utils.deserializar(json , RegraNcmHistorico.class);
+        h.setRegraNcm(regra);
+        h.setId(null);
         regraNcmHistoricoService.create(h);
         
         produtoCenarioService.changeRule(DominioRegras.NCM, regra);
@@ -140,7 +142,15 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
     @Override
     public RegraNcm update(RegraNcm obj) throws Exception {
         validar(obj);
-        return super.update(obj);
+        RegraNcm regra = super.update(obj);
+        
+        String json = Utils.serializar((Object) obj, null);
+        RegraNcmHistorico h = (RegraNcmHistorico) Utils.deserializar(json , RegraNcmHistorico.class);
+        h.setRegraNcm(regra);
+        h.setId(null);
+        regraNcmHistoricoService.create(h);
+                
+        return regra;
     }
 
     public void validar(RegraNcm regraNcm) throws Exception {
