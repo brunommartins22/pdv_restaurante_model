@@ -5,9 +5,11 @@
  */
 package br.com.interagese.padrao.services;
 
+import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.models.RegraProduto;
+import br.com.interagese.syscontabil.models.RegraProdutoHistorico;
 import br.com.interagese.syscontabil.models.ProdutoGeral;
 import java.math.BigInteger;
 import java.util.List;
@@ -27,6 +29,8 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
     private ProdutoGeralService pgs;
     @Autowired
     private ProdutoCenarioService produtoCenarioService;
+    @Autowired
+    private RegraProdutoHistoricoService regraProdutoHistoricoService;
     
     /**
      * CORRIGIR SQL DE CONSULTA
@@ -108,6 +112,13 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
     public RegraProduto create(RegraProduto obj) throws Exception {
         validar(obj);
         RegraProduto regra = super.create(obj);
+        
+        String json = Utils.serializar((Object) obj, null);
+        RegraProdutoHistorico h = (RegraProdutoHistorico) Utils.deserializar(json , RegraProdutoHistorico.class);
+        h.setRegraProduto(regra);
+        h.setId(null);
+        regraProdutoHistoricoService.create(h);
+        
         produtoCenarioService.changeRule(DominioRegras.PRODUTO, regra);
         return super.create(obj);
     }
@@ -115,7 +126,15 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
     @Override
     public RegraProduto update(RegraProduto obj) throws Exception {
         validar(obj);
-        return super.update(obj);
+        RegraProduto regra = super.update(obj);
+        
+        String json = Utils.serializar((Object) obj, null);
+        RegraProdutoHistorico h = (RegraProdutoHistorico) Utils.deserializar(json , RegraProdutoHistorico.class);
+        h.setRegraProduto(regra);
+        h.setId(null);
+        regraProdutoHistoricoService.create(h);
+        
+        return regra;
     }
 
     public void validar(RegraProduto regraProduto) throws Exception {
