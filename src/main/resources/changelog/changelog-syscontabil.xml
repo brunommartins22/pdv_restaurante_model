@@ -355,5 +355,34 @@
             ALTER TABLE syscontabil.regra_ncm ALTER COLUMN regime_tributario DROP NOT NULL;
         </sql>
     </changeSet>
-
+    
+    <changeSet id="remover regra_produto_uk_01" author="joao" runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">
+            DROP INDEX IF EXISTS syscontabil.regra_produto_uk_01;
+        </sql>
+    </changeSet>
+    
+    <changeSet id="remover regra_produto_uk_02" author="joao" runOnChange="true">
+        <sql splitStatements="true" dbms="postgresql">
+            DROP INDEX IF EXISTS syscontabil.regra_produto_uk_02;
+        </sql>
+    </changeSet>
+    
+    <changeSet id="recriar regra_produto_uk_01" author="joao" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*)
+                FROM pg_catalog.pg_indexes con
+                where
+                con.schemaname = 'syscontabil'
+                and con.tablename = 'regra_produto'
+                and con.indexname = 'regra_produto_uk_01'
+            </sqlCheck>
+        </preConditions>
+        <sql splitStatements="true" dbms="postgresql">
+            CREATE UNIQUE INDEX regra_produto_uk_01 ON syscontabil.regra_produto
+            USING btree (ean_produto, codigo_produto, cliente_id, cenario_id, regime_tributario);
+        </sql>
+    </changeSet>
+    
 </databaseChangeLog>
