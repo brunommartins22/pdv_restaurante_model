@@ -32,7 +32,7 @@ public class RegraNcm implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_ncm")
-    @SequenceGenerator(name = "gen_regra_ncm", sequenceName = "seq_regra_ncm", allocationSize = 1)
+    @SequenceGenerator(name = "gen_regra_ncm", sequenceName = "seq_regra_ncm", initialValue = 0, allocationSize = 1)
     private Long id;
     @Column(length = 8, nullable = false)
     private String ncm;

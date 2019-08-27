@@ -29,7 +29,7 @@ public class RegraProduto implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_produto")
-    @SequenceGenerator(name = "gen_regra_produto", sequenceName = "seq_regra_produto", allocationSize = 1)
+    @SequenceGenerator(name = "gen_regra_produto", sequenceName = "seq_regra_produto", initialValue = 0, allocationSize = 1)
     private Long id;
     @ManyToOne
     private Cliente cliente;

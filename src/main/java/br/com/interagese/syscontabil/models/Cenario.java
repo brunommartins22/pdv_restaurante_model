@@ -30,7 +30,7 @@ public class Cenario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_cenario")
-    @SequenceGenerator(name = "gen_cenario", sequenceName = "seq_cenario")
+    @SequenceGenerator(name = "gen_cenario", sequenceName = "seq_cenario", initialValue = 0, allocationSize = 1)
     private Long id;
     @Column(length = 255, nullable = false)
     private String nomeCenario;
