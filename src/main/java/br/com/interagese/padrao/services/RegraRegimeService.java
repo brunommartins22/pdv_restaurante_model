@@ -9,9 +9,12 @@ import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.syscontabil.models.RegraRegimeTributario;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.domains.DominioRegime;
+import br.com.interagese.syscontabil.domains.DominioRegras;
+import br.com.interagese.syscontabil.models.RegraRegimeTributarioHistorico;
 import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,6 +24,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
 
+    @Autowired
+    private ProdutoCenarioService produtoCenarioService;
+    @Autowired
+    private RegraRegimeHistoricoService regraRegimeHistoricoService;
+    
     //************************ create business rules ***************************
     @Override
     public String getWhere(String complementoConsulta) {
@@ -106,13 +114,32 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
     @Override
     public RegraRegimeTributario create(RegraRegimeTributario obj) throws Exception {
         validar(obj);
-        return super.create(obj);
+        
+        RegraRegimeTributario regra = super.create(obj);
+        
+        String json = Utils.serializar((Object) obj, null);
+        RegraRegimeTributarioHistorico h = (RegraRegimeTributarioHistorico) Utils.deserializar(json , RegraRegimeTributarioHistorico.class);
+        h.setRegraRegimeTributario(regra);
+        h.setId(null);
+        regraRegimeHistoricoService.create(h);
+        
+        return regra;
     }
     
     @Override
     public RegraRegimeTributario update(RegraRegimeTributario obj) throws Exception {
         validar(obj);
-        return super.update(obj);
+        
+        RegraRegimeTributario regra = super.update(obj);
+        
+        String json = Utils.serializar((Object) obj, null);
+        RegraRegimeTributarioHistorico h = (RegraRegimeTributarioHistorico) Utils.deserializar(json , RegraRegimeTributarioHistorico.class);
+        h.setRegraRegimeTributario(regra);
+        h.setId(null);
+        regraRegimeHistoricoService.create(h);
+        
+        produtoCenarioService.updateRule(DominioRegras.REGIME, regra);
+        return regra;
     }
 
     public void validar(RegraRegimeTributario regraRegime) throws Exception {

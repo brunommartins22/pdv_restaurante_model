@@ -149,7 +149,8 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
         h.setRegraNcm(regra);
         h.setId(null);
         regraNcmHistoricoService.create(h);
-                
+        
+        produtoCenarioService.updateRule(DominioRegras.NCM, regra); 
         return regra;
     }
 

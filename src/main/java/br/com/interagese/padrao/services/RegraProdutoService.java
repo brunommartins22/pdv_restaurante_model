@@ -144,6 +144,7 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
         h.setId(null);
         regraProdutoHistoricoService.create(h);
         
+        produtoCenarioService.updateRule(DominioRegras.PRODUTO, regra);
         return regra;
     }
 
