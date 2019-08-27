@@ -33,12 +33,7 @@ import javax.persistence.Transient;
 @Table(name = "arquivos_processar")
 public class ArquivosProcessar implements Serializable {
 
-    /**
-     * @return the statusArquivo
-     */
-    public DominioStatusArquivo getStatusArquivo() {
-        return statusArquivo;
-    }
+   
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_arquivos_processar")
@@ -246,6 +241,12 @@ public class ArquivosProcessar implements Serializable {
 
     public void setDataFimProcesso(Date dataFimProcesso) {
         this.dataFimProcesso = dataFimProcesso;
+    }
+     /**
+     * @return the statusArquivo
+     */
+    public DominioStatusArquivo getStatusArquivo() {
+        return statusArquivo;
     }
 
 }

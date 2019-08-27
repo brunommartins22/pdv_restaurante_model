@@ -8,7 +8,6 @@ package br.com.interagese.syscontabil.models;
 import br.com.interagese.erplibrary.AtributoPadrao;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -44,10 +43,14 @@ public class ProdutoCliente implements Serializable {
     private String ncmCliente;
     @Column(length = 8)
     private String ncmPadrao;
+    @Column(length = 8)
+    private String ncmInformado;
     @Column(length = 7)
     private String cestCliente;
     @Column(length = 7)
     private String cestPadrao;
+    @Column(length = 7)
+    private String cestInformado;
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     @Transient
@@ -237,6 +240,34 @@ public class ProdutoCliente implements Serializable {
      */
     public void setIsProdutoGeral(boolean isProdutoGeral) {
         this.isProdutoGeral = isProdutoGeral;
+    }
+
+    /**
+     * @return the ncmInformado
+     */
+    public String getNcmInformado() {
+        return ncmInformado;
+    }
+
+    /**
+     * @param ncmInformado the ncmInformado to set
+     */
+    public void setNcmInformado(String ncmInformado) {
+        this.ncmInformado = ncmInformado;
+    }
+
+    /**
+     * @return the cestInformado
+     */
+    public String getCestInformado() {
+        return cestInformado;
+    }
+
+    /**
+     * @param cestInformado the cestInformado to set
+     */
+    public void setCestInformado(String cestInformado) {
+        this.cestInformado = cestInformado;
     }
 
 }

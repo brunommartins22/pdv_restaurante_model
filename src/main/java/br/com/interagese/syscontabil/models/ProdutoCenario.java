@@ -51,16 +51,20 @@ public class ProdutoCenario implements Serializable {
     @Embedded
     private TributoEstadualPadrao tributoEstadualPadrao = new TributoEstadualPadrao();
     @Embedded
+    private TributoFederalInformado tributoFederalInformado = new TributoFederalInformado();
+    @Embedded
+    private TributoEstadualInformado tributoEstadualInformado = new TributoEstadualInformado();
+    @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     @Column(nullable = false)
     private boolean divergente;
     @Column(nullable = false)
-    private boolean confirmado = false;
+    private boolean confirmado;
     @Transient
     private String status;
 
     public ProdutoCenario() {
-       
+        this.confirmado = false;
     }
 
     //************************ equals && hashcode ******************************
@@ -269,6 +273,34 @@ public class ProdutoCenario implements Serializable {
 
     public void setConfirmado(boolean confirmado) {
         this.confirmado = confirmado;
+    }
+
+    /**
+     * @return the tributoFederalInformado
+     */
+    public TributoFederalInformado getTributoFederalInformado() {
+        return tributoFederalInformado;
+    }
+
+    /**
+     * @param tributoFederalInformado the tributoFederalInformado to set
+     */
+    public void setTributoFederalInformado(TributoFederalInformado tributoFederalInformado) {
+        this.tributoFederalInformado = tributoFederalInformado;
+    }
+
+    /**
+     * @return the tributoEstadualInformado
+     */
+    public TributoEstadualInformado getTributoEstadualInformado() {
+        return tributoEstadualInformado;
+    }
+
+    /**
+     * @param tributoEstadualInformado the tributoEstadualInformado to set
+     */
+    public void setTributoEstadualInformado(TributoEstadualInformado tributoEstadualInformado) {
+        this.tributoEstadualInformado = tributoEstadualInformado;
     }
 
 }

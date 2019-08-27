@@ -20,8 +20,6 @@ public class ClienteProdutoDto {
     private String regime;
     private String cpfCnpj;
     private String nomeCliente;
-    private BigInteger qtdRegistrosPendentes;
-    private BigInteger qtdRegistrosAtualizados;
     private BigInteger qtdRegistro;
     private List<ProdutoCliente> resultProdutoCliente;
 
@@ -68,34 +66,7 @@ public class ClienteProdutoDto {
         this.nomeCliente = nomeCliente;
     }
 
-    /**
-     * @return the qtdRegistrosPendentes
-     */
-    public BigInteger getQtdRegistrosPendentes() {
-        return qtdRegistrosPendentes;
-    }
-
-    /**
-     * @param qtdRegistrosPendentes the qtdRegistrosPendentes to set
-     */
-    public void setQtdRegistrosPendentes(BigInteger qtdRegistrosPendentes) {
-        this.qtdRegistrosPendentes = qtdRegistrosPendentes;
-    }
-
-    /**
-     * @return the qtdRegistrosAtualizados
-     */
-    public BigInteger getQtdRegistrosAtualizados() {
-        return qtdRegistrosAtualizados;
-    }
-
-    /**
-     * @param qtdRegistrosAtualizados the qtdRegistrosAtualizados to set
-     */
-    public void setQtdRegistrosAtualizados(BigInteger qtdRegistrosAtualizados) {
-        this.qtdRegistrosAtualizados = qtdRegistrosAtualizados;
-    }
-
+    
     /**
      * @return the qtdRegistro
      */
