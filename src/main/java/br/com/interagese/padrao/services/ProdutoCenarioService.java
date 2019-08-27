@@ -12,6 +12,7 @@ import br.com.interagese.syscontabil.models.RegraNcm;
 import br.com.interagese.syscontabil.models.RegraProduto;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.Query;
 import org.springframework.stereotype.Service;
 
@@ -22,17 +23,29 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
 
-    public List<ProdutoCenario> loadProdutoCenarioByClienteById(Long idCliente, Long idCenario) {
-        String sql = "SELECT o FROM ProdutoCenario o where o.produtoCliente.cliente.id = :cliente and o.cenario.id = :id";
+    public List<ProdutoCenario> loadProdutoCenarioByClienteById(Map resp) {
+        
+        Long clienteId = ((Integer) resp.get("clienteId")).longValue();
+        Long cenarioId = ((Integer) resp.get("cenarioId")).longValue();
+        String status = (String) resp.get("status");
 
-        List<ProdutoCenario> result = em.createQuery(sql).setParameter("cliente", idCliente).setParameter("id", idCenario).getResultList();
+        String sql = "SELECT o FROM ProdutoCenario o where o.produtoCliente.cliente.id = '" + clienteId + "' ";
+
+        if (cenarioId != null) {
+            sql += " and o.cenario.id = '" + cenarioId + "'";
+        }
+        if (status != null && !status.isEmpty()) {
+            sql += " and o.divergente is " + status.equals("Pendente");
+        }
+
+        List<ProdutoCenario> result = em.createQuery(sql).getResultList();
 
         return result;
     }
 
     public void changeRule(DominioRegras dominioRegra, Object regra) throws Exception {
         if (dominioRegra != null && regra != null) {
-            
+
 //            if(dominioRegra == DominioRegras.REGIME){ 
 //                RegraRegimeTributario rrt = (RegraRegimeTributario) regra;
 //            }
@@ -49,7 +62,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 */
                 
                 RegraNcm regraNcm = (RegraNcm) regra;
-                
+
                 List<Long> listaRegraNcmGenerica = new ArrayList<>();
                 String sqlRegraNcmGenerica = "";
                 
@@ -72,11 +85,11 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     if (regraNcm.getCliente()!= null && regraNcm.getCliente().getId() != null) {
                         sqlComplementarCliente += " and o.cliente.id = :clienteId ";
                     }
-                    
+
                     String sqlPrioridade = "";
-                    
-                    if ((regraNcm.getCliente()!= null && regraNcm.getCliente().getId() != null)
-                        && (regraNcm.getCenario()!= null && regraNcm.getCenario().getId() != null)) {
+
+                    if ((regraNcm.getCliente() != null && regraNcm.getCliente().getId() != null)
+                            && (regraNcm.getCenario() != null && regraNcm.getCenario().getId() != null)) {
                         sqlPrioridade = " or o.cliente.id = '" + regraNcm.getCliente().getId() + "' ";
                     }
                     
@@ -108,22 +121,20 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 if (regraNcm.getCliente()!= null && regraNcm.getCliente().getId() != null) {
                     queryCliente.setParameter("clienteId", regraNcm.getCliente().getId());
                 }
-                
+
                 List<Long> listaProdutoCliente = queryCliente.getResultList();
-                
+
                 String sqlComplementar = "";
-                
-                
+
 //                if (regraNcm.getRegimeTributario() != null) {
 //                    sqlComplementar += " and o.produtoCliente.cliente.regimeTributario = :regime ";
 //                }
-
                 if (regraNcm.getCenario() != null) {
                     sqlComplementar += " and cenario_id = :cenarioId ";
                 }
-                
-                if(!listaProdutoCliente.isEmpty()){
-                
+
+                if (!listaProdutoCliente.isEmpty()) {
+
                     Query query = em.createNativeQuery("UPDATE syscontabil.produto_cenario set confirmado = false, "
                         + "dominio_regras = 'NCM', "
                         + "regra_id = :regraId, "
@@ -149,16 +160,14 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
 //                    fim tributo federal
                     query.setParameter("regraId", regraNcm.getId());
                     query.setParameter("listaProdutoCliente", listaProdutoCliente);
-                    
 
-    //                if (regraNcm.getRegimeTributario()!= null) {
-    //                    query.setParameter("regime", regraNcm.getRegimeTributario());
-    //                }
-
-                    if(!listaRegraNcmGenerica.isEmpty()){
+                    //                if (regraNcm.getRegimeTributario()!= null) {
+                    //                    query.setParameter("regime", regraNcm.getRegimeTributario());
+                    //                }
+                    if (!listaRegraNcmGenerica.isEmpty()) {
                         query.setParameter("listaRegraNcmGenerica", listaRegraNcmGenerica);
                     }
-    
+
                     if (regraNcm.getCenario() != null) {
                         query.setParameter("cenarioId", regraNcm.getCenario().getId());
                     }
@@ -187,7 +196,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 if (regraProduto.getEanProduto() != null) {
                     sqlComplementarCliente += " o.ean = :ean ";
                 }
-                
+
                 if (regraProduto.getCodigoProduto() != null) {
                     sqlComplementarCliente += " o.codigoProduto = :codigoProduto ";
                 }
@@ -537,7 +546,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 if (regraProduto.getEanProduto() != null) {
                     queryCliente.setParameter("ean", regraProduto.getEanProduto());
                 }
-                
+
                 if (regraProduto.getCodigoProduto() != null) {
                     queryCliente.setParameter("codigoProduto", regraProduto.getCodigoProduto());
                 }
@@ -612,7 +621,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 }
                 
             }
-            
+
         }
     }
 }
