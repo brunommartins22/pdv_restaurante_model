@@ -6,11 +6,14 @@
 package br.com.interagese.syscontabil.models;
 
 import br.com.interagese.erplibrary.AtributoPadrao;
+import br.com.interagese.syscontabil.domains.DominioRegime;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,6 +42,9 @@ public class RegraProduto implements Serializable {
     private Long eanProduto;
     @ManyToOne
     private Cenario cenario;
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private DominioRegime regimeTributario;
     @Embedded
     private TributoFederalPadrao tributoFederalPadrao = new TributoFederalPadrao();
     @Embedded
@@ -55,6 +61,8 @@ public class RegraProduto implements Serializable {
     private String nomeCliente;
     @Transient
     private String nomeCenario;
+    @Transient
+    private String nomeRegime;
     
     //**************************** Equals && HashCode **************************
     @Override
@@ -230,6 +238,22 @@ public class RegraProduto implements Serializable {
 
     public void setEmbasamentoJuridico(String embasamentoJuridico) {
         this.embasamentoJuridico = embasamentoJuridico;
+    }
+
+    public DominioRegime getRegimeTributario() {
+        return regimeTributario;
+    }
+
+    public void setRegimeTributario(DominioRegime regimeTributario) {
+        this.regimeTributario = regimeTributario;
+    }
+
+    public String getNomeRegime() {
+        return nomeRegime;
+    }
+
+    public void setNomeRegime(String nomeRegime) {
+        this.nomeRegime = nomeRegime;
     }
 
 }
