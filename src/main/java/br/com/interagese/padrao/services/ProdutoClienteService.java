@@ -7,17 +7,12 @@ package br.com.interagese.padrao.services;
 
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.padrao.rest.util.TransformNativeQuery;
-import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.dto.ClienteProdutoDto;
-import br.com.interagese.syscontabil.dto.ProdutoClienteDto;
-import br.com.interagese.syscontabil.models.Cenario;
-import br.com.interagese.syscontabil.models.Cliente;
 import br.com.interagese.syscontabil.models.ProdutoCenario;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Query;
+import java.util.Map;
 import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,16 +44,13 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 + "  c.tipo_regime as REGIME,"
                 + "  c.cpf_cnpj AS CPF_CNPJ,"
                 + "  c.razao_social AS CLIENTE,"
-                + "  (select count(*) from syscontabil.produto_cliente p join syscontabil.produto_cenario pc on pc.produto_cliente_id = p.id and divergente is true) AS PENDENTE,"
-                + "  (select count(*) from syscontabil.produto_cliente p join syscontabil.produto_cenario pc on pc.produto_cliente_id = p.id and divergente is false) AS VALIDADO "
+                + "  (select count(*) from syscontabil.produto_cliente p where cliente_id = c.id) AS TOTAL"
                 + " FROM syscontabil.cliente c ";
 
         List<Object[]> result = em.createNativeQuery(sql).getResultList();
 
         List<ClienteProdutoDto> resultClienteProduto = new TransformNativeQuery(ClienteProdutoDto.class).execute(result);
-        resultClienteProduto.forEach((cp) -> {
-            cp.setQtdRegistro(cp.getQtdRegistrosPendentes().add(cp.getQtdRegistrosAtualizados()));
-        });
+        
         return resultClienteProduto;
 
     }
@@ -74,13 +66,17 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         return null;
     }
 
-    public List<ProdutoCenario> loadProductClientRule(Long clienteId, Long cenarioId) throws Exception {
-        List<ProdutoCenario> result = produtoCenarioService.loadProdutoCenarioByClienteById(clienteId, cenarioId);
+    public List<ProdutoCenario> loadProductClientRule(Map resp) throws Exception {
+       
+        List<ProdutoCenario> result = produtoCenarioService.loadProdutoCenarioByClienteById(resp);
         if (result == null || result.isEmpty()) {
             throw new Exception("Nenhum registro encontrado na base de dados !!");
-        }else{
+        } else {
             result.forEach((produtoCenario) -> {
-                produtoCenario.setStatus(produtoCenario.isDivergente()?"Pendente":"Validado");
+                produtoCenario.setStatus(produtoCenario.isDivergente() ? "Pendente" : "Validado");
+                if(produtoCenario.getProdutoCliente().getNcmPadrao()!=null && produtoCenario.getProdutoCliente().getCestPadrao()!=null){
+                    produtoCenario.getProdutoCliente().setIsProdutoGeral(true);
+                }
             });
         }
         return result;
