@@ -6,10 +6,13 @@
 package br.com.interagese.padrao.services;
 
 import br.com.interagese.erplibrary.Utils;
+import br.com.interagese.padrao.rest.util.FiltroParametro;
+import br.com.interagese.padrao.rest.util.FiltroParametroItem;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.domains.DominioStatusArquivo;
 import br.com.interagese.syscontabil.models.ArquivosProcessar;
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 
 /**
@@ -44,6 +47,45 @@ public class ArquivosProcessarService extends PadraoService<ArquivosProcessar> {
     @Override
     public List<ArquivosProcessar> findRange(String complementoConsulta, int apartirDe, int quantidade, String ordernacao) {
         List<ArquivosProcessar> result = super.findRange(complementoConsulta, apartirDe, quantidade, ordernacao); //To change body of generated methods, choose Tools | Templates.
+
+        if (!result.isEmpty()) {
+            for (ArquivosProcessar ap : result) {
+                ap.setDescricaoStatus(ap.getStatusArquivo().getDescricao());
+                
+                if (ap.getStatusArquivo() == DominioStatusArquivo.EMANDAMENTO) {
+                    ap.setPercentualProcessado((ap.getNumeroRegistrosProcessados() * 100.0)/ap.getNumeroRegistros());
+                }
+                
+                if (ap.getDataFimProcesso() != null && ap.getDataInicioProcesso() != null){
+                    Long duracao = ap.getDataFimProcesso().getTime() - ap.getDataInicioProcesso().getTime();
+                    ap.setDuracaoProcesso(((duracao.doubleValue())/1000.00));
+                }
+            }
+        }
+        
+        return result;
+    }
+
+    @Override
+    public String getWhere(FiltroParametro filtroParametro) {
+        String consultaSQL = "";
+        
+//        FiltroParametro filtroParametro = (FiltroParametro) filtros;
+        
+        if(!filtroParametro.getItens().isEmpty()){
+            for (FiltroParametroItem i : filtroParametro.getItens()) {
+                if(i.getField().equals("clienteId")){
+                    consultaSQL = " o.cliente.id = '" + i.getValue() + "' ";
+                }
+            }
+        }
+        
+        return consultaSQL;
+    }
+
+    @Override
+    public List<ArquivosProcessar> findRange(FiltroParametro filtro) {
+        List<ArquivosProcessar> result = super.findRange(filtro); //To change body of generated methods, choose Tools | Templates.
 
         if (!result.isEmpty()) {
             for (ArquivosProcessar ap : result) {
