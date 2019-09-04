@@ -85,4 +85,39 @@ public class ClienteService extends PadraoService<Cliente> {
         }
     }
 
+    @Override
+    public List<Cliente> findRange(String complementoConsulta, int apartirDe, int quantidade, String ordernacao) {
+        List<Cliente> result = super.findRange(complementoConsulta, apartirDe, quantidade, ordernacao); //To change body of generated methods, choose Tools | Templates.
+
+        if (!result.isEmpty()) {
+            result.forEach((c) -> {
+                if(c.getAtivo().equals(true)){
+                    c.setSituacao("Ativo");
+                } else {
+                    c.setSituacao("Inativo");
+                }
+            });
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<Cliente> findRange(FiltroParametro filtro) {
+        List<Cliente> result =  super.findRange(filtro); //To change body of generated methods, choose Tools | Templates.
+        
+        if (!result.isEmpty()) {
+            result.forEach((c) -> {
+                if(c.getAtivo().equals(true)){
+                    c.setSituacao("Ativo");
+                } else {
+                    c.setSituacao("Inativo");
+                }
+            });
+        }
+        
+        return result;
+    }
+    
+    
 }

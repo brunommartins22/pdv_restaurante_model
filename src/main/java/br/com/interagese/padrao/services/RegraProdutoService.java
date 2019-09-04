@@ -80,6 +80,12 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
             sqlComplementar += " and o.cenario.id is null ";
         }
         
+        if (regraProduto.getRegimeTributario() != null) {
+            sqlComplementar += " and o.regimeTributario = :regime ";
+        } else {
+            sqlComplementar += " and o.regimeTributario is null ";
+        }
+        
         Query query = em.createQuery("SELECT o from RegraProduto o where o.atributoPadrao.dominioEvento <> 3 " + sqlComplementar);
 
         if (regraProduto.getEanProduto()!= null) {
@@ -102,6 +108,10 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
             query.setParameter("id", regraProduto.getId());
         }
 
+        if (regraProduto.getRegimeTributario()!= null) {
+            query.setParameter("regime", regraProduto.getRegimeTributario());
+        }
+        
         List<RegraProduto> lista = query.getResultList();
 
         return !lista.isEmpty();
@@ -134,12 +144,13 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
         h.setId(null);
         regraProdutoHistoricoService.create(h);
         
+        produtoCenarioService.updateRule(DominioRegras.PRODUTO, regra);
         return regra;
     }
 
     public void validar(RegraProduto regraProduto) throws Exception {
         if (existeProdutoCenario(regraProduto)) {
-            addErro("Ja existe uma regra para o produto e cenário informados!");
+            addErro("Ja existe uma regra para o produto, regime e cenário informados!");
         }
     }
     
@@ -166,6 +177,12 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
                     rt.setNomeCenario("Todos");
                 } else {
                     rt.setNomeCenario(rt.getCenario().getNomeCenario());
+                }
+                
+                if(rt.getRegimeTributario()== null){
+                    rt.setNomeRegime("Todos");
+                } else {
+                    rt.setNomeRegime(rt.getRegimeTributario().getDescricao());
                 }
             });
         }
