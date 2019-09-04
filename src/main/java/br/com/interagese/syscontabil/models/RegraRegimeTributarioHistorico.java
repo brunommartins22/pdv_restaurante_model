@@ -24,29 +24,23 @@ import javax.persistence.Transient;
 
 /**
  *
- * @author Bruno Martins
+ * @author Joao
  */
 @Entity
-@Table(name = "regra_produto_historico")
-public class RegraProdutoHistorico implements Serializable {
+@Table(name = "regra_regime_tributario_historico")
+public class RegraRegimeTributarioHistorico implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_produto_historico")
-    @SequenceGenerator(name = "gen_regra_produto_historico", sequenceName = "seq_regra_produto_historico", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_regra_regime_historico")
+    @SequenceGenerator(name = "gen_regra_regime_historico", sequenceName = "seq_regra_regime_historico", allocationSize = 1)
     private Long id;
     @ManyToOne
-    private RegraProduto regraProduto;
-    @ManyToOne
-    private Cliente cliente;
-    @Column(length = 12)
-    private String codigoProduto;
-    @Column(length = 20)
-    private Long eanProduto;
-    @ManyToOne
-    private Cenario cenario;
-    @Column(length = 20)
+    private RegraRegimeTributario regraRegimeTributario;
+    @Column(length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
     private DominioRegime regimeTributario;
+    @ManyToOne
+    private Cenario cenario;
     @Embedded
     private TributoFederalPadrao tributoFederalPadrao = new TributoFederalPadrao();
     @Embedded
@@ -54,23 +48,16 @@ public class RegraProdutoHistorico implements Serializable {
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
-    @Column
-    private String embasamentoJuridico;
-    
-    @Transient
-    private String nomeProduto;
-    @Transient
-    private String nomeCliente;
-    @Transient
-    private String nomeCenario;
     @Transient
     private String nomeRegime;
-    
-    //**************************** Equals && HashCode **************************
+    @Transient
+    private String nomeCenario;
+
+    //************************* Equals && HashCode *****************************
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.getId());
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.getId());
         return hash;
     }
 
@@ -85,7 +72,7 @@ public class RegraProdutoHistorico implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final RegraProdutoHistorico other = (RegraProdutoHistorico) obj;
+        final RegraRegimeTributarioHistorico other = (RegraRegimeTributarioHistorico) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
@@ -94,10 +81,11 @@ public class RegraProdutoHistorico implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.interagese.syscontabil.models.RegraProduto{" + "id=" + getId() + '}';
+        return "br.com.interagese.syscontabil.models.RegraRegimeTributario{" + "id=" + getId() + '}';
     }
 
-    //**************************** get && setts ********************************
+    //****************************** get && setts ******************************
+
     /**
      * @return the id
      */
@@ -113,45 +101,17 @@ public class RegraProdutoHistorico implements Serializable {
     }
 
     /**
-     * @return the cliente
+     * @return the regimeTributario
      */
-    public Cliente getCliente() {
-        return cliente;
+    public DominioRegime getRegimeTributario() {
+        return regimeTributario;
     }
 
     /**
-     * @param cliente the cliente to set
+     * @param regimeTributario the regimeTributario to set
      */
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    /**
-     * @return the codigoProduto
-     */
-    public String getCodigoProduto() {
-        return codigoProduto;
-    }
-
-    /**
-     * @param codigoProduto the codigoProduto to set
-     */
-    public void setCodigoProduto(String codigoProduto) {
-        this.codigoProduto = codigoProduto;
-    }
-
-    /**
-     * @return the eanProduto
-     */
-    public Long getEanProduto() {
-        return eanProduto;
-    }
-
-    /**
-     * @param eanProduto the eanProduto to set
-     */
-    public void setEanProduto(Long eanProduto) {
-        this.eanProduto = eanProduto;
+    public void setRegimeTributario(DominioRegime regimeTributario) {
+        this.regimeTributario = regimeTributario;
     }
 
     /**
@@ -210,20 +170,18 @@ public class RegraProdutoHistorico implements Serializable {
         this.atributoPadrao = atributoPadrao;
     }
 
-    public String getNomeProduto() {
-        return nomeProduto;
+    /**
+     * @return the nomeRegime
+     */
+    public String getNomeRegime() {
+        return nomeRegime;
     }
 
-    public void setNomeProduto(String nomeProduto) {
-        this.nomeProduto = nomeProduto;
-    }
-
-    public String getNomeCliente() {
-        return nomeCliente;
-    }
-
-    public void setNomeCliente(String nomeCliente) {
-        this.nomeCliente = nomeCliente;
+    /**
+     * @param nomeRegime the nomeRegime to set
+     */
+    public void setNomeRegime(String nomeRegime) {
+        this.nomeRegime = nomeRegime;
     }
 
     public String getNomeCenario() {
@@ -234,36 +192,12 @@ public class RegraProdutoHistorico implements Serializable {
         this.nomeCenario = nomeCenario;
     }
 
-    public String getEmbasamentoJuridico() {
-        return embasamentoJuridico;
+    public RegraRegimeTributario getRegraRegimeTributario() {
+        return regraRegimeTributario;
     }
 
-    public void setEmbasamentoJuridico(String embasamentoJuridico) {
-        this.embasamentoJuridico = embasamentoJuridico;
+    public void setRegraRegimeTributario(RegraRegimeTributario regraRegimeTributario) {
+        this.regraRegimeTributario = regraRegimeTributario;
     }
-
-    public RegraProduto getRegraProduto() {
-        return regraProduto;
-    }
-
-    public void setRegraProduto(RegraProduto regraProduto) {
-        this.regraProduto = regraProduto;
-    }
-
-    public DominioRegime getRegimeTributario() {
-        return regimeTributario;
-    }
-
-    public void setRegimeTributario(DominioRegime regimeTributario) {
-        this.regimeTributario = regimeTributario;
-    }
-
-    public String getNomeRegime() {
-        return nomeRegime;
-    }
-
-    public void setNomeRegime(String nomeRegime) {
-        this.nomeRegime = nomeRegime;
-    }
-
+    
 }

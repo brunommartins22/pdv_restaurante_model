@@ -22,10 +22,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -66,7 +66,16 @@ public class Cliente implements Serializable {
     private AtributoPadrao atributoPadrao;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Cenario> cenarios;
-
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Cnae> atividades;
+    @Column(columnDefinition="Boolean default true")
+    private Boolean ativo;
+    @Column(length = 20)
+    private String numeroContrato;
+    
+    @Transient
+    private String situacao;
+    
     public Cliente() {
 
     }
@@ -300,6 +309,38 @@ public class Cliente implements Serializable {
      */
     public void setCenarios(List<Cenario> cenarios) {
         this.cenarios = cenarios;
+    }
+
+    public List<Cnae> getAtividades() {
+        return atividades;
+    }
+
+    public void setAtividades(List<Cnae> atividades) {
+        this.atividades = atividades;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public String getNumeroContrato() {
+        return numeroContrato;
+    }
+
+    public void setNumeroContrato(String numeroContrato) {
+        this.numeroContrato = numeroContrato;
+    }
+
+    public String getSituacao() {
+        return situacao;
+    }
+
+    public void setSituacao(String situacao) {
+        this.situacao = situacao;
     }
 
 }
