@@ -10,6 +10,7 @@ import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.models.ProdutoCenario;
 import br.com.interagese.syscontabil.models.RegraNcm;
 import br.com.interagese.syscontabil.models.RegraProduto;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +24,33 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
 
-    public List<ProdutoCenario> loadProdutoCenarioByClienteById(Map resp) {
-        
+    public Long loadProdutoCenarioCount(Map resp) {
+
         Long clienteId = ((Integer) resp.get("clienteId")).longValue();
         Long cenarioId = ((Integer) resp.get("cenarioId")).longValue();
         String status = (String) resp.get("status");
+
+        String sql = "SELECT count(o) FROM ProdutoCenario o where o.produtoCliente.cliente.id = '" + clienteId + "' ";
+
+        if (cenarioId != null) {
+            sql += " and o.cenario.id = '" + cenarioId + "'";
+        }
+        if (status != null && !status.isEmpty()) {
+            sql += " and o.divergente is " + status.equals("Pendente");
+        }
+    
+        Long result = (Long) em.createQuery(sql).getSingleResult();
+
+        return result;
+    }
+
+    public List<ProdutoCenario> loadProdutoCenarioByClienteById(Map resp) {
+
+        Long clienteId = ((Integer) resp.get("clienteId")).longValue();
+        Long cenarioId = ((Integer) resp.get("cenarioId")).longValue();
+        String status = (String) resp.get("status");
+        int inicial = ((Number) resp.get("inicial")).intValue();
+        int finalR = ((Number) resp.get("final")).intValue();
 
         String sql = "SELECT o FROM ProdutoCenario o where o.produtoCliente.cliente.id = '" + clienteId + "' ";
 
@@ -37,8 +60,9 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
         if (status != null && !status.isEmpty()) {
             sql += " and o.divergente is " + status.equals("Pendente");
         }
+        sql += " order by o.id";
 
-        List<ProdutoCenario> result = em.createQuery(sql).getResultList();
+        List<ProdutoCenario> result = em.createQuery(sql).setFirstResult(inicial).setMaxResults(finalR).getResultList();
 
         return result;
     }

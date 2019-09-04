@@ -8,7 +8,9 @@ package br.com.interagese.padrao.controllers;
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
 import br.com.interagese.padrao.services.ClienteService;
+import br.com.interagese.padrao.services.ProdutoCenarioService;
 import br.com.interagese.padrao.services.ProdutoClienteService;
+import br.com.interagese.syscontabil.models.ProdutoCenario;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
     @Autowired
     private ProdutoClienteService produtoClienteService;
     @Autowired
+    private ProdutoCenarioService  produtoCenarioService;
+    @Autowired
     private ClienteService clienteService;
 
     //**************************************************************************
@@ -43,6 +47,17 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
         }
     }
 
+    @PostMapping(path = "loadProdutoCenarioCount")
+    public String loadProdutoCenarioCount(@RequestBody Map resp) {
+        try {
+
+            return serializar(produtoCenarioService.loadProdutoCenarioCount(resp));
+
+        } catch (Exception ex) {
+            return returnException(ex);
+        }
+    }
+    
     @PostMapping(path = "loadClientSelected")
     public String loadClientSelected(@RequestBody Map resp) {
         try {
@@ -53,5 +68,7 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
             return returnException(ex);
         }
     }
+    
+    
 
 }
