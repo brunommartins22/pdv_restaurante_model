@@ -45,12 +45,16 @@ public class ProdutoCliente implements Serializable {
     private String ncmPadrao;
     @Column(length = 8)
     private String ncmInformado;
+    @Column(length = 8)
+    private String ncmConfirmado;
     @Column(length = 7)
     private String cestCliente;
     @Column(length = 7)
     private String cestPadrao;
     @Column(length = 7)
     private String cestInformado;
+    @Column(length = 7)
+    private String cestConfirmado;
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     @Transient
@@ -88,6 +92,7 @@ public class ProdutoCliente implements Serializable {
     }
 
     //**************************** get && setts ********************************
+
     /**
      * @return the id
      */
@@ -187,6 +192,34 @@ public class ProdutoCliente implements Serializable {
     }
 
     /**
+     * @return the ncmInformado
+     */
+    public String getNcmInformado() {
+        return ncmInformado;
+    }
+
+    /**
+     * @param ncmInformado the ncmInformado to set
+     */
+    public void setNcmInformado(String ncmInformado) {
+        this.ncmInformado = ncmInformado;
+    }
+
+    /**
+     * @return the ncmConfirmado
+     */
+    public String getNcmConfirmado() {
+        return ncmConfirmado;
+    }
+
+    /**
+     * @param ncmConfirmado the ncmConfirmado to set
+     */
+    public void setNcmConfirmado(String ncmConfirmado) {
+        this.ncmConfirmado = ncmConfirmado;
+    }
+
+    /**
      * @return the cestCliente
      */
     public String getCestCliente() {
@@ -212,6 +245,34 @@ public class ProdutoCliente implements Serializable {
      */
     public void setCestPadrao(String cestPadrao) {
         this.cestPadrao = cestPadrao;
+    }
+
+    /**
+     * @return the cestInformado
+     */
+    public String getCestInformado() {
+        return cestInformado;
+    }
+
+    /**
+     * @param cestInformado the cestInformado to set
+     */
+    public void setCestInformado(String cestInformado) {
+        this.cestInformado = cestInformado;
+    }
+
+    /**
+     * @return the cestConfirmado
+     */
+    public String getCestConfirmado() {
+        return cestConfirmado;
+    }
+
+    /**
+     * @param cestConfirmado the cestConfirmado to set
+     */
+    public void setCestConfirmado(String cestConfirmado) {
+        this.cestConfirmado = cestConfirmado;
     }
 
     /**
@@ -241,33 +302,6 @@ public class ProdutoCliente implements Serializable {
     public void setIsProdutoGeral(boolean isProdutoGeral) {
         this.isProdutoGeral = isProdutoGeral;
     }
-
-    /**
-     * @return the ncmInformado
-     */
-    public String getNcmInformado() {
-        return ncmInformado;
-    }
-
-    /**
-     * @param ncmInformado the ncmInformado to set
-     */
-    public void setNcmInformado(String ncmInformado) {
-        this.ncmInformado = ncmInformado;
-    }
-
-    /**
-     * @return the cestInformado
-     */
-    public String getCestInformado() {
-        return cestInformado;
-    }
-
-    /**
-     * @param cestInformado the cestInformado to set
-     */
-    public void setCestInformado(String cestInformado) {
-        this.cestInformado = cestInformado;
-    }
+   
 
 }

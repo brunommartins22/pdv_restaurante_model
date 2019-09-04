@@ -9,6 +9,10 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+//update syscontabil.arquivos_processar set status_arquivo='PENDENTE';
+//delete from syscontabil.produto_cenario;
+//delete from syscontabil.produto_cliente;
+
 /**
  *
  * @author Bruno Martins
