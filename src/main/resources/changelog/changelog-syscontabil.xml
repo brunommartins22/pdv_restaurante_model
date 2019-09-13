@@ -231,7 +231,8 @@
     <changeSet id="13" author="syscontabil-bruno-joao" runOnChange="true">
         <sql splitStatements="true" dbms="postgresql">
             ALTER TABLE syscontabil.produto_cenario
-            ALTER COLUMN dominio_regras TYPE syscontabil."DominioRegras";
+            ALTER COLUMN dominio_regras TYPE syscontabil."DominioRegras",
+            ALTER COLUMN dominio_regras_confirmado TYPE syscontabil."DominioRegras";
         </sql>
     </changeSet>
 

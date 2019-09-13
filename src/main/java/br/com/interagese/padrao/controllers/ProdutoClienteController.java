@@ -10,7 +10,6 @@ import br.com.interagese.padrao.rest.util.PadraoController;
 import br.com.interagese.padrao.services.ClienteService;
 import br.com.interagese.padrao.services.ProdutoCenarioService;
 import br.com.interagese.padrao.services.ProdutoClienteService;
-import br.com.interagese.syscontabil.models.ProdutoCenario;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
