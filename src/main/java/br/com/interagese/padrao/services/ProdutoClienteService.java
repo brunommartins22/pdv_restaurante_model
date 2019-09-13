@@ -8,6 +8,7 @@ package br.com.interagese.padrao.services;
 import br.com.interagese.padrao.rest.domains.DominioEvento;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.padrao.rest.util.TransformNativeQuery;
+import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.dto.ClienteProdutoDto;
 import br.com.interagese.syscontabil.models.ProdutoCenario;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
@@ -161,8 +162,9 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 
             switch (produtoCenario.getDominioRegrasInformado()) {
                 case PRODUTO: {
+                    RegraProduto regraProduto = null;
                     if (!produtoCenario.getDominioRegras().equals(produtoCenario.getDominioRegrasInformado())) {
-                        RegraProduto regraProduto = new RegraProduto();
+                        regraProduto = new RegraProduto();
                         regraProduto.setAtributoPadrao(produtoCenario.getAtributoPadrao());
                         regraProduto.setCenario(produtoCenario.getCenario());
                         regraProduto.setCliente(produtoCenario.getProdutoCliente().getCliente());
@@ -172,9 +174,10 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                         regraProduto.setTributoFederalPadrao(produtoCenario.getTributoFederalPadrao());
                         regraProduto.setTributoEstadualPadrao(produtoCenario.getTributoEstadualPadrao());
                         regraProdutoService.create(regraProduto);
-                        //regraProdutoService.
+                        produtoCenarioService.changeRule(DominioRegras.PRODUTO, regraProduto);
                     } else {
-
+                        //********************* criar metodo ********************
+                       produtoCenarioService.updateRule(DominioRegras.PRODUTO, regraProduto);
                     }
 
                     break;
@@ -195,16 +198,16 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                     break;
                 }
                 case REGIME: {
-                    if (!produtoCenario.getDominioRegras().equals(produtoCenario.getDominioRegrasInformado())) {
-                        RegraRegimeTributario regraRegimeTributario = new RegraRegimeTributario();
-                        regraRegimeTributario.setAtributoPadrao(produtoCenario.getAtributoPadrao());
-                        regraRegimeTributario.setRegimeTributario(produtoCenario.getProdutoCliente().getCliente().getTipoRegime());
-                        regraRegimeTributario.setCenario(produtoCenario.getCenario());
-                        regraRegimeTributario.setTributoFederalPadrao(produtoCenario.getTributoFederalPadrao());
-                        regraRegimeTributario.setTributoEstadualPadrao(produtoCenario.getTributoEstadualPadrao());
-                    } else {
-
-                    }
+//                    if (!produtoCenario.getDominioRegras().equals(produtoCenario.getDominioRegrasInformado())) {
+//                        RegraRegimeTributario regraRegimeTributario = new RegraRegimeTributario();
+//                        regraRegimeTributario.setAtributoPadrao(produtoCenario.getAtributoPadrao());
+//                        regraRegimeTributario.setRegimeTributario(produtoCenario.getProdutoCliente().getCliente().getTipoRegime());
+//                        regraRegimeTributario.setCenario(produtoCenario.getCenario());
+//                        regraRegimeTributario.setTributoFederalPadrao(produtoCenario.getTributoFederalPadrao());
+//                        regraRegimeTributario.setTributoEstadualPadrao(produtoCenario.getTributoEstadualPadrao());
+//                    } else {
+//
+//                    }
                     break;
                 }
             }
