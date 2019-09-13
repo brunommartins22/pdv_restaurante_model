@@ -40,6 +40,11 @@ public class ProdutoCenario implements Serializable {
     private Cenario cenario;
     @Enumerated(EnumType.STRING)
     private DominioRegras dominioRegras;
+    @Transient
+    @Enumerated(EnumType.STRING)
+    private DominioRegras dominioRegrasInformado;
+    @Enumerated(EnumType.STRING)
+    private DominioRegras dominioRegrasConfirmado;
     @Column(length = 20)
     private Long regraId;
     @Embedded
@@ -333,6 +338,34 @@ public class ProdutoCenario implements Serializable {
      */
     public void setTributoEstadualConfirmado(TributoEstadualConfirmado tributoEstadualConfirmado) {
         this.tributoEstadualConfirmado = tributoEstadualConfirmado;
+    }
+
+    /**
+     * @return the dominioRegrasInformado
+     */
+    public DominioRegras getDominioRegrasInformado() {
+        return dominioRegrasInformado;
+    }
+
+    /**
+     * @param dominioRegrasInformado the dominioRegrasInformado to set
+     */
+    public void setDominioRegrasInformado(DominioRegras dominioRegrasInformado) {
+        this.dominioRegrasInformado = dominioRegrasInformado;
+    }
+
+    /**
+     * @return the dominioRegrasConfirmado
+     */
+    public DominioRegras getDominioRegrasConfirmado() {
+        return dominioRegrasConfirmado;
+    }
+
+    /**
+     * @param dominioRegrasConfirmado the dominioRegrasConfirmado to set
+     */
+    public void setDominioRegrasConfirmado(DominioRegras dominioRegrasConfirmado) {
+        this.dominioRegrasConfirmado = dominioRegrasConfirmado;
     }
 
 }

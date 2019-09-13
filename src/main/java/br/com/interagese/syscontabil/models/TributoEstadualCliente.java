@@ -20,29 +20,19 @@ public class TributoEstadualCliente implements Serializable {
     private String cstIcmsEntradaCliente;
     @Column(length = 12)
     private Double aliquotaIcmsEntradaCliente;
-    @Column(length = 12)
-    private Double aliquotaIcmsEntradaSTCliente;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsEntradaCliente;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsEntradaSTCliente;
     @Column(length = 3)
     private String cstIcmsSaidaCliente;
     @Column(length = 12)
     private Double aliquotaIcmsSaidaCliente;
-    @Column(length = 12)
-    private Double aliquotaIcmsSaidaSTCliente;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsSaidaCliente;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsSaidaSTCliente;
-    
-    //********************************* get && setts ***************************
 
+    //********************************* get && setts ***************************
     /**
      * @return the cstIcmsEntradaCliente
      */
     public String getCstIcmsEntradaCliente() {
+        if (cstIcmsEntradaCliente == null) {
+            cstIcmsEntradaCliente = "";
+        }
         return cstIcmsEntradaCliente;
     }
 
@@ -57,6 +47,9 @@ public class TributoEstadualCliente implements Serializable {
      * @return the aliquotaIcmsEntradaCliente
      */
     public Double getAliquotaIcmsEntradaCliente() {
+        if (aliquotaIcmsEntradaCliente == null) {
+            aliquotaIcmsEntradaCliente = 0.0;
+        }
         return aliquotaIcmsEntradaCliente;
     }
 
@@ -68,51 +61,12 @@ public class TributoEstadualCliente implements Serializable {
     }
 
     /**
-     * @return the aliquotaIcmsEntradaSTCliente
-     */
-    public Double getAliquotaIcmsEntradaSTCliente() {
-        return aliquotaIcmsEntradaSTCliente;
-    }
-
-    /**
-     * @param aliquotaIcmsEntradaSTCliente the aliquotaIcmsEntradaSTCliente to set
-     */
-    public void setAliquotaIcmsEntradaSTCliente(Double aliquotaIcmsEntradaSTCliente) {
-        this.aliquotaIcmsEntradaSTCliente = aliquotaIcmsEntradaSTCliente;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsEntradaCliente
-     */
-    public Double getReducaoBaseCalculoIcmsEntradaCliente() {
-        return reducaoBaseCalculoIcmsEntradaCliente;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsEntradaCliente the reducaoBaseCalculoIcmsEntradaCliente to set
-     */
-    public void setReducaoBaseCalculoIcmsEntradaCliente(Double reducaoBaseCalculoIcmsEntradaCliente) {
-        this.reducaoBaseCalculoIcmsEntradaCliente = reducaoBaseCalculoIcmsEntradaCliente;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsEntradaSTCliente
-     */
-    public Double getReducaoBaseCalculoIcmsEntradaSTCliente() {
-        return reducaoBaseCalculoIcmsEntradaSTCliente;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsEntradaSTCliente the reducaoBaseCalculoIcmsEntradaSTCliente to set
-     */
-    public void setReducaoBaseCalculoIcmsEntradaSTCliente(Double reducaoBaseCalculoIcmsEntradaSTCliente) {
-        this.reducaoBaseCalculoIcmsEntradaSTCliente = reducaoBaseCalculoIcmsEntradaSTCliente;
-    }
-
-    /**
      * @return the cstIcmsSaidaCliente
      */
     public String getCstIcmsSaidaCliente() {
+        if (cstIcmsSaidaCliente == null) {
+            cstIcmsSaidaCliente = "";
+        }
         return cstIcmsSaidaCliente;
     }
 
@@ -127,6 +81,9 @@ public class TributoEstadualCliente implements Serializable {
      * @return the aliquotaIcmsSaidaCliente
      */
     public Double getAliquotaIcmsSaidaCliente() {
+        if (aliquotaIcmsSaidaCliente == null) {
+            aliquotaIcmsSaidaCliente = 0.0;
+        }
         return aliquotaIcmsSaidaCliente;
     }
 
@@ -137,47 +94,4 @@ public class TributoEstadualCliente implements Serializable {
         this.aliquotaIcmsSaidaCliente = aliquotaIcmsSaidaCliente;
     }
 
-    /**
-     * @return the aliquotaIcmsSaidaSTCliente
-     */
-    public Double getAliquotaIcmsSaidaSTCliente() {
-        return aliquotaIcmsSaidaSTCliente;
-    }
-
-    /**
-     * @param aliquotaIcmsSaidaSTCliente the aliquotaIcmsSaidaSTCliente to set
-     */
-    public void setAliquotaIcmsSaidaSTCliente(Double aliquotaIcmsSaidaSTCliente) {
-        this.aliquotaIcmsSaidaSTCliente = aliquotaIcmsSaidaSTCliente;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsSaidaCliente
-     */
-    public Double getReducaoBaseCalculoIcmsSaidaCliente() {
-        return reducaoBaseCalculoIcmsSaidaCliente;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsSaidaCliente the reducaoBaseCalculoIcmsSaidaCliente to set
-     */
-    public void setReducaoBaseCalculoIcmsSaidaCliente(Double reducaoBaseCalculoIcmsSaidaCliente) {
-        this.reducaoBaseCalculoIcmsSaidaCliente = reducaoBaseCalculoIcmsSaidaCliente;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsSaidaSTCliente
-     */
-    public Double getReducaoBaseCalculoIcmsSaidaSTCliente() {
-        return reducaoBaseCalculoIcmsSaidaSTCliente;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsSaidaSTCliente the reducaoBaseCalculoIcmsSaidaSTCliente to set
-     */
-    public void setReducaoBaseCalculoIcmsSaidaSTCliente(Double reducaoBaseCalculoIcmsSaidaSTCliente) {
-        this.reducaoBaseCalculoIcmsSaidaSTCliente = reducaoBaseCalculoIcmsSaidaSTCliente;
-    }
-
-   
 }

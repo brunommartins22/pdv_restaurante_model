@@ -20,23 +20,12 @@ public class TributoEstadualPadrao implements Serializable {
     private String cstIcmsEntradaPadrao;
     @Column(length = 12)
     private Double aliquotaIcmsEntradaPadrao;
-    @Column(length = 12)
-    private Double aliquotaIcmsEntradaSTPadrao;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsEntradaPadrao;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsEntradaSTPadrao;
     @Column(length = 3)
     private String cstIcmsSaidaPadrao;
     @Column(length = 12)
     private Double aliquotaIcmsSaidaPadrao;
-    @Column(length = 12)
-    private Double aliquotaIcmsSaidaSTPadrao;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsSaidaPadrao;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsSaidaSTPadrao;
 
+    //***************************** get && setts *******************************
     /**
      * @return the cstIcmsEntradaPadrao
      */
@@ -71,58 +60,7 @@ public class TributoEstadualPadrao implements Serializable {
         this.aliquotaIcmsEntradaPadrao = aliquotaIcmsEntradaPadrao;
     }
 
-    /**
-     * @return the aliquotaIcmsEntradaSTPadrao
-     */
-    public Double getAliquotaIcmsEntradaSTPadrao() {
-        if (aliquotaIcmsEntradaSTPadrao == null) {
-            aliquotaIcmsEntradaSTPadrao = 0.0;
-        }
-        return aliquotaIcmsEntradaSTPadrao;
-    }
-
-    /**
-     * @param aliquotaIcmsEntradaSTPadrao the aliquotaIcmsEntradaSTPadrao to set
-     */
-    public void setAliquotaIcmsEntradaSTPadrao(Double aliquotaIcmsEntradaSTPadrao) {
-        this.aliquotaIcmsEntradaSTPadrao = aliquotaIcmsEntradaSTPadrao;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsEntradaPadrao
-     */
-    public Double getReducaoBaseCalculoIcmsEntradaPadrao() {
-        if (reducaoBaseCalculoIcmsEntradaPadrao == null) {
-            reducaoBaseCalculoIcmsEntradaPadrao = 0.0;
-        }
-        return reducaoBaseCalculoIcmsEntradaPadrao;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsEntradaPadrao the
-     * reducaoBaseCalculoIcmsEntradaPadrao to set
-     */
-    public void setReducaoBaseCalculoIcmsEntradaPadrao(Double reducaoBaseCalculoIcmsEntradaPadrao) {
-        this.reducaoBaseCalculoIcmsEntradaPadrao = reducaoBaseCalculoIcmsEntradaPadrao;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsEntradaSTPadrao
-     */
-    public Double getReducaoBaseCalculoIcmsEntradaSTPadrao() {
-        if (reducaoBaseCalculoIcmsEntradaSTPadrao == null) {
-            reducaoBaseCalculoIcmsEntradaSTPadrao = 0.0;
-        }
-        return reducaoBaseCalculoIcmsEntradaSTPadrao;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsEntradaSTPadrao the
-     * reducaoBaseCalculoIcmsEntradaSTPadrao to set
-     */
-    public void setReducaoBaseCalculoIcmsEntradaSTPadrao(Double reducaoBaseCalculoIcmsEntradaSTPadrao) {
-        this.reducaoBaseCalculoIcmsEntradaSTPadrao = reducaoBaseCalculoIcmsEntradaSTPadrao;
-    }
+    
 
     /**
      * @return the cstIcmsSaidaPadrao
@@ -158,56 +96,6 @@ public class TributoEstadualPadrao implements Serializable {
         this.aliquotaIcmsSaidaPadrao = aliquotaIcmsSaidaPadrao;
     }
 
-    /**
-     * @return the aliquotaIcmsSaidaSTPadrao
-     */
-    public Double getAliquotaIcmsSaidaSTPadrao() {
-        if (aliquotaIcmsSaidaSTPadrao == null) {
-            aliquotaIcmsSaidaSTPadrao = 0.0;
-        }
-        return aliquotaIcmsSaidaSTPadrao;
-    }
+    
 
-    /**
-     * @param aliquotaIcmsSaidaSTPadrao the aliquotaIcmsSaidaSTPadrao to set
-     */
-    public void setAliquotaIcmsSaidaSTPadrao(Double aliquotaIcmsSaidaSTPadrao) {
-        this.aliquotaIcmsSaidaSTPadrao = aliquotaIcmsSaidaSTPadrao;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsSaidaPadrao
-     */
-    public Double getReducaoBaseCalculoIcmsSaidaPadrao() {
-        if (reducaoBaseCalculoIcmsSaidaPadrao == null) {
-            reducaoBaseCalculoIcmsSaidaPadrao = 0.0;
-        }
-        return reducaoBaseCalculoIcmsSaidaPadrao;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsSaidaPadrao the
-     * reducaoBaseCalculoIcmsSaidaPadrao to set
-     */
-    public void setReducaoBaseCalculoIcmsSaidaPadrao(Double reducaoBaseCalculoIcmsSaidaPadrao) {
-        this.reducaoBaseCalculoIcmsSaidaPadrao = reducaoBaseCalculoIcmsSaidaPadrao;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsSaidaSTPadrao
-     */
-    public Double getReducaoBaseCalculoIcmsSaidaSTPadrao() {
-        if (reducaoBaseCalculoIcmsSaidaSTPadrao == null) {
-            reducaoBaseCalculoIcmsSaidaSTPadrao = 0.0;
-        }
-        return reducaoBaseCalculoIcmsSaidaSTPadrao;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsSaidaSTPadrao the
-     * reducaoBaseCalculoIcmsSaidaSTPadrao to set
-     */
-    public void setReducaoBaseCalculoIcmsSaidaSTPadrao(Double reducaoBaseCalculoIcmsSaidaSTPadrao) {
-        this.reducaoBaseCalculoIcmsSaidaSTPadrao = reducaoBaseCalculoIcmsSaidaSTPadrao;
-    }
 }

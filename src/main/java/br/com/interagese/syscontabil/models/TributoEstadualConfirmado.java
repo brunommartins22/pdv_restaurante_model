@@ -20,29 +20,19 @@ public class TributoEstadualConfirmado implements Serializable {
     private String cstIcmsEntradaConfirmado;
     @Column(length = 12)
     private Double aliquotaIcmsEntradaConfirmado;
-    @Column(length = 12)
-    private Double aliquotaIcmsEntradaSTConfirmado;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsEntradaConfirmado;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsEntradaSTConfirmado;
     @Column(length = 3)
     private String cstIcmsSaidaConfirmado;
     @Column(length = 12)
     private Double aliquotaIcmsSaidaConfirmado;
-    @Column(length = 12)
-    private Double aliquotaIcmsSaidaSTConfirmado;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsSaidaConfirmado;
-    @Column(length = 12)
-    private Double reducaoBaseCalculoIcmsSaidaSTConfirmado;
-    
-    //********************************* get && setts ***************************
 
+    //********************************* get && setts ***************************
     /**
      * @return the cstIcmsEntradaConfirmado
      */
     public String getCstIcmsEntradaConfirmado() {
+        if (cstIcmsEntradaConfirmado == null) {
+            cstIcmsEntradaConfirmado = "";
+        }
         return cstIcmsEntradaConfirmado;
     }
 
@@ -57,62 +47,27 @@ public class TributoEstadualConfirmado implements Serializable {
      * @return the aliquotaIcmsEntradaConfirmado
      */
     public Double getAliquotaIcmsEntradaConfirmado() {
+        if (aliquotaIcmsEntradaConfirmado == null) {
+            aliquotaIcmsEntradaConfirmado = 0.0;
+        }
         return aliquotaIcmsEntradaConfirmado;
     }
 
     /**
-     * @param aliquotaIcmsEntradaConfirmado the aliquotaIcmsEntradaConfirmado to set
+     * @param aliquotaIcmsEntradaConfirmado the aliquotaIcmsEntradaConfirmado to
+     * set
      */
     public void setAliquotaIcmsEntradaConfirmado(Double aliquotaIcmsEntradaConfirmado) {
         this.aliquotaIcmsEntradaConfirmado = aliquotaIcmsEntradaConfirmado;
     }
 
     /**
-     * @return the aliquotaIcmsEntradaSTConfirmado
-     */
-    public Double getAliquotaIcmsEntradaSTConfirmado() {
-        return aliquotaIcmsEntradaSTConfirmado;
-    }
-
-    /**
-     * @param aliquotaIcmsEntradaSTConfirmado the aliquotaIcmsEntradaSTConfirmado to set
-     */
-    public void setAliquotaIcmsEntradaSTConfirmado(Double aliquotaIcmsEntradaSTConfirmado) {
-        this.aliquotaIcmsEntradaSTConfirmado = aliquotaIcmsEntradaSTConfirmado;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsEntradaConfirmado
-     */
-    public Double getReducaoBaseCalculoIcmsEntradaConfirmado() {
-        return reducaoBaseCalculoIcmsEntradaConfirmado;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsEntradaConfirmado the reducaoBaseCalculoIcmsEntradaConfirmado to set
-     */
-    public void setReducaoBaseCalculoIcmsEntradaConfirmado(Double reducaoBaseCalculoIcmsEntradaConfirmado) {
-        this.reducaoBaseCalculoIcmsEntradaConfirmado = reducaoBaseCalculoIcmsEntradaConfirmado;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsEntradaSTConfirmado
-     */
-    public Double getReducaoBaseCalculoIcmsEntradaSTConfirmado() {
-        return reducaoBaseCalculoIcmsEntradaSTConfirmado;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsEntradaSTConfirmado the reducaoBaseCalculoIcmsEntradaSTConfirmado to set
-     */
-    public void setReducaoBaseCalculoIcmsEntradaSTConfirmado(Double reducaoBaseCalculoIcmsEntradaSTConfirmado) {
-        this.reducaoBaseCalculoIcmsEntradaSTConfirmado = reducaoBaseCalculoIcmsEntradaSTConfirmado;
-    }
-
-    /**
      * @return the cstIcmsSaidaConfirmado
      */
     public String getCstIcmsSaidaConfirmado() {
+        if (cstIcmsSaidaConfirmado == null) {
+            cstIcmsSaidaConfirmado = "";
+        }
         return cstIcmsSaidaConfirmado;
     }
 
@@ -127,6 +82,9 @@ public class TributoEstadualConfirmado implements Serializable {
      * @return the aliquotaIcmsSaidaConfirmado
      */
     public Double getAliquotaIcmsSaidaConfirmado() {
+        if (aliquotaIcmsSaidaConfirmado == null) {
+            aliquotaIcmsSaidaConfirmado = 0.0;
+        }
         return aliquotaIcmsSaidaConfirmado;
     }
 
@@ -137,47 +95,4 @@ public class TributoEstadualConfirmado implements Serializable {
         this.aliquotaIcmsSaidaConfirmado = aliquotaIcmsSaidaConfirmado;
     }
 
-    /**
-     * @return the aliquotaIcmsSaidaSTConfirmado
-     */
-    public Double getAliquotaIcmsSaidaSTConfirmado() {
-        return aliquotaIcmsSaidaSTConfirmado;
-    }
-
-    /**
-     * @param aliquotaIcmsSaidaSTConfirmado the aliquotaIcmsSaidaSTConfirmado to set
-     */
-    public void setAliquotaIcmsSaidaSTConfirmado(Double aliquotaIcmsSaidaSTConfirmado) {
-        this.aliquotaIcmsSaidaSTConfirmado = aliquotaIcmsSaidaSTConfirmado;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsSaidaConfirmado
-     */
-    public Double getReducaoBaseCalculoIcmsSaidaConfirmado() {
-        return reducaoBaseCalculoIcmsSaidaConfirmado;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsSaidaConfirmado the reducaoBaseCalculoIcmsSaidaConfirmado to set
-     */
-    public void setReducaoBaseCalculoIcmsSaidaConfirmado(Double reducaoBaseCalculoIcmsSaidaConfirmado) {
-        this.reducaoBaseCalculoIcmsSaidaConfirmado = reducaoBaseCalculoIcmsSaidaConfirmado;
-    }
-
-    /**
-     * @return the reducaoBaseCalculoIcmsSaidaSTConfirmado
-     */
-    public Double getReducaoBaseCalculoIcmsSaidaSTConfirmado() {
-        return reducaoBaseCalculoIcmsSaidaSTConfirmado;
-    }
-
-    /**
-     * @param reducaoBaseCalculoIcmsSaidaSTConfirmado the reducaoBaseCalculoIcmsSaidaSTConfirmado to set
-     */
-    public void setReducaoBaseCalculoIcmsSaidaSTConfirmado(Double reducaoBaseCalculoIcmsSaidaSTConfirmado) {
-        this.reducaoBaseCalculoIcmsSaidaSTConfirmado = reducaoBaseCalculoIcmsSaidaSTConfirmado;
-    }
-
-   
 }
