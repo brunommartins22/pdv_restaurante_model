@@ -9,6 +9,7 @@ import br.com.interagese.erplibrary.AtributoPadrao;
 import br.com.interagese.syscontabil.domains.DominioRegras;
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -34,7 +35,7 @@ public class ProdutoCenario implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_produto_cenario")
     @SequenceGenerator(name = "gen_produto_cenario", sequenceName = "seq_produto_cenario")
     private Long id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private ProdutoCliente produtoCliente;
     @ManyToOne
     private Cenario cenario;

@@ -64,9 +64,9 @@ public class Cliente implements Serializable {
     private EnderecoPadrao endereco;
     @Embedded
     private AtributoPadrao atributoPadrao;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.MERGE)
     private List<Cenario> cenarios;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.MERGE)
     private List<Cnae> atividades;
     @Column(columnDefinition="Boolean default true")
     private Boolean ativo;

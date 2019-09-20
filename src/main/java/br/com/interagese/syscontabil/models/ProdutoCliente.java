@@ -37,7 +37,7 @@ public class ProdutoCliente implements Serializable {
     private String nomeProduto;
     @Column(length = 120)
     private String codigoProduto;
-    @Column(length = 13, unique = true)
+    @Column(length = 13)
     private Long ean;
     @Column(length = 8)
     private String ncmCliente;
