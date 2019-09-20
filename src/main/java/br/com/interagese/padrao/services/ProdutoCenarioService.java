@@ -95,7 +95,11 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     + "cst_ipi_saida_padrao = :cstIpiSaida, "
                     + "aliquota_ipi_saida_padrao = :aliquotaIpiSaida ";
 
+            String sqlTributoEstadualPadrao = "cst_icms_saida_padrao = :cstIcmsSaida, "
+                    + "aliquota_icms_saida_padrao = :aliquotaIcmsSaida ";
+
             String sqlTributoFederalInformado = sqlTributoFederalPadrao.replace("_padrao", "_informado");
+            String sqlTributoEstadualInformado = sqlTributoEstadualPadrao.replace("_padrao", "_informado");
 
 //            if(dominioRegra == DominioRegras.REGIME){ 
 //                RegraRegimeTributario rrt = (RegraRegimeTributario) regra;
@@ -187,7 +191,8 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     Query query = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
                             + "dominio_regras = 'NCM', "
                             + "regra_id = :regraId, "
-                            + sqlTributoFederalPadrao
+                            + sqlTributoFederalPadrao + ","
+                            + sqlTributoEstadualPadrao
                             + " where produto_cliente_id in (:listaProdutoCliente) "
                             + " and (dominio_regras = 'REGIME' " + sqlRegraNcmGenerica + ")"
                             + " and rgevento <> 3 " + sqlComplementar);
@@ -200,6 +205,10 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     query.setParameter("cstIpiSaida", regraNcm.getTributoFederalPadrao().getCstIpiSaidaPadrao());
                     query.setParameter("aliquotaIpiSaida", regraNcm.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
 //                    fim tributo federal
+//                    tributo estadual
+                    query.setParameter("cstIcmsSaida", regraNcm.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                    query.setParameter("aliquotaIcmsSaida", regraNcm.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
+//                    fim tributo estadual
                     query.setParameter("regraId", regraNcm.getId());
                     query.setParameter("listaProdutoCliente", listaProdutoCliente);
 
@@ -216,7 +225,8 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     Query queryInformado = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
                             + "dominio_regras = 'NCM', "
                             + "regra_id = :regraId, "
-                            + sqlTributoFederalInformado
+                            + sqlTributoFederalInformado + ","
+                            + sqlTributoEstadualInformado
                             + " where produto_cliente_id in (:listaProdutoCliente) "
                             + " and (dominio_regras = 'REGIME' " + sqlRegraNcmGenerica + ")"
                             + " and rgevento <> 3 and confirmado = true and divergente = false " + sqlComplementar);
@@ -229,6 +239,10 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     queryInformado.setParameter("cstIpiSaida", regraNcm.getTributoFederalPadrao().getCstIpiSaidaPadrao());
                     queryInformado.setParameter("aliquotaIpiSaida", regraNcm.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
 //                    fim tributo federal
+//                    tributo estadual
+                    queryInformado.setParameter("cstIcmsSaida", regraNcm.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                    queryInformado.setParameter("aliquotaIcmsSaida", regraNcm.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
+//                    fim tributo estadual
                     queryInformado.setParameter("regraId", regraNcm.getId());
                     queryInformado.setParameter("listaProdutoCliente", listaProdutoCliente);
 
@@ -262,11 +276,11 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 String sqlComplementarCliente = "";
 
                 if (regraProduto.getEanProduto() != null) {
-                    sqlComplementarCliente += " o.ean = :ean ";
+                    sqlComplementarCliente += " o.produtoCliente.ean = :ean ";
                 }
 
                 if (regraProduto.getCodigoProduto() != null) {
-                    sqlComplementarCliente += " o.codigoProduto = :codigoProduto ";
+                    sqlComplementarCliente += " o.produtoCliente.codigoProduto = :codigoProduto ";
                 }
 
                 if (regraProduto.getCenario() != null) {
@@ -274,7 +288,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 }
 
                 if (regraProduto.getCliente() != null && regraProduto.getCliente().getId() != null) {
-                    sqlComplementarCliente += " and o.cliente.id = :clienteId ";
+                    sqlComplementarCliente += " and o.produtoCliente.cliente.id = :clienteId ";
                 }
 
                 if ((regraProduto.getCliente() != null && regraProduto.getCliente().getId() != null)
@@ -285,12 +299,12 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                         listaCliente = em.createQuery("Select o.id from Cliente o where o.tipoRegime = :regime ")
                                 .setParameter("regime", regraProduto.getRegimeTributario()).getResultList();
                         if (!listaCliente.isEmpty()) {
-                            sqlComplementarCliente += " and o.cliente.id in (:listaCliente) ";
+                            sqlComplementarCliente += " and o.produtoCliente.cliente.id in (:listaCliente) ";
                         }
                     }
 
                     if (regraProduto.getCliente() != null && regraProduto.getCliente().getId() != null) {
-                        sqlComplementarCliente += " and o.cliente.id = :clienteId ";
+                        sqlComplementarCliente += " and o.produtoCliente.cliente.id = :clienteId ";
                     }
 
                     String sqlPrioridade = "";
@@ -313,7 +327,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     }
                 }
 
-                Query queryCliente = em.createQuery("Select o.id from ProdutoCliente o "
+                Query queryCliente = em.createQuery("Select o.id from ProdutoCenario o "
                         + "where " + sqlComplementarCliente);
 
                 if (regraProduto.getEanProduto() != null) {
@@ -352,7 +366,8 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     Query query = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
                             + "dominio_regras = 'PRODUTO', "
                             + "regra_id = :regraId, "
-                            + sqlTributoFederalPadrao
+                            + sqlTributoFederalPadrao + ","
+                            + sqlTributoEstadualPadrao
                             + " where produto_cliente_id in (:listaProdutoCliente) "
                             + " and (dominio_regras = 'REGIME' or dominio_regras = 'NCM' " + sqlRegraProdutoGenerica + ")"
                             + " and rgevento <> 3 " + sqlComplementar);
@@ -365,6 +380,10 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     query.setParameter("cstIpiSaida", regraProduto.getTributoFederalPadrao().getCstIpiSaidaPadrao());
                     query.setParameter("aliquotaIpiSaida", regraProduto.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
 //                    fim tributo federal
+//                    tributo estadual
+                    query.setParameter("cstIcmsSaida", regraProduto.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                    query.setParameter("aliquotaIcmsSaida", regraProduto.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
+//                    fim tributo estadual
                     query.setParameter("regraId", regraProduto.getId());
                     query.setParameter("listaProdutoCliente", listaProdutoCliente);
 
@@ -381,7 +400,8 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     Query queryInformado = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
                             + "dominio_regras = 'PRODUTO', "
                             + "regra_id = :regraId, "
-                            + sqlTributoFederalInformado
+                            + sqlTributoFederalInformado + ","
+                            + sqlTributoEstadualInformado
                             + " where produto_cliente_id in (:listaProdutoCliente) "
                             + " and (dominio_regras = 'REGIME' or dominio_regras = 'NCM' " + sqlRegraProdutoGenerica + ")"
                             + " and rgevento <> 3 and confirmado = true and divergente = false " + sqlComplementar);
@@ -394,6 +414,10 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     queryInformado.setParameter("cstIpiSaida", regraProduto.getTributoFederalPadrao().getCstIpiSaidaPadrao());
                     queryInformado.setParameter("aliquotaIpiSaida", regraProduto.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
 //                    fim tributo federal
+//                    tributo estadual
+                    queryInformado.setParameter("cstIcmsSaida", regraProduto.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                    queryInformado.setParameter("aliquotaIcmsSaida", regraProduto.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
+//                    fim tributo estadual
                     queryInformado.setParameter("regraId", regraProduto.getId());
                     queryInformado.setParameter("listaProdutoCliente", listaProdutoCliente);
 
@@ -423,13 +447,18 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     + "cst_ipi_saida_padrao = :cstIpiSaida, "
                     + "aliquota_ipi_saida_padrao = :aliquotaIpiSaida ";
 
+            String sqlTributoEstadualPadrao = "cst_icms_saida_padrao = :cstIcmsSaida, "
+                    + "aliquota_icms_saida_padrao = :aliquotaIcmsSaida ";
+
             String sqlTributoFederalInformado = sqlTributoFederalPadrao.replace("_padrao", "_informado");
+            String sqlTributoEstadualInformado = sqlTributoEstadualPadrao.replace("_padrao", "_informado");
 
             if (dominioRegra == DominioRegras.REGIME) {
                 RegraRegimeTributario rrt = (RegraRegimeTributario) regra;
 
                 Query query = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
-                        + sqlTributoFederalPadrao
+                        + sqlTributoFederalPadrao + ","
+                        + sqlTributoEstadualPadrao
                         + " where dominio_regras = 'REGIME' and regra_id = :regraId ");
                 query.setParameter("regraId", rrt.getId());
 
@@ -439,11 +468,14 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 query.setParameter("aliquotaCofinsSaida", rrt.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao());
                 query.setParameter("cstIpiSaida", rrt.getTributoFederalPadrao().getCstIpiSaidaPadrao());
                 query.setParameter("aliquotaIpiSaida", rrt.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
+                query.setParameter("cstIcmsSaida", rrt.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                query.setParameter("aliquotaIcmsSaida", rrt.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
 
                 query.executeUpdate();
 
                 Query queryInformado = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
-                        + sqlTributoFederalInformado
+                        + sqlTributoFederalInformado + ","
+                        + sqlTributoEstadualInformado
                         + " where dominio_regras = 'REGIME' and regra_id = :regraId "
                         + "and confirmado = true and divergente = false ");
                 queryInformado.setParameter("regraId", rrt.getId());
@@ -454,6 +486,8 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 queryInformado.setParameter("aliquotaCofinsSaida", rrt.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao());
                 queryInformado.setParameter("cstIpiSaida", rrt.getTributoFederalPadrao().getCstIpiSaidaPadrao());
                 queryInformado.setParameter("aliquotaIpiSaida", rrt.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
+                queryInformado.setParameter("cstIcmsSaida", rrt.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                queryInformado.setParameter("aliquotaIcmsSaida", rrt.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
 
                 queryInformado.executeUpdate();
             }
@@ -462,7 +496,8 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 RegraNcm regraNcm = (RegraNcm) regra;
 
                 Query query = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
-                        + sqlTributoFederalPadrao
+                        + sqlTributoFederalPadrao + ","
+                        + sqlTributoEstadualPadrao
                         + " where dominio_regras = 'NCM' and regra_id = :regraId ");
                 query.setParameter("regraId", regraNcm.getId());
 
@@ -472,11 +507,14 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 query.setParameter("aliquotaCofinsSaida", regraNcm.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao());
                 query.setParameter("cstIpiSaida", regraNcm.getTributoFederalPadrao().getCstIpiSaidaPadrao());
                 query.setParameter("aliquotaIpiSaida", regraNcm.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
+                query.setParameter("cstIcmsSaida", regraNcm.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                query.setParameter("aliquotaIcmsSaida", regraNcm.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
 
                 query.executeUpdate();
 
                 Query queryInformado = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
-                        + sqlTributoFederalInformado
+                        + sqlTributoFederalInformado + ","
+                        + sqlTributoEstadualInformado
                         + " where dominio_regras = 'NCM' and regra_id = :regraId "
                         + "and confirmado = true and divergente = false ");
                 queryInformado.setParameter("regraId", regraNcm.getId());
@@ -487,6 +525,8 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 queryInformado.setParameter("aliquotaCofinsSaida", regraNcm.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao());
                 queryInformado.setParameter("cstIpiSaida", regraNcm.getTributoFederalPadrao().getCstIpiSaidaPadrao());
                 queryInformado.setParameter("aliquotaIpiSaida", regraNcm.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
+                queryInformado.setParameter("cstIcmsSaida", regraNcm.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                queryInformado.setParameter("aliquotaIcmsSaida", regraNcm.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
 
                 queryInformado.executeUpdate();
             }
@@ -495,7 +535,8 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 RegraProduto regraProduto = (RegraProduto) regra;
 
                 Query query = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
-                        + sqlTributoFederalPadrao
+                        + sqlTributoFederalPadrao + ","
+                        + sqlTributoEstadualPadrao
                         + " where dominio_regras = 'PRODUTO' and regra_id = :regraId ");
                 query.setParameter("regraId", regraProduto.getId());
 
@@ -505,11 +546,14 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 query.setParameter("aliquotaCofinsSaida", regraProduto.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao());
                 query.setParameter("cstIpiSaida", regraProduto.getTributoFederalPadrao().getCstIpiSaidaPadrao());
                 query.setParameter("aliquotaIpiSaida", regraProduto.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
+                query.setParameter("cstIcmsSaida", regraProduto.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                query.setParameter("aliquotaIcmsSaida", regraProduto.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
 
                 query.executeUpdate();
 
                 Query queryInformado = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
-                        + sqlTributoFederalInformado
+                        + sqlTributoFederalInformado + ","
+                        + sqlTributoEstadualInformado
                         + " where dominio_regras = 'PRODUTO' and regra_id = :regraId "
                         + "and confirmado = true and divergente = false ");
                 queryInformado.setParameter("regraId", regraProduto.getId());
@@ -520,6 +564,8 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 queryInformado.setParameter("aliquotaCofinsSaida", regraProduto.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao());
                 queryInformado.setParameter("cstIpiSaida", regraProduto.getTributoFederalPadrao().getCstIpiSaidaPadrao());
                 queryInformado.setParameter("aliquotaIpiSaida", regraProduto.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
+                queryInformado.setParameter("cstIcmsSaida", regraProduto.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                queryInformado.setParameter("aliquotaIcmsSaida", regraProduto.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
 
                 queryInformado.executeUpdate();
 

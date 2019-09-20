@@ -83,6 +83,7 @@ public class ClienteService extends PadraoService<Cliente> {
         if (existeCpfCnpj(cliente)) {
             addErro("CPF/CNPJ cadastrado anteriormente!");
         }
+        
     }
 
     @Override

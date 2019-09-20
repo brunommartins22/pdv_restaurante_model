@@ -121,16 +121,16 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
     @Override
     public RegraProduto create(RegraProduto obj) throws Exception {
         validar(obj);
-        RegraProduto regra = super.create(obj);
+        super.create(obj);
         
         String json = Utils.serializar((Object) obj, null);
         RegraProdutoHistorico h = (RegraProdutoHistorico) Utils.deserializar(json , RegraProdutoHistorico.class);
-        h.setRegraProduto(regra);
+        h.setRegraProduto(obj);
         h.setId(null);
         regraProdutoHistoricoService.create(h);
         
-        produtoCenarioService.changeRule(DominioRegras.PRODUTO, regra);
-        return super.create(obj);
+        produtoCenarioService.changeRule(DominioRegras.PRODUTO, obj);
+        return obj;
     }
     
     @Override

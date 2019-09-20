@@ -10,10 +10,10 @@ import br.com.interagese.padrao.rest.util.PadraoController;
 import br.com.interagese.padrao.services.ClienteService;
 import br.com.interagese.padrao.services.ProdutoCenarioService;
 import br.com.interagese.padrao.services.ProdutoClienteService;
+import br.com.interagese.syscontabil.models.ProdutoCenario;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,16 +31,16 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
     @Autowired
     private ProdutoClienteService produtoClienteService;
     @Autowired
-    private ProdutoCenarioService  produtoCenarioService;
+    private ProdutoCenarioService produtoCenarioService;
     @Autowired
     private ClienteService clienteService;
 
     //**************************************************************************
-    @GetMapping(path = "loadClientProductAll")
-    public String loadClientProductAll() {
+    @PostMapping(path = "loadClientProductAll")
+    public String loadClientProductAll(@RequestBody Map resp) {
 
         try {
-            return serializar(produtoClienteService.loadProductClient());
+            return serializar(produtoClienteService.loadProductClient(resp));
         } catch (Exception ex) {
             return returnException(ex);
         }
@@ -56,7 +56,7 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
             return returnException(ex);
         }
     }
-    
+
     @PostMapping(path = "loadClientSelected")
     public String loadClientSelected(@RequestBody Map resp) {
         try {
@@ -67,7 +67,17 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
             return returnException(ex);
         }
     }
-    
-    
+
+    @PostMapping(path = "confirmClientRule")
+    public String confirmClientRule(@RequestBody String json) {
+        try {
+            ProdutoCenario produtoCenario = (ProdutoCenario) deserializar(json, ProdutoCenario.class);
+            return serializar(produtoClienteService.confirmClientRule(produtoCenario));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return returnException(ex);
+        }
+    }
 
 }
