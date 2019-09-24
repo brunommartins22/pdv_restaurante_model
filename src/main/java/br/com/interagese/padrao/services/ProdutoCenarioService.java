@@ -276,19 +276,18 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 String sqlComplementarCliente = "";
 
                 if (regraProduto.getEanProduto() != null) {
-                    sqlComplementarCliente += " o.produtoCliente.ean = :ean ";
+                    sqlComplementarCliente += " o.ean = :ean ";
                 }
 
                 if (regraProduto.getCodigoProduto() != null) {
-                    sqlComplementarCliente += " o.produtoCliente.codigoProduto = :codigoProduto ";
+                    sqlComplementarCliente += " o.codigoProduto = :codigoProduto ";
                 }
 
-                if (regraProduto.getCenario() != null) {
-                    sqlComplementarCliente += " and o.cenario.id = :cenarioId ";
-                }
-
+//                if (regraProduto.getCenario() != null) {
+//                    sqlComplementarCliente += " and o.cenario.id = :cenarioId ";
+//                }
                 if (regraProduto.getCliente() != null && regraProduto.getCliente().getId() != null) {
-                    sqlComplementarCliente += " and o.produtoCliente.cliente.id = :clienteId ";
+                    sqlComplementarCliente += " and o.cliente.id = :clienteId ";
                 }
 
                 if ((regraProduto.getCliente() != null && regraProduto.getCliente().getId() != null)
@@ -299,12 +298,12 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                         listaCliente = em.createQuery("Select o.id from Cliente o where o.tipoRegime = :regime ")
                                 .setParameter("regime", regraProduto.getRegimeTributario()).getResultList();
                         if (!listaCliente.isEmpty()) {
-                            sqlComplementarCliente += " and o.produtoCliente.cliente.id in (:listaCliente) ";
+                            sqlComplementarCliente += " and o.cliente.id in (:listaCliente) ";
                         }
                     }
 
                     if (regraProduto.getCliente() != null && regraProduto.getCliente().getId() != null) {
-                        sqlComplementarCliente += " and o.produtoCliente.cliente.id = :clienteId ";
+                        sqlComplementarCliente += " and o.cliente.id = :clienteId ";
                     }
 
                     String sqlPrioridade = "";
@@ -327,7 +326,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     }
                 }
 
-                Query queryCliente = em.createQuery("Select o.id from ProdutoCenario o "
+                Query queryCliente = em.createQuery("Select o.id from ProdutoCliente o "
                         + "where " + sqlComplementarCliente);
 
                 if (regraProduto.getEanProduto() != null) {
@@ -338,10 +337,9 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     queryCliente.setParameter("codigoProduto", regraProduto.getCodigoProduto());
                 }
 
-                if (regraProduto.getCenario() != null) {
-                    queryCliente.setParameter("cenarioId", regraProduto.getCenario().getId());
-                }
-
+//                if (regraProduto.getCenario() != null) {
+//                    queryCliente.setParameter("cenarioId", regraProduto.getCenario().getId());
+//                }
                 if (regraProduto.getRegimeTributario() != null && !listaCliente.isEmpty()) {
                     queryCliente.setParameter("listaCliente", listaCliente);
                 }
@@ -459,7 +457,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 Query query = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
                         + sqlTributoFederalPadrao + ","
                         + sqlTributoEstadualPadrao
-                        + " where dominio_regras = 'REGIME' and regra_id = :regraId ");
+                        + " where dominio_regras = 'REGIME' and regra_id = :regraId " + (rrt.getCenario() != null ? " and cenario_id ="+rrt.getCenario().getId()+"":""));
                 query.setParameter("regraId", rrt.getId());
 
                 query.setParameter("cstPisSaida", rrt.getTributoFederalPadrao().getCstPisSaidaPadrao());
@@ -477,7 +475,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                         + sqlTributoFederalInformado + ","
                         + sqlTributoEstadualInformado
                         + " where dominio_regras = 'REGIME' and regra_id = :regraId "
-                        + "and confirmado = true and divergente = false ");
+                        + "and confirmado = true and divergente = false "+ (rrt.getCenario() != null ? " and cenario_id ="+rrt.getCenario().getId()+"":""));
                 queryInformado.setParameter("regraId", rrt.getId());
 
                 queryInformado.setParameter("cstPisSaida", rrt.getTributoFederalPadrao().getCstPisSaidaPadrao());
@@ -498,7 +496,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 Query query = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
                         + sqlTributoFederalPadrao + ","
                         + sqlTributoEstadualPadrao
-                        + " where dominio_regras = 'NCM' and regra_id = :regraId ");
+                        + " where dominio_regras = 'NCM' and regra_id = :regraId "+ (regraNcm.getCenario() != null ? " and cenario_id ="+regraNcm.getCenario().getId()+"":""));
                 query.setParameter("regraId", regraNcm.getId());
 
                 query.setParameter("cstPisSaida", regraNcm.getTributoFederalPadrao().getCstPisSaidaPadrao());
@@ -516,7 +514,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                         + sqlTributoFederalInformado + ","
                         + sqlTributoEstadualInformado
                         + " where dominio_regras = 'NCM' and regra_id = :regraId "
-                        + "and confirmado = true and divergente = false ");
+                        + "and confirmado = true and divergente = false "+ (regraNcm.getCenario() != null ? " and cenario_id ="+regraNcm.getCenario().getId()+"":""));
                 queryInformado.setParameter("regraId", regraNcm.getId());
 
                 queryInformado.setParameter("cstPisSaida", regraNcm.getTributoFederalPadrao().getCstPisSaidaPadrao());
@@ -537,7 +535,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 Query query = em.createNativeQuery("UPDATE syscontabil.produto_cenario set "
                         + sqlTributoFederalPadrao + ","
                         + sqlTributoEstadualPadrao
-                        + " where dominio_regras = 'PRODUTO' and regra_id = :regraId ");
+                        + " where dominio_regras = 'PRODUTO' and regra_id = :regraId " + (regraProduto.getCenario() != null ? " and cenario_id ="+regraProduto.getCenario().getId()+"":""));
                 query.setParameter("regraId", regraProduto.getId());
 
                 query.setParameter("cstPisSaida", regraProduto.getTributoFederalPadrao().getCstPisSaidaPadrao());
@@ -555,7 +553,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                         + sqlTributoFederalInformado + ","
                         + sqlTributoEstadualInformado
                         + " where dominio_regras = 'PRODUTO' and regra_id = :regraId "
-                        + "and confirmado = true and divergente = false ");
+                        + "and confirmado = true and divergente = false " + (regraProduto.getCenario() != null ? " and cenario_id ="+regraProduto.getCenario().getId()+"":""));
                 queryInformado.setParameter("regraId", regraProduto.getId());
 
                 queryInformado.setParameter("cstPisSaida", regraProduto.getTributoFederalPadrao().getCstPisSaidaPadrao());
