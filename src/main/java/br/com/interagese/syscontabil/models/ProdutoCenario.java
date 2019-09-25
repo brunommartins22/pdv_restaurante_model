@@ -43,6 +43,9 @@ public class ProdutoCenario implements Serializable {
     private DominioRegras dominioRegras;
     @Transient
     @Enumerated(EnumType.STRING)
+    private DominioRegras dominioRegrasInformadoBotaoDireito;
+    @Transient
+    @Enumerated(EnumType.STRING)
     private DominioRegras dominioRegrasInformado;
     @Enumerated(EnumType.STRING)
     private DominioRegras dominioRegrasConfirmado;
@@ -367,6 +370,20 @@ public class ProdutoCenario implements Serializable {
      */
     public void setDominioRegrasConfirmado(DominioRegras dominioRegrasConfirmado) {
         this.dominioRegrasConfirmado = dominioRegrasConfirmado;
+    }
+
+    /**
+     * @return the dominioRegrasInformadoBotaoDireito
+     */
+    public DominioRegras getDominioRegrasInformadoBotaoDireito() {
+        return dominioRegrasInformadoBotaoDireito;
+    }
+
+    /**
+     * @param dominioRegrasInformadoBotaoDireito the dominioRegrasInformadoBotaoDireito to set
+     */
+    public void setDominioRegrasInformadoBotaoDireito(DominioRegras dominioRegrasInformadoBotaoDireito) {
+        this.dominioRegrasInformadoBotaoDireito = dominioRegrasInformadoBotaoDireito;
     }
 
 }
