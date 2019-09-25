@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -100,6 +101,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         } else {
             result.forEach((produtoCenario) -> {
                 produtoCenario.setStatus(produtoCenario.isDivergente() ? "Pendente" : "Validado");
+                produtoCenario.setDominioRegrasInformadoBotaoDireito(produtoCenario.isConfirmado() ? produtoCenario.getDominioRegrasConfirmado() : produtoCenario.getDominioRegras());
                 produtoCenario.setDominioRegrasInformado(produtoCenario.isConfirmado() ? produtoCenario.getDominioRegrasConfirmado() : produtoCenario.getDominioRegras());
                 if ((produtoCenario.getProdutoCliente().getNcmPadrao() != null && !produtoCenario.getProdutoCliente().getNcmPadrao().isEmpty()) && (produtoCenario.getProdutoCliente().getCestPadrao() != null && !produtoCenario.getProdutoCliente().getCestPadrao().isEmpty())) {
                     produtoCenario.getProdutoCliente().setIsProdutoGeral(true);
@@ -143,6 +145,15 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 produtoCenario.getProdutoCliente().setNcmPadrao(produtoCenario.getProdutoCliente().getNcmInformado());
                 produtoCenario.getProdutoCliente().setCestPadrao(produtoCenario.getProdutoCliente().getCestInformado());
 
+                //******* update all product in table produtoCliente ***********
+                if (produtoCenario.getProdutoCliente().getEan() != null) {
+                    em.createNativeQuery("update syscontabil.produto_cliente set "
+                            + "ncm_padrao = '" + produtoCenario.getProdutoCliente().getNcmInformado() + "',"
+                            + "ncm_informado = '" + produtoCenario.getProdutoCliente().getNcmInformado() + "',"
+                            + "cest_padrao = '" + produtoCenario.getProdutoCliente().getCestInformado() + "',"
+                            + "cest_informado = '" + produtoCenario.getProdutoCliente().getCestInformado() + "' "
+                            + "where ean =" + produtoCenario.getProdutoCliente().getEan()).executeUpdate();
+                }
             }
 
             produtoCenario.getProdutoCliente().setNcmConfirmado(produtoCenario.getProdutoCliente().getNcmInformado());
@@ -188,7 +199,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
             switch (produtoCenario.getDominioRegrasInformado()) {
                 case PRODUTO: {
                     RegraProduto regraProduto = null;
-                    if (!produtoCenario.getDominioRegras().equals(produtoCenario.getDominioRegrasInformado())) {
+                    if (!produtoCenario.getDominioRegras().equals(produtoCenario.getDominioRegrasInformado()) && !produtoCenario.getDominioRegrasInformadoBotaoDireito().equals(produtoCenario.getDominioRegrasInformado())) {
                         regraProduto = new RegraProduto();
                         regraProduto.getAtributoPadrao().setDataAlteracao(new Date());
                         regraProduto.getAtributoPadrao().setIdUsuario(1L);
@@ -272,4 +283,10 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         return produtoCenario;
     }
 
+    //************************* syscotabil_job *********************************
+    //" segundo min hora dia mes dia-da-semana "
+    @Scheduled(cron = "0 0 0 * * *")
+    public void executeJob() {
+
+    }
 }
