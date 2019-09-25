@@ -108,6 +108,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 } else {
                     produtoCenario.getProdutoCliente().setIsProdutoGeral(false);
                 }
+                produtoCenario.setIsEdited(false);
             });
         }
         return result;
@@ -147,30 +148,47 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 
                 //******* update all product in table produtoCliente ***********
                 if (produtoCenario.getProdutoCliente().getEan() != null) {
+
                     em.createNativeQuery("update syscontabil.produto_cliente set "
                             + "ncm_padrao = '" + produtoCenario.getProdutoCliente().getNcmInformado() + "',"
-                            + "ncm_informado = '" + produtoCenario.getProdutoCliente().getNcmInformado() + "',"
-                            + "cest_padrao = '" + produtoCenario.getProdutoCliente().getCestInformado() + "',"
-                            + "cest_informado = '" + produtoCenario.getProdutoCliente().getCestInformado() + "' "
+                            + "cest_padrao = '" + produtoCenario.getProdutoCliente().getCestInformado() + "' "
                             + "where ean =" + produtoCenario.getProdutoCliente().getEan()).executeUpdate();
+                }
+            } else {
+                if (!produtoCenario.getProdutoCliente().getNcmInformado().equals(produtoCenario.getProdutoCliente().getNcmPadrao())) {
+                    addErro("Ncm informado precisa ser corrigido para o sugerido !!");
+                }
+
+                if (!produtoCenario.getProdutoCliente().getCestInformado().equals(produtoCenario.getProdutoCliente().getCestPadrao())) {
+                    addErro("Cest informado precisa ser corrigido para o sugerido !!");
                 }
             }
 
             produtoCenario.getProdutoCliente().setNcmConfirmado(produtoCenario.getProdutoCliente().getNcmInformado());
             produtoCenario.getProdutoCliente().setCestConfirmado(produtoCenario.getProdutoCliente().getCestInformado());
 
-            if (produtoCenario.getTributoEstadualInformado() != null) {
-
-                //****************************** ICMS **************************
-                //****************************** Tributos de Saída ************************************
-                //****************************** Update Client Exit ***********************************
-                produtoCenario.getTributoEstadualPadrao().setCstIcmsSaidaPadrao(produtoCenario.getTributoEstadualInformado().getCstIcmsSaidaInformado());
-                produtoCenario.getTributoEstadualPadrao().setAliquotaIcmsSaidaPadrao(produtoCenario.getTributoEstadualInformado().getAliquotaIcmsSaidaInformado());
-                produtoCenario.getTributoEstadualConfirmado().setCstIcmsSaidaConfirmado(produtoCenario.getTributoEstadualInformado().getCstIcmsSaidaInformado());
-                produtoCenario.getTributoEstadualConfirmado().setAliquotaIcmsSaidaConfirmado(produtoCenario.getTributoEstadualInformado().getAliquotaIcmsSaidaInformado());
-            }
-
             if (produtoCenario.getTributoFederalInformado() != null) {
+
+                if (!produtoCenario.isIsEdited()) {
+                    if (!produtoCenario.getTributoFederalInformado().getCstPisSaidaInformado().equals(produtoCenario.getTributoFederalPadrao().getCstPisSaidaPadrao())) {
+                        addErro("CST do Pis informado precisa ser alterado para o sugerido !!");
+                    }
+                    if (!produtoCenario.getTributoFederalInformado().getAliquotaPisSaidaInformado().equals(produtoCenario.getTributoFederalPadrao().getAliquotaPisSaidaPadrao())) {
+                        addErro("Alíquota do Icms informado precisa ser alterado para o sugerido !!");
+                    }
+                    if (!produtoCenario.getTributoFederalInformado().getCstCofinsSaidaInformado().equals(produtoCenario.getTributoFederalPadrao().getCstCofinsSaidaPadrao())) {
+                        addErro("CST do Cofins informado precisa ser alterado para o sugerido !!");
+                    }
+                    if (!produtoCenario.getTributoFederalInformado().getAliquotaCofinsSaidaInformado().equals(produtoCenario.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao())) {
+                        addErro("Alíquota do Cofins informado precisa ser alterado para o sugerido !!");
+                    }
+                    if (!produtoCenario.getTributoFederalInformado().getCstIpiSaidaInformado().equals(produtoCenario.getTributoFederalPadrao().getCstIpiSaidaPadrao())) {
+                        addErro("CST do Ipi informado precisa ser alterado para o sugerido !!");
+                    }
+                    if (!produtoCenario.getTributoFederalInformado().getAliquotaIpiSaidaInformado().equals(produtoCenario.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao())) {
+                        addErro("Alíquota do Ipi informado precisa ser alterado para o sugerido !!");
+                    }
+                }
 
                 //************************* Pis ********************************
                 //****************************** Tributos de Saída ************************************
@@ -194,6 +212,26 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 produtoCenario.getTributoFederalConfirmado().setCstIpiSaidaConfirmado(produtoCenario.getTributoFederalInformado().getCstIpiSaidaInformado());
                 produtoCenario.getTributoFederalConfirmado().setAliquotaIpiSaidaConfirmado(produtoCenario.getTributoFederalInformado().getAliquotaIpiSaidaInformado());
 
+            }
+
+            if (produtoCenario.getTributoEstadualInformado() != null) {
+
+                if (!produtoCenario.isIsEdited()) {
+                    if (!produtoCenario.getTributoEstadualInformado().getCstIcmsSaidaInformado().equals(produtoCenario.getTributoEstadualPadrao().getCstIcmsSaidaPadrao())) {
+                        addErro("CST do Icms informado precisa ser alterado para o sugerido !!");
+                    }
+                    if (!produtoCenario.getTributoEstadualInformado().getAliquotaIcmsSaidaInformado().equals(produtoCenario.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao())) {
+                        addErro("Alíquota do Icms informado precisa ser alterado para o sugerido !!");
+                    }
+                }
+
+                //****************************** ICMS **************************
+                //****************************** Tributos de Saída ************************************
+                //****************************** Update Client Exit ***********************************
+                produtoCenario.getTributoEstadualPadrao().setCstIcmsSaidaPadrao(produtoCenario.getTributoEstadualInformado().getCstIcmsSaidaInformado());
+                produtoCenario.getTributoEstadualPadrao().setAliquotaIcmsSaidaPadrao(produtoCenario.getTributoEstadualInformado().getAliquotaIcmsSaidaInformado());
+                produtoCenario.getTributoEstadualConfirmado().setCstIcmsSaidaConfirmado(produtoCenario.getTributoEstadualInformado().getCstIcmsSaidaInformado());
+                produtoCenario.getTributoEstadualConfirmado().setAliquotaIcmsSaidaConfirmado(produtoCenario.getTributoEstadualInformado().getAliquotaIcmsSaidaInformado());
             }
 
             switch (produtoCenario.getDominioRegrasInformado()) {

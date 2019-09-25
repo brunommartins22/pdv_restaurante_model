@@ -51,7 +51,6 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
         try {
 
             return serializar(produtoCenarioService.loadProdutoCenarioCount(resp));
-
         } catch (Exception ex) {
             return returnException(ex);
         }
@@ -60,9 +59,7 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
     @PostMapping(path = "loadClientSelected")
     public String loadClientSelected(@RequestBody Map resp) {
         try {
-
             return serializar(produtoClienteService.loadProductClientRule(resp));
-
         } catch (Exception ex) {
             return returnException(ex);
         }
@@ -73,9 +70,7 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
         try {
             ProdutoCenario produtoCenario = (ProdutoCenario) deserializar(json, ProdutoCenario.class);
             return serializar(produtoClienteService.confirmClientRule(produtoCenario));
-
         } catch (Exception ex) {
-            ex.printStackTrace();
             return returnException(ex);
         }
     }
