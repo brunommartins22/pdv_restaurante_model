@@ -75,6 +75,8 @@ public class ProdutoCenario implements Serializable {
     private boolean confirmado;
     @Transient
     private String status;
+    @Transient
+    private boolean isEdited;
 
     public ProdutoCenario() {
         this.confirmado = false;
@@ -384,6 +386,20 @@ public class ProdutoCenario implements Serializable {
      */
     public void setDominioRegrasInformadoBotaoDireito(DominioRegras dominioRegrasInformadoBotaoDireito) {
         this.dominioRegrasInformadoBotaoDireito = dominioRegrasInformadoBotaoDireito;
+    }
+
+    /**
+     * @return the isEdited
+     */
+    public boolean isIsEdited() {
+        return isEdited;
+    }
+
+    /**
+     * @param isEdited the isEdited to set
+     */
+    public void setIsEdited(boolean isEdited) {
+        this.isEdited = isEdited;
     }
 
 }
