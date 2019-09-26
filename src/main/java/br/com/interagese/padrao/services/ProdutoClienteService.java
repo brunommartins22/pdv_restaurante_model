@@ -59,22 +59,26 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 + "  c.cpf_cnpj AS CPF_CNPJ,"
                 + "  c.razao_social AS CLIENTE,"
                 + "  (select count(*) from syscontabil.produto_cliente p where cliente_id = c.id) AS TOTAL"
-                + " FROM syscontabil.cliente c where c.rgevento <> '3' and ativo is true";
+                + " FROM syscontabil.cliente c where c.rgevento <> '3' and ativo is true and tipo_cliente='JURIDICA'";
 
         if (resp != null && resp.size() > 0) {
             String codigo = (((String) resp.get("codigo")) == null || ((String) resp.get("codigo")).isEmpty()) ? null : (String) resp.get("codigo");
             String nome = (String) resp.get("nome");
-            String tipoPessoa = (String) resp.get("tipoPessoa");
             String ordenacao = (String) resp.get("ordenacao");
 
-            if (codigo != null) {
-                sql += " and c.cpf_cnpj = " + codigo + "";
+            if (codigo != null && !codigo.isEmpty()) {
+                codigo = Utils.retirarCaracteresEspeciais(codigo);
+                if (!Utils.somenteNumeros(codigo)) {
+                    addErro("Campo não pode conter Letras !!");
+                }
+                if (codigo.length() == 14) {
+                    sql += " and c.cpf_cnpj = '" + Utils.formataStringCNPJ(codigo) + "'";
+                } else {
+                    addErro("Quantidade de Caracters Inválida !!");
+                }
             }
             if (nome != null && !nome.isEmpty()) {
-                 sql += " and c.razao_social like '%" + nome + "%'";
-            }
-            if (tipoPessoa != null && !tipoPessoa.isEmpty()) {
-                sql += " and c.tipo_cliente = '" + tipoPessoa + "'";
+                sql += " and c.razao_social like '%" + nome + "%'";
             }
             if (ordenacao != null && !ordenacao.isEmpty()) {
                 sql += " order by " + ordenacao;
