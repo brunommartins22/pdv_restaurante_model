@@ -43,10 +43,13 @@ public class TributoFederalInformado implements Serializable {
     
     //********************************* get && setts ***************************
 
-    /**
+     /**
      * @return the cstPisEntradaInformado
      */
     public String getCstPisEntradaInformado() {
+        if (cstPisEntradaInformado == null) {
+            cstPisEntradaInformado = "";
+        }
         return cstPisEntradaInformado;
     }
 
@@ -61,6 +64,9 @@ public class TributoFederalInformado implements Serializable {
      * @return the aliquotaPisEntradaInformado
      */
     public Double getAliquotaPisEntradaInformado() {
+        if (aliquotaPisEntradaInformado == null) {
+            aliquotaPisEntradaInformado = 0.0;
+        }
         return aliquotaPisEntradaInformado;
     }
 
@@ -75,6 +81,9 @@ public class TributoFederalInformado implements Serializable {
      * @return the cstPisSaidaInformado
      */
     public String getCstPisSaidaInformado() {
+        if (cstPisSaidaInformado == null) {
+            cstPisSaidaInformado = "";
+        }
         return cstPisSaidaInformado;
     }
 
@@ -89,6 +98,9 @@ public class TributoFederalInformado implements Serializable {
      * @return the aliquotaPisSaidaInformado
      */
     public Double getAliquotaPisSaidaInformado() {
+        if (aliquotaPisSaidaInformado == null) {
+            aliquotaPisSaidaInformado = 0.0;
+        }
         return aliquotaPisSaidaInformado;
     }
 
@@ -103,6 +115,9 @@ public class TributoFederalInformado implements Serializable {
      * @return the cstCofinsEntradaInformado
      */
     public String getCstCofinsEntradaInformado() {
+        if (cstCofinsEntradaInformado == null) {
+            cstCofinsEntradaInformado = "";
+        }
         return cstCofinsEntradaInformado;
     }
 
@@ -117,6 +132,9 @@ public class TributoFederalInformado implements Serializable {
      * @return the aliquotaCofinsEntradaInformado
      */
     public Double getAliquotaCofinsEntradaInformado() {
+        if (aliquotaCofinsEntradaInformado == null) {
+            aliquotaCofinsEntradaInformado = 0.0;
+        }
         return aliquotaCofinsEntradaInformado;
     }
 
@@ -131,6 +149,9 @@ public class TributoFederalInformado implements Serializable {
      * @return the cstCofinsSaidaInformado
      */
     public String getCstCofinsSaidaInformado() {
+        if (cstCofinsSaidaInformado == null) {
+            cstCofinsSaidaInformado = "";
+        }
         return cstCofinsSaidaInformado;
     }
 
@@ -145,6 +166,9 @@ public class TributoFederalInformado implements Serializable {
      * @return the aliquotaCofinsSaidaInformado
      */
     public Double getAliquotaCofinsSaidaInformado() {
+        if (aliquotaCofinsSaidaInformado == null) {
+            aliquotaCofinsSaidaInformado = 0.0;
+        }
         return aliquotaCofinsSaidaInformado;
     }
 
@@ -159,6 +183,9 @@ public class TributoFederalInformado implements Serializable {
      * @return the cstIpiEntradaInformado
      */
     public String getCstIpiEntradaInformado() {
+        if (cstIpiEntradaInformado == null) {
+            cstIpiEntradaInformado = "";
+        }
         return cstIpiEntradaInformado;
     }
 
@@ -173,6 +200,9 @@ public class TributoFederalInformado implements Serializable {
      * @return the aliquotaIpiEntradaInformado
      */
     public Double getAliquotaIpiEntradaInformado() {
+        if (aliquotaIpiEntradaInformado == null) {
+            aliquotaIpiEntradaInformado = 0.0;
+        }
         return aliquotaIpiEntradaInformado;
     }
 
@@ -187,6 +217,9 @@ public class TributoFederalInformado implements Serializable {
      * @return the cstIpiSaidaInformado
      */
     public String getCstIpiSaidaInformado() {
+        if (cstIpiSaidaInformado == null) {
+            cstIpiSaidaInformado = "";
+        }
         return cstIpiSaidaInformado;
     }
 
@@ -201,6 +234,9 @@ public class TributoFederalInformado implements Serializable {
      * @return the aliquotaIpiSaidaInformado
      */
     public Double getAliquotaIpiSaidaInformado() {
+        if (aliquotaIpiSaidaInformado == null) {
+            aliquotaIpiSaidaInformado = 0.0;
+        }
         return aliquotaIpiSaidaInformado;
     }
 
@@ -210,6 +246,7 @@ public class TributoFederalInformado implements Serializable {
     public void setAliquotaIpiSaidaInformado(Double aliquotaIpiSaidaInformado) {
         this.aliquotaIpiSaidaInformado = aliquotaIpiSaidaInformado;
     }
+
 
    
 }

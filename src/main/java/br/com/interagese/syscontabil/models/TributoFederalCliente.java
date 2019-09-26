@@ -43,10 +43,13 @@ public class TributoFederalCliente implements Serializable {
     
     //********************************* get && setts ***************************
 
-    /**
+     /**
      * @return the cstPisEntradaCliente
      */
     public String getCstPisEntradaCliente() {
+        if (cstPisEntradaCliente == null) {
+            cstPisEntradaCliente = "";
+        }
         return cstPisEntradaCliente;
     }
 
@@ -61,6 +64,9 @@ public class TributoFederalCliente implements Serializable {
      * @return the aliquotaPisEntradaCliente
      */
     public Double getAliquotaPisEntradaCliente() {
+        if (aliquotaPisEntradaCliente == null) {
+            aliquotaPisEntradaCliente = 0.0;
+        }
         return aliquotaPisEntradaCliente;
     }
 
@@ -75,6 +81,9 @@ public class TributoFederalCliente implements Serializable {
      * @return the cstPisSaidaCliente
      */
     public String getCstPisSaidaCliente() {
+        if (cstPisSaidaCliente == null) {
+            cstPisSaidaCliente = "";
+        }
         return cstPisSaidaCliente;
     }
 
@@ -89,6 +98,9 @@ public class TributoFederalCliente implements Serializable {
      * @return the aliquotaPisSaidaCliente
      */
     public Double getAliquotaPisSaidaCliente() {
+        if (aliquotaPisSaidaCliente == null) {
+            aliquotaPisSaidaCliente = 0.0;
+        }
         return aliquotaPisSaidaCliente;
     }
 
@@ -103,6 +115,9 @@ public class TributoFederalCliente implements Serializable {
      * @return the cstCofinsEntradaCliente
      */
     public String getCstCofinsEntradaCliente() {
+        if (cstCofinsEntradaCliente == null) {
+            cstCofinsEntradaCliente = "";
+        }
         return cstCofinsEntradaCliente;
     }
 
@@ -117,6 +132,9 @@ public class TributoFederalCliente implements Serializable {
      * @return the aliquotaCofinsEntradaCliente
      */
     public Double getAliquotaCofinsEntradaCliente() {
+        if (aliquotaCofinsEntradaCliente == null) {
+            aliquotaCofinsEntradaCliente = 0.0;
+        }
         return aliquotaCofinsEntradaCliente;
     }
 
@@ -131,6 +149,9 @@ public class TributoFederalCliente implements Serializable {
      * @return the cstCofinsSaidaCliente
      */
     public String getCstCofinsSaidaCliente() {
+        if (cstCofinsSaidaCliente == null) {
+            cstCofinsSaidaCliente = "";
+        }
         return cstCofinsSaidaCliente;
     }
 
@@ -145,6 +166,9 @@ public class TributoFederalCliente implements Serializable {
      * @return the aliquotaCofinsSaidaCliente
      */
     public Double getAliquotaCofinsSaidaCliente() {
+        if (aliquotaCofinsSaidaCliente == null) {
+            aliquotaCofinsSaidaCliente = 0.0;
+        }
         return aliquotaCofinsSaidaCliente;
     }
 
@@ -159,6 +183,9 @@ public class TributoFederalCliente implements Serializable {
      * @return the cstIpiEntradaCliente
      */
     public String getCstIpiEntradaCliente() {
+        if (cstIpiEntradaCliente == null) {
+            cstIpiEntradaCliente = "";
+        }
         return cstIpiEntradaCliente;
     }
 
@@ -173,6 +200,9 @@ public class TributoFederalCliente implements Serializable {
      * @return the aliquotaIpiEntradaCliente
      */
     public Double getAliquotaIpiEntradaCliente() {
+        if (aliquotaIpiEntradaCliente == null) {
+            aliquotaIpiEntradaCliente = 0.0;
+        }
         return aliquotaIpiEntradaCliente;
     }
 
@@ -187,6 +217,9 @@ public class TributoFederalCliente implements Serializable {
      * @return the cstIpiSaidaCliente
      */
     public String getCstIpiSaidaCliente() {
+        if (cstIpiSaidaCliente == null) {
+            cstIpiSaidaCliente = "";
+        }
         return cstIpiSaidaCliente;
     }
 
@@ -201,6 +234,9 @@ public class TributoFederalCliente implements Serializable {
      * @return the aliquotaIpiSaidaCliente
      */
     public Double getAliquotaIpiSaidaCliente() {
+        if (aliquotaIpiSaidaCliente == null) {
+            aliquotaIpiSaidaCliente = 0.0;
+        }
         return aliquotaIpiSaidaCliente;
     }
 
