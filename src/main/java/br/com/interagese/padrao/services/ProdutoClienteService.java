@@ -5,23 +5,32 @@
  */
 package br.com.interagese.padrao.services;
 
+import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.padrao.rest.domains.DominioEvento;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.padrao.rest.util.TransformNativeQuery;
 import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.dto.ClienteProdutoDto;
+import br.com.interagese.syscontabil.models.ArquivosProcessar;
 import br.com.interagese.syscontabil.models.ProdutoCenario;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
 import br.com.interagese.syscontabil.models.ProdutoGeral;
 import br.com.interagese.syscontabil.models.RegraNcm;
 import br.com.interagese.syscontabil.models.RegraProduto;
+import br.com.interagese.syscontabil.models.RegraRegimeTributario;
+import br.com.interagese.syscontabil.models.fileProcessed.ArquivoItem;
+import br.com.interagese.syscontabil.models.fileProcessed.Produto;
+import br.com.interagese.syscontabil.models.fileProcessed.ProdutoCenarioJob;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,15 +43,13 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
     @Autowired
     private RegraProdutoService regraProdutoService;
     @Autowired
-    private RegraRegimeService regraRegimeTributarioService;
+    private RegraRegimeService regraRegimeService;
     @Autowired
     private RegraNcmService regraNcmService;
     @Autowired
     private ProdutoGeralService produtoGeralService;
     @Autowired
     private ProdutoCenarioService produtoCenarioService;
-    @Autowired
-    private CenarioService cenarioService;
 
     public List<ClienteProdutoDto> loadProductClient(Map resp) throws Exception {
 
@@ -52,7 +59,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 + "  c.cpf_cnpj AS CPF_CNPJ,"
                 + "  c.razao_social AS CLIENTE,"
                 + "  (select count(*) from syscontabil.produto_cliente p where cliente_id = c.id) AS TOTAL"
-                + " FROM syscontabil.cliente c where c.rgevento <> '3'";
+                + " FROM syscontabil.cliente c where c.rgevento <> '3' and ativo is true";
 
         if (resp != null && resp.size() > 0) {
             Long codigo = (((String) resp.get("codigo")) == null || ((String) resp.get("codigo")).isEmpty()) ? null : Long.parseLong((String) resp.get("codigo"));
@@ -64,7 +71,8 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 sql += " and c.id = " + codigo + "";
             }
             if (nome != null && !nome.isEmpty()) {
-                sql += " and c.razao_social like '%" + nome + "%'";
+                nome = Utils.retirarCaracteresEspeciais(nome);
+                sql += " and c.razao_social like '%" + nome + "%' or c.cpf_cnpj ='" + (nome.length() == 11 ? Utils.formataStringCPF(nome) : Utils.formataStringCNPJ(nome)) + "'";
             }
             if (tipoPessoa != null && !tipoPessoa.isEmpty()) {
                 sql += " and c.tipo_cliente = '" + tipoPessoa + "'";
@@ -321,10 +329,400 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         return produtoCenario;
     }
 
-    //************************* syscotabil_job *********************************
-    //" segundo min hora dia mes dia-da-semana "
-    @Scheduled(cron = "0 0 0 * * *")
-    public void executeJob() {
+    //*************************** Methods Job **********************************
+    public List<Produto> loadProdutos(ArquivosProcessar arquivoSelecionado) throws Exception {
+        List<Produto> produtos = new ArrayList<>();
+        File arquivo = new File(arquivoSelecionado.getCaminho());
+
+        if (!arquivo.exists()) {
+            throw new Exception("Caminho inserido na base de dados inválido !!");
+        }
+
+        BufferedReader br = new BufferedReader(new FileReader(arquivo));
+        int size = 0;
+
+        while (br.ready()) {
+
+            String linha = br.readLine();
+            if (size != 0) {
+                Produto produto = null;
+                System.out.println("posição(arquivo) : " + size + " registro(s)");
+
+                ArquivoItem arquivoItem = getItem(linha, size);
+
+                produto = produtos.stream().filter((p) -> {
+                    return (p.getCodigoProduto() != null ? p.getCodigoProduto().equals(arquivoItem.getCodigoProduto()) : p.getEan() != null ? p.getEan().equals(arquivoItem.getEan()) : null);
+                }).findFirst().orElse(null);
+
+                if (produto != null) {
+                    updateProduto(produto, arquivoItem);
+                } else {
+                    produto = insertProduto(arquivoSelecionado.getAtributoPadrao().getIdUsuario(), arquivoSelecionado.getAtributoPadrao().getNomeUsuario(), arquivoSelecionado.getCliente().getId(), arquivoItem);
+                    produtos.add(produto);
+
+                }
+
+            }
+            size++;
+        }
+        return produtos;
+    }
+
+    private Produto insertProduto(Long codUsuario, String nmUsuario, Long clienteId, ArquivoItem item) throws Exception {
+
+        //************************ PRODUTO *************************************
+        Produto produtoJob = new Produto();
+        //********************** USUARIO ******************************
+        produtoJob.getAtributoPadrao().setIdUsuario(codUsuario);
+        produtoJob.getAtributoPadrao().setNmUsuario(nmUsuario);
+        produtoJob.getAtributoPadrao().setRgEvento(1);
+        produtoJob.getAtributoPadrao().setRgData(new Date());
+        //**********************************************************************
+        //p.setId(idProduto);
+        produtoJob.setClienteId(clienteId);
+        produtoJob.setCodigoProduto(item.getCodigoProduto());
+        produtoJob.setEan(item.getEan());
+        produtoJob.setNmProduto(item.getNmProduto());
+        produtoJob.setNcm(item.getNcm());
+        produtoJob.setCest(item.getCest());
+        //************************* PRODUTO CENARIO ****************************
+        ProdutoCenarioJob produtoCenarioJob = new ProdutoCenarioJob();
+        //********************** USUARIO ******************************
+        //produtoCenario.setId(idProdutoCenario);
+        produtoCenarioJob.getAtributoPadrao().setIdUsuario(codUsuario);
+        produtoCenarioJob.getAtributoPadrao().setNmUsuario(nmUsuario);
+        produtoCenarioJob.getAtributoPadrao().setRgEvento(1);
+        produtoCenarioJob.getAtributoPadrao().setRgData(new Date());
+        //**********************************************************************
+        produtoCenarioJob.setIdCenario(item.getCenarioId());
+        //************************ tributo estadual ****************************
+        //******************** ICMS ***********************
+        //******************** Saida ***********************
+        produtoCenarioJob.getTributoEstadualCliente().setCstIcmsSaidaCliente(item.getCstIcmsSaida());
+        produtoCenarioJob.getTributoEstadualCliente().setAliquotaIcmsSaidaCliente(item.getAliquotaIcmsSaida());
+        //************************ tributo federal  ****************************
+        //******************** PIS ************************
+        //******************** Saida ***********************
+        produtoCenarioJob.getTributoFederalCliente().setCstPisSaidaCliente(item.getCstPisSaida());
+        produtoCenarioJob.getTributoFederalCliente().setAliquotaPisSaidaCliente(item.getAliquotaPisSaida());
+        //******************* COFINS **********************
+        //******************** Saida ***********************
+        produtoCenarioJob.getTributoFederalCliente().setCstCofinsSaidaCliente(item.getCstCofinsSaida());
+        produtoCenarioJob.getTributoFederalCliente().setAliquotaCofinsSaidaCliente(item.getAliquotaCofinsSaida());
+        //******************** IPI ************************
+        //******************** Saida ***********************
+        produtoCenarioJob.getTributoFederalCliente().setCstIpiSaidaCliente(item.getCstIpiSaida());
+        produtoCenarioJob.getTributoFederalCliente().setAliquotaIpiSaidaCliente(item.getAliquotaIpiSaida());
+
+        //**********************************************************************
+        produtoJob.getListaProdutoCenario().add(produtoCenarioJob);
+
+        //*************************** validation Rule **************************
+        String ncmPadrao = null;
+        String cestPadrao = null;
+        if (produtoJob.getEan() != null) {
+            List<Object[]> result = em.createNativeQuery("SELECT o.ncm as ncm,o.cest as cest FROM syscontabil.produto_geral o WHERE o.ean ='" + produtoJob.getEan() + "'").getResultList();
+            if (!result.isEmpty()) {
+                ncmPadrao = (String) result.get(0)[0];
+                cestPadrao = (String) result.get(0)[1];
+            }
+        }
+
+        produtoJob.setNcmPadrao(ncmPadrao);
+        produtoJob.setCestPadrao(cestPadrao);
+
+        produtoJob.setNcmInformado(produtoJob.getNcm() != null && !produtoJob.getNcm().isEmpty() ? produtoJob.getNcm() : produtoJob.getNcmPadrao() != null && !produtoJob.getNcmPadrao().isEmpty() ? produtoJob.getNcmPadrao() : null);
+        produtoJob.setCestInformado(produtoJob.getCest() != null && !produtoJob.getCest().isEmpty() ? produtoJob.getCest() : produtoJob.getCestPadrao() != null && !produtoJob.getCestPadrao().isEmpty() ? produtoJob.getCestPadrao() : null);
+
+        int cont = 1;
+        //******************************************************************
+        switch (cont) {
+            case 1: {
+                if (produtoJob.getEan() != null) {
+                    //************************ Product Rule ****************************
+
+                    RegraProduto regraProduto = regraProdutoService.loadRegraProduto(produtoCenarioJob.getIdCenario(), produtoJob.getEan(), produtoJob.getClienteId(), produtoJob.getCodigoProduto());
+
+                    if (regraProduto != null) {
+                        produtoCenarioJob.setIdRegra(regraProduto.getId());
+                        produtoCenarioJob.setNmRegra("PRODUTO");
+                        produtoCenarioJob.setTributoEstadualPadrao(regraProduto.getTributoEstadualPadrao());
+                        produtoCenarioJob.setTributoFederalPadrao(regraProduto.getTributoFederalPadrao());
+                        break;
+                    }
+                }
+                cont++;
+            }
+            case 2: {
+                if (produtoJob.getNcm() != null) {
+                    //************************ Ncm Rule ****************************
+
+                    RegraNcm regraNcm = regraNcmService.loadRegraNcm(produtoCenarioJob.getIdCenario(), produtoJob.getNcm(), produtoJob.getClienteId());
+
+                    if (regraNcm != null) {
+                        produtoCenarioJob.setIdRegra(regraNcm.getId());
+                        produtoCenarioJob.setNmRegra("NCM");
+                        produtoCenarioJob.setTributoEstadualPadrao(regraNcm.getTributoEstadualPadrao());
+                        produtoCenarioJob.setTributoFederalPadrao(regraNcm.getTributoFederalPadrao());
+                        break;
+                    }
+                }
+                cont++;
+            }
+            case 3: {
+                if (produtoJob.getClienteId() != null) {
+                    //************************ Regime Tributário Rule ****************************
+
+                    RegraRegimeTributario regimeTributario = regraRegimeService.loadRegraRegimeTributario(produtoCenarioJob.getIdCenario(), produtoJob.getClienteId());
+
+                    if (regimeTributario != null) {
+                        produtoCenarioJob.setIdRegra(regimeTributario.getId());
+                        produtoCenarioJob.setNmRegra("REGIME");
+                        produtoCenarioJob.setTributoEstadualPadrao(regimeTributario.getTributoEstadualPadrao());
+                        produtoCenarioJob.setTributoFederalPadrao(regimeTributario.getTributoFederalPadrao());
+                    }
+
+                }
+            }
+        }
+
+        return produtoJob;
+
+    }
+
+    private void updateProduto(Produto produto, ArquivoItem a) throws Exception {
+
+        ProdutoCenarioJob produtoCenario = produto.getListaProdutoCenario().stream().filter((pc) -> {
+            return pc.getIdCenario().equals(a.getCenarioId()) && ((produto.getCodigoProduto() != null && !produto.getCodigoProduto().isEmpty() && produto.getCodigoProduto().equals(a.getCodigoProduto())) || (produto.getEan() != null && produto.getEan().equals(a.getEan())));
+        }).findFirst().orElse(null);
+
+        if (produtoCenario == null) {
+            //************************* PRODUTO CENARIO ****************************
+            produtoCenario = new ProdutoCenarioJob();
+            //produtoCenario.setId(p.getListaProdutoCenario().get(p.getListaProdutoCenario().size() - 1).getId() + 1L);
+            //********************** USUARIO ******************************
+            produtoCenario.getAtributoPadrao().setIdUsuario(produto.getAtributoPadrao().getIdUsuario());
+            produtoCenario.getAtributoPadrao().setNmUsuario(produto.getAtributoPadrao().getNmUsuario());
+            produtoCenario.getAtributoPadrao().setRgEvento(1);
+            produtoCenario.getAtributoPadrao().setRgData(new Date());
+            //**********************************************************************
+            //produtoCenario.setIdProduto(p.getId());
+            produtoCenario.setIdCenario(a.getCenarioId());
+            //************************ tributo estadual ****************************
+            //******************** ICMS ***********************
+            //******************** Saida ***********************
+            produtoCenario.getTributoEstadualCliente().setCstIcmsSaidaCliente(a.getCstIcmsSaida());
+            produtoCenario.getTributoEstadualCliente().setAliquotaIcmsSaidaCliente(a.getAliquotaIcmsSaida());
+
+            //************************ tributo federal  ****************************
+            //******************** PIS ************************
+            //******************** Saida ***********************
+            produtoCenario.getTributoFederalCliente().setCstPisSaidaCliente(a.getCstPisSaida());
+            produtoCenario.getTributoFederalCliente().setAliquotaPisSaidaCliente(a.getAliquotaPisSaida());
+            //******************* COFINS **********************
+            //******************** Saida ***********************
+            produtoCenario.getTributoFederalCliente().setCstCofinsSaidaCliente(a.getCstCofinsSaida());
+            produtoCenario.getTributoFederalCliente().setAliquotaCofinsSaidaCliente(a.getAliquotaCofinsSaida());
+            //******************** IPI ************************
+            //******************** Saida ***********************
+            produtoCenario.getTributoFederalCliente().setCstIpiSaidaCliente(a.getCstIpiSaida());
+            produtoCenario.getTributoFederalCliente().setAliquotaIpiSaidaCliente(a.getAliquotaIpiSaida());
+
+            produto.getListaProdutoCenario().add(produtoCenario);
+
+            //************************ validation rule *************************
+            int cont = 1;
+            //******************************************************************
+            switch (cont) {
+                case 1: {
+                    if (produto.getEan() != null) {
+                        //************************ Product Rule ****************************
+
+                        RegraProduto regraProduto = regraProdutoService.loadRegraProduto(produtoCenario.getIdCenario(), produto.getEan(), produto.getClienteId(), produto.getCodigoProduto());
+
+                        if (regraProduto != null) {
+                            produtoCenario.setIdRegra(regraProduto.getId());
+                            produtoCenario.setNmRegra("PRODUTO");
+                            produtoCenario.setTributoEstadualPadrao(regraProduto.getTributoEstadualPadrao());
+                            produtoCenario.setTributoFederalPadrao(regraProduto.getTributoFederalPadrao());
+                            break;
+                        }
+                    }
+                    cont++;
+                }
+                case 2: {
+                    if (produto.getNcm() != null) {
+                        //************************ Ncm Rule ****************************
+
+                        RegraNcm regraNcm = regraNcmService.loadRegraNcm(produtoCenario.getIdCenario(), produto.getNcm(), produto.getClienteId());
+
+                        if (regraNcm != null) {
+                            produtoCenario.setIdRegra(regraNcm.getId());
+                            produtoCenario.setNmRegra("NCM");
+                            produtoCenario.setTributoEstadualPadrao(regraNcm.getTributoEstadualPadrao());
+                            produtoCenario.setTributoFederalPadrao(regraNcm.getTributoFederalPadrao());
+                            break;
+                        }
+                    }
+                    cont++;
+                }
+                case 3: {
+                    if (produto.getClienteId() != null) {
+                        //************************ Regime Tributário Rule ****************************
+
+                        RegraRegimeTributario regimeTributario = regraRegimeService.loadRegraRegimeTributario(produtoCenario.getIdCenario(), produto.getClienteId());
+
+                        if (regimeTributario != null) {
+                            produtoCenario.setIdRegra(regimeTributario.getId());
+                            produtoCenario.setNmRegra("REGIME");
+                            produtoCenario.setTributoEstadualPadrao(regimeTributario.getTributoEstadualPadrao());
+                            produtoCenario.setTributoFederalPadrao(regimeTributario.getTributoFederalPadrao());
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    private ArquivoItem getItem(String linha, Integer index) {
+
+        int i = 0;
+        ArquivoItem arq = new ArquivoItem();
+        arq.setIndex(index);
+
+        for (String field : linha.split(";")) {
+
+            switch (i) {
+                case 0: {
+                    arq.setCenarioId(field != null && !field.isEmpty() ? Long.parseLong(field) : null);
+                    break;
+                }
+                case 1: {
+                    arq.setCodigoProduto(field);
+                    break;
+                }
+                case 2: {
+                    arq.setEan(field != null && !field.isEmpty() ? Long.parseLong(field) : null);
+                    break;
+                }
+                case 3: {
+                    arq.setNmProduto(field);
+                    break;
+                }
+                case 4: {
+                    arq.setNcm(field);
+                    break;
+                }
+                case 5: {
+                    arq.setCest(field);
+                    break;
+                }
+                case 6: {
+                    arq.setCstIcmsSaida(field);
+                    break;
+                }
+                case 7: {
+                    arq.setAliquotaIcmsSaida(Double.parseDouble(field == null || field.isEmpty() ? "0.0" : field.contains(",") ? field.replace(".", "").trim().replace(",", ".") : field));
+                    break;
+                }
+                case 8: {
+                    arq.setCstPisSaida(field);
+                    break;
+                }
+                case 9: {
+                    arq.setAliquotaPisSaida(Double.parseDouble(field == null || field.isEmpty() ? "0.0" : field.contains(",") ? field.replace(".", "").trim().replace(",", ".") : field));
+                    break;
+                }
+                case 10: {
+                    arq.setCstCofinsSaida(field);
+                    break;
+                }
+                case 11: {
+                    arq.setAliquotaCofinsSaida(Double.parseDouble(field == null || field.isEmpty() ? "0.0" : field.contains(",") ? field.replace(".", "").trim().replace(",", ".") : field));
+                    break;
+                }
+                case 12: {
+                    arq.setCstIpiSaida(field);
+                    break;
+                }
+                case 13: {
+                    arq.setAliquotaIpiSaida(Double.parseDouble(field == null || field.isEmpty() ? "0.0" : field.contains(",") ? field.replace(".", "").trim().replace(",", ".") : field));
+                    break;
+                }
+            }
+            i++;
+
+        }
+
+        return arq;
+    }
+
+    public Produto loadValidacaoProduto(Long clienteId, String codigoProduto, Long ean) throws Exception {
+
+        List<Object[]> resultProduto = em.createNativeQuery("SELECT id,cliente_id,nome_produto,codigo_produto,ean,ncm_cliente,cest_cliente,ncm_padrao,cest_padrao,ncm_informado,cest_informado FROM syscontabil.produto_cliente where cliente_id =" + clienteId + " and (codigo_produto = '" + codigoProduto + "' or ean = " + ean + ")").getResultList();
+        Produto produto = null;
+        if (!resultProduto.isEmpty()) {
+            //************************ PRODUTO *************************************
+            produto = new Produto();
+            //**********************************************************************
+            produto.setId(resultProduto.get(0)[0] != null ? ((BigInteger) resultProduto.get(0)[0]).longValue() : null);
+            produto.setClienteId(resultProduto.get(0)[1] != null ? ((BigInteger) resultProduto.get(0)[1]).longValue() : null);
+            produto.setNmProduto(resultProduto.get(0)[2] != null ? (String) resultProduto.get(0)[2] : "");
+            produto.setCodigoProduto(resultProduto.get(0)[3] != null ? (String) resultProduto.get(0)[3] : "");
+            produto.setEan(resultProduto.get(0)[4] != null ? ((BigInteger) resultProduto.get(0)[4]).longValue() : null);
+            produto.setNcm(resultProduto.get(0)[5] != null ? (String) resultProduto.get(0)[5] : "");
+            produto.setCest(resultProduto.get(0)[6] != null ? (String) resultProduto.get(0)[6] : "");
+            produto.setNcmPadrao(resultProduto.get(0)[7] != null ? (String) resultProduto.get(0)[7] : "");
+            produto.setCestPadrao(resultProduto.get(0)[8] != null ? (String) resultProduto.get(0)[8] : "");
+            produto.setNcmInformado(resultProduto.get(0)[9] != null ? (String) resultProduto.get(0)[9] : "");
+            produto.setCestInformado(resultProduto.get(0)[10] != null ? (String) resultProduto.get(0)[10] : "");
+
+        }
+
+        if (produto != null) {
+            List<Object[]> resultProdutoCenario = em.createNativeQuery("select id,produto_cliente_id,cenario_id,"
+                    + "cst_icms_saida_cliente,aliquota_icms_saida_cliente,"
+                    + "cst_pis_saida_cliente,aliquota_pis_saida_cliente,"
+                    + "cst_cofins_saida_cliente,aliquota_cofins_saida_cliente,"
+                    + "cst_ipi_saida_cliente,aliquota_ipi_saida_cliente "
+                    + "from syscontabil.produto_cenario where produto_cliente_id='" + produto.getId() + "'").getResultList();
+
+            for (Object[] o : resultProdutoCenario) {
+
+                //************************* PRODUTO CENARIO ****************************
+                ProdutoCenarioJob produtoCenario = new ProdutoCenarioJob();
+
+                produtoCenario.setId(o[0] != null ? ((BigInteger) o[0]).longValue() : null);
+                //**********************************************************************
+                produtoCenario.setIdProduto(o[1] != null ? ((BigInteger) o[1]).longValue() : null);
+                produtoCenario.setIdCenario(o[2] != null ? ((BigInteger) o[2]).longValue() : null);
+                //************************ tributo estadual ****************************
+                //******************** ICMS ***********************
+                //******************** Saida ***********************
+                produtoCenario.getTributoEstadualCliente().setCstIcmsSaidaCliente(o[3] != null ? (String) o[3] : "");
+                produtoCenario.getTributoEstadualCliente().setAliquotaIcmsSaidaCliente(o[4] != null ? (Double) o[4] : 0.0);
+
+                //************************ tributo federal  ****************************
+                //******************** PIS ************************
+                //******************** Saida ***********************
+                produtoCenario.getTributoFederalCliente().setCstPisSaidaCliente(o[5] != null ? (String) o[5] : "");
+                produtoCenario.getTributoFederalCliente().setAliquotaPisSaidaCliente(o[6] != null ? (Double) o[6] : 0.0);
+                //******************* COFINS **********************
+                //******************** Saida ***********************
+                produtoCenario.getTributoFederalCliente().setCstCofinsSaidaCliente(o[7] != null ? (String) o[7] : "");
+                produtoCenario.getTributoFederalCliente().setAliquotaCofinsSaidaCliente(o[8] != null ? (Double) o[8] : 0.0);
+                //******************** IPI ************************
+                //******************** Saida ***********************
+                produtoCenario.getTributoFederalCliente().setCstIpiSaidaCliente(o[9] != null ? (String) o[9] : "");
+                produtoCenario.getTributoFederalCliente().setAliquotaIpiSaidaCliente(o[10] != null ? (Double) o[10] : 0.0);
+
+                //**********************************************************************
+                produto.getListaProdutoCenario().add(produtoCenario);
+            }
+        }
+
+        return produto;
 
     }
 }

@@ -28,7 +28,7 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
     private ProdutoCenarioService produtoCenarioService;
     @Autowired
     private RegraRegimeHistoricoService regraRegimeHistoricoService;
-    
+
     //************************ create business rules ***************************
     @Override
     public String getWhere(String complementoConsulta) {
@@ -52,7 +52,7 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
         return o;
     }
 
-     /**
+    /**
      * CORRIGIR SQL DE CONSULTA
      */
     public RegraRegimeTributario loadRegraRegimeTributario(String regime) {
@@ -70,7 +70,7 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
         if (!result.isEmpty()) {
             result.forEach((rt) -> {
                 rt.setNomeRegime(rt.getRegimeTributario().getDescricao());
-                if(rt.getCenario() == null){
+                if (rt.getCenario() == null) {
                     rt.setNomeCenario("Todos");
                 } else {
                     rt.setNomeCenario(rt.getCenario().getNomeCenario());
@@ -80,7 +80,7 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
 
         return result;
     }
-    
+
     public boolean existeRegimeCenario(RegraRegimeTributario regraRegime) {
 
         String sqlComplementar = "";
@@ -93,14 +93,14 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
         } else {
             sqlComplementar += " and o.cenario.id is null ";
         }
-        
+
         Query query = em.createQuery("SELECT o from RegraRegimeTributario o where o.regimeTributario = :regime and o.atributoPadrao.dominioEvento <> 3 " + sqlComplementar);
         query.setParameter("regime", regraRegime.getRegimeTributario());
 
         if (regraRegime.getCenario() != null) {
             query.setParameter("cenarioId", regraRegime.getCenario().getId());
         }
-        
+
         if (regraRegime.getId() != null) {
             query.setParameter("id", regraRegime.getId());
         }
@@ -114,30 +114,30 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
     @Override
     public RegraRegimeTributario create(RegraRegimeTributario obj) throws Exception {
         validar(obj);
-        
+
         RegraRegimeTributario regra = super.create(obj);
-        
+
         String json = Utils.serializar((Object) obj, null);
-        RegraRegimeTributarioHistorico h = (RegraRegimeTributarioHistorico) Utils.deserializar(json , RegraRegimeTributarioHistorico.class);
+        RegraRegimeTributarioHistorico h = (RegraRegimeTributarioHistorico) Utils.deserializar(json, RegraRegimeTributarioHistorico.class);
         h.setRegraRegimeTributario(regra);
         h.setId(null);
         regraRegimeHistoricoService.create(h);
-        
+
         return regra;
     }
-    
+
     @Override
     public RegraRegimeTributario update(RegraRegimeTributario obj) throws Exception {
         validar(obj);
-        
+
         RegraRegimeTributario regra = super.update(obj);
-        
+
         String json = Utils.serializar((Object) obj, null);
-        RegraRegimeTributarioHistorico h = (RegraRegimeTributarioHistorico) Utils.deserializar(json , RegraRegimeTributarioHistorico.class);
+        RegraRegimeTributarioHistorico h = (RegraRegimeTributarioHistorico) Utils.deserializar(json, RegraRegimeTributarioHistorico.class);
         h.setRegraRegimeTributario(regra);
         h.setId(null);
         regraRegimeHistoricoService.create(h);
-        
+
         produtoCenarioService.updateRule(DominioRegras.REGIME, regra);
         return regra;
     }
@@ -146,5 +146,26 @@ public class RegraRegimeService extends PadraoService<RegraRegimeTributario> {
         if (existeRegimeCenario(regraRegime)) {
             addErro("Ja existe uma regra para o regime tributário e cenário informados!");
         }
+    }
+
+    public RegraRegimeTributario loadRegraRegimeTributario(Long cenarioId, Long clienteId) throws Exception {
+
+        //********************** load cliente ******************************
+        List<String> resultRegime = em.createNativeQuery("SELECT tipo_regime as regime FROM syscontabil.cliente WHERE id = '" + clienteId + "'").getResultList();
+        String regime = null;
+        if (!resultRegime.isEmpty()) {
+            regime = resultRegime.get(0);
+        }
+
+        RegraRegimeTributario regraRegimeTributario = null;
+        if (regime != null && !regime.isEmpty()) {
+            TypedQuery<RegraRegimeTributario> result = (TypedQuery<RegraRegimeTributario>) em.createNativeQuery("SELECT * FROM syscontabil.regra_regime_tributario WHERE (cenario_id =" + cenarioId + " and regime_tributario =" + (regime != null ? "'" + regime + "'" : null) + ") or (cenario_id is null and regime_tributario =" + (regime != null ? "'" + regime + "'" : null) + ") ", RegraRegimeTributario.class);
+            if (!result.getResultList().isEmpty()) {
+                regraRegimeTributario = result.getSingleResult();
+            }
+        }
+
+        return regraRegimeTributario;
+
     }
 }

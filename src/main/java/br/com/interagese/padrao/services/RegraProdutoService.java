@@ -31,7 +31,7 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
     private ProdutoCenarioService produtoCenarioService;
     @Autowired
     private RegraProdutoHistoricoService regraProdutoHistoricoService;
-    
+
     /**
      * CORRIGIR SQL DE CONSULTA
      */
@@ -55,95 +55,95 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
             sqlComplementar = " and o.id <> :id ";
         }
 
-        if (regraProduto.getEanProduto()!= null) {
+        if (regraProduto.getEanProduto() != null) {
             sqlComplementar += " and o.eanProduto = :ean ";
         } else {
             sqlComplementar += " and o.eanProduto is null ";
         }
-        
-        if (regraProduto.getCliente()!= null && regraProduto.getCliente().getId() != null) {
+
+        if (regraProduto.getCliente() != null && regraProduto.getCliente().getId() != null) {
             sqlComplementar += " and o.cliente.id = :clienteId ";
         } else {
             sqlComplementar += " and o.cliente.id is null ";
             regraProduto.setCliente(null);
         }
-        
-        if (regraProduto.getCodigoProduto()!= null) {
+
+        if (regraProduto.getCodigoProduto() != null) {
             sqlComplementar += " and o.codigoProduto = :codpro ";
         } else {
             sqlComplementar += " and o.codigoProduto is null ";
         }
-        
+
         if (regraProduto.getCenario() != null) {
             sqlComplementar += " and o.cenario.id = :cenarioId ";
         } else {
             sqlComplementar += " and o.cenario.id is null ";
         }
-        
+
         if (regraProduto.getRegimeTributario() != null) {
             sqlComplementar += " and o.regimeTributario = :regime ";
         } else {
             sqlComplementar += " and o.regimeTributario is null ";
         }
-        
+
         Query query = em.createQuery("SELECT o from RegraProduto o where o.atributoPadrao.dominioEvento <> 3 " + sqlComplementar);
 
-        if (regraProduto.getEanProduto()!= null) {
+        if (regraProduto.getEanProduto() != null) {
             query.setParameter("ean", regraProduto.getEanProduto());
         }
-        
-        if (regraProduto.getCliente()!= null && regraProduto.getCliente().getId() != null) {
+
+        if (regraProduto.getCliente() != null && regraProduto.getCliente().getId() != null) {
             query.setParameter("clienteId", regraProduto.getCliente().getId());
         }
-        
-        if (regraProduto.getCodigoProduto()!= null) {
+
+        if (regraProduto.getCodigoProduto() != null) {
             query.setParameter("codpro", regraProduto.getCodigoProduto());
         }
-        
+
         if (regraProduto.getCenario() != null) {
             query.setParameter("cenarioId", regraProduto.getCenario().getId());
         }
-        
+
         if (regraProduto.getId() != null) {
             query.setParameter("id", regraProduto.getId());
         }
 
-        if (regraProduto.getRegimeTributario()!= null) {
+        if (regraProduto.getRegimeTributario() != null) {
             query.setParameter("regime", regraProduto.getRegimeTributario());
         }
-        
+
         List<RegraProduto> lista = query.getResultList();
 
         return !lista.isEmpty();
 
     }
-    
+
     @Override
     public RegraProduto create(RegraProduto obj) throws Exception {
         validar(obj);
         super.create(obj);
-        
+
         String json = Utils.serializar((Object) obj, null);
-        RegraProdutoHistorico h = (RegraProdutoHistorico) Utils.deserializar(json , RegraProdutoHistorico.class);
+        RegraProdutoHistorico h = (RegraProdutoHistorico) Utils.deserializar(json, RegraProdutoHistorico.class);
         h.setRegraProduto(obj);
         h.setId(null);
         regraProdutoHistoricoService.create(h);
-        
+
         produtoCenarioService.changeRule(DominioRegras.PRODUTO, obj);
         return obj;
     }
-    
+
     @Override
     public RegraProduto update(RegraProduto obj) throws Exception {
         validar(obj);
         RegraProduto regra = super.update(obj);
-        
+
         String json = Utils.serializar((Object) obj, null);
-        RegraProdutoHistorico h = (RegraProdutoHistorico) Utils.deserializar(json , RegraProdutoHistorico.class);
+        RegraProdutoHistorico h = (RegraProdutoHistorico) Utils.deserializar(json, RegraProdutoHistorico.class);
         h.setRegraProduto(regra);
         h.setId(null);
         regraProdutoHistoricoService.create(h);
-        
+
         produtoCenarioService.updateRule(DominioRegras.PRODUTO, regra);
         return regra;
     }
@@ -153,33 +153,33 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
             addErro("Ja existe uma regra para o produto, regime e cenário informados!");
         }
     }
-    
+
     @Override
     public List<RegraProduto> findRange(String complementoConsulta, int apartirDe, int quantidade, String ordernacao) {
         List<RegraProduto> result = super.findRange(complementoConsulta, apartirDe, quantidade, ordernacao); //To change body of generated methods, choose Tools | Templates.
 
         if (!result.isEmpty()) {
             result.forEach((rt) -> {
-                if(rt.getCodigoProduto() == null){
+                if (rt.getCodigoProduto() == null) {
                     rt.setNomeProduto("Todos");
                 } else {
                     ProdutoGeral pro = pgs.findById(rt.getCodigoProduto());
                     rt.setNomeProduto(pro.getNomeProduto());
                 }
-                
-                if(rt.getCliente() == null){
+
+                if (rt.getCliente() == null) {
                     rt.setNomeCliente("Todos");
                 } else {
                     rt.setNomeCliente(rt.getCliente().getRazaoSocial());
                 }
-                
-                if(rt.getCenario() == null){
+
+                if (rt.getCenario() == null) {
                     rt.setNomeCenario("Todos");
                 } else {
                     rt.setNomeCenario(rt.getCenario().getNomeCenario());
                 }
-                
-                if(rt.getRegimeTributario()== null){
+
+                if (rt.getRegimeTributario() == null) {
                     rt.setNomeRegime("Todos");
                 } else {
                     rt.setNomeRegime(rt.getRegimeTributario().getDescricao());
@@ -188,5 +188,13 @@ public class RegraProdutoService extends PadraoService<RegraProduto> {
         }
 
         return result;
+    }
+
+    public RegraProduto loadRegraProduto(Long cenarioId, Long ean, Long clienteId, String codigoProduto) throws Exception {
+
+        TypedQuery<RegraProduto> result = (TypedQuery<RegraProduto>) em.createNativeQuery("SELECT * FROM syscontabil.regra_produto WHERE (cenario_id=" + cenarioId + " and (ean_produto = " + ean + " or (cliente_id=" + clienteId + " and codigo_produto =" + (codigoProduto != null ? "'" + codigoProduto + "'" : null) + "))) or (cenario_id is null and (ean_produto = " + ean + " or (cliente_id=" + clienteId + " and codigo_produto =" + (codigoProduto != null ? "'" + codigoProduto + "'" : null) + ")))",RegraProduto.class);
+
+        return result.getResultList().isEmpty() ? null : result.getSingleResult();
+
     }
 }
