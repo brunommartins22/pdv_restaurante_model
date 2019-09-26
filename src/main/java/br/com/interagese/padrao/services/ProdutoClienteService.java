@@ -62,17 +62,16 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 + " FROM syscontabil.cliente c where c.rgevento <> '3' and ativo is true";
 
         if (resp != null && resp.size() > 0) {
-            Long codigo = (((String) resp.get("codigo")) == null || ((String) resp.get("codigo")).isEmpty()) ? null : Long.parseLong((String) resp.get("codigo"));
+            String codigo = (((String) resp.get("codigo")) == null || ((String) resp.get("codigo")).isEmpty()) ? null : (String) resp.get("codigo");
             String nome = (String) resp.get("nome");
             String tipoPessoa = (String) resp.get("tipoPessoa");
             String ordenacao = (String) resp.get("ordenacao");
 
             if (codigo != null) {
-                sql += " and c.id = " + codigo + "";
+                sql += " and c.cpf_cnpj = " + codigo + "";
             }
             if (nome != null && !nome.isEmpty()) {
-                nome = Utils.retirarCaracteresEspeciais(nome);
-                sql += " and c.razao_social like '%" + nome + "%' or c.cpf_cnpj ='" + (nome.length() == 11 ? Utils.formataStringCPF(nome) : Utils.formataStringCNPJ(nome)) + "'";
+                 sql += " and c.razao_social like '%" + nome + "%'";
             }
             if (tipoPessoa != null && !tipoPessoa.isEmpty()) {
                 sql += " and c.tipo_cliente = '" + tipoPessoa + "'";
