@@ -48,7 +48,7 @@ public class CnaeService extends PadraoService<Cnae> {
             if (Utils.somenteNumeros(teste)) {
                 consultaSQL = "o.codigo like '%" + complementoConsulta + "%' ";
             } else {
-                consultaSQL = "o.descricao LIKE '%" + complementoConsulta + "%' ";
+                consultaSQL = "o.descricao LIKE '%" + Utils.getExtensaoByFileName(complementoConsulta.toLowerCase()) + "%' or  o.descricao LIKE '%" + complementoConsulta + "%'";
             }
         }
         setOrder("order by o.descricao");
