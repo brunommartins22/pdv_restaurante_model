@@ -22,6 +22,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -39,7 +40,7 @@ public class Cliente implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_cliente")
     @SequenceGenerator(name = "gen_cliente", sequenceName = "seq_cliente")
     private Long id;
-    @Column(length = 255, nullable = false)
+    @Column(length = 255,nullable = false)
     private String razaoSocial;
     @Column(length = 255)
     private String nomeFantasia;
@@ -64,9 +65,9 @@ public class Cliente implements Serializable {
     private EnderecoPadrao endereco;
     @Embedded
     private AtributoPadrao atributoPadrao;
-    @OneToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE)
     private List<Cenario> cenarios;
-    @OneToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE)
     private List<Cnae> atividades;
     @Column(columnDefinition="Boolean default true")
     private Boolean ativo;

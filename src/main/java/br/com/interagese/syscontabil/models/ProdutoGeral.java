@@ -35,7 +35,7 @@ public class ProdutoGeral implements Serializable {
     private Long ean;
     @Column(length = 8, nullable = false)
     private String ncm;
-    @Column(length = 7, nullable = false)
+    @Column(length = 7)
     private String cest;
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
