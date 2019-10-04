@@ -13,9 +13,16 @@ import br.com.interagese.syscontabil.domains.DominioStatusArquivo;
 import br.com.interagese.syscontabil.models.ArquivosProcessar;
 import br.com.interagese.syscontabil.models.fileProcessed.Produto;
 import br.com.interagese.syscontabil.models.fileProcessed.ProdutoCenarioJob;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.type.BigIntegerType;
+import org.hibernate.type.LongType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -137,7 +144,11 @@ public class ArquivosProcessarService extends PadraoService<ArquivosProcessar> {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            em.createNativeQuery("UPDATE syscontabil.arquivos_processar set status_arquivo ='PARALIZADO',erros='" + ex.getMessage() + "' where id = " + arquivoSelecionado.getId());
+            String sqlError = "UPDATE syscontabil.arquivos_processar set status_arquivo ='PARALIZADO',erros= :erro where id = :id";
+            em.createNativeQuery(sqlError)
+                    .setParameter("erro", ex.getMessage())
+                    .setParameter("id", arquivoSelecionado.getId())
+                    .executeUpdate();
             arquivoSelecionado = null;
         }
 
@@ -146,7 +157,10 @@ public class ArquivosProcessarService extends PadraoService<ArquivosProcessar> {
     private void loadFile(ArquivosProcessar arquivoSelecionado) throws Exception {
 
         //********************** modificar status file *************************
-        em.createNativeQuery("update syscontabil.arquivos_processar set status_arquivo ='EMANDAMENTO',data_inicio_processo = now() where id ='" + arquivoSelecionado.getId() + "'").executeUpdate();
+        em.createNativeQuery("update syscontabil.arquivos_processar set status_arquivo ='EMANDAMENTO',data_inicio_processo = :dataInicio where id = :id")
+                .setParameter("dataInicio", new Date())
+                .setParameter("id", arquivoSelecionado.getId())
+                .executeUpdate();
 
         //********************** load Produtos *********************************
         List<Produto> produtos = produtoClienteService.loadProdutos(arquivoSelecionado);
@@ -164,6 +178,8 @@ public class ArquivosProcessarService extends PadraoService<ArquivosProcessar> {
         Long contArquivo = 0L;
         String sql = "";
         List<String> resp = new ArrayList<>();
+        SQLQuery query = null;
+
         if (!produtos.isEmpty()) {
 
             Long idProduto = getUltimoId("syscontabil.seq_produto_cliente").longValue();
@@ -191,145 +207,146 @@ public class ArquivosProcessarService extends PadraoService<ArquivosProcessar> {
                         System.out.println("posição(produto) = " + cont + " registro(s)");
 
                         Produto produtoValidado = produtoClienteService.loadValidacaoProduto(clienteId, produtoJob.getCodigoProduto(), produtoJob.getEan());
+                        query = em.unwrap(Session.class).createSQLQuery("insert into syscontabil.produto_cliente(id,rgdata,rgevento,rgcodusu,rgusuario,cest_cliente,cest_padrao,cest_informado,codigo_produto,ean,ncm_cliente,ncm_padrao,ncm_informado,nome_produto,cliente_id)"
+                                + "values(:id,now(),'1',:idUsuario,:nomeUsuario,:cest,:cestPadrao,:cestInformado,:codigoProduto,:ean,:ncm,:ncmPadrao,:ncmInformado,:nomeProduto,:idCliente)");
 
                         if (produtoValidado == null) {
                             produtoJob.setId(idProduto);
 
-                            sql = "insert into syscontabil.produto_cliente(id,rgdata,rgevento,rgcodusu,rgusuario,cest_cliente,cest_padrao,cest_informado,codigo_produto,ean,ncm_cliente,ncm_padrao,ncm_informado,nome_produto,cliente_id)"
-                                    + "values(" + produtoJob.getId() + ","
-                                    + "now(),"
-                                    + "'1',"
-                                    + "" + produtoJob.getAtributoPadrao().getIdUsuario() + ","
-                                    + "" + (produtoJob.getAtributoPadrao().getNmUsuario() != null ? "'" + produtoJob.getAtributoPadrao().getNmUsuario() + "'" : null) + ","
-                                    + "" + (produtoJob.getCest() != null ? "'" + produtoJob.getCest() + "'" : null) + ","
-                                    + "" + (produtoJob.getCestPadrao() != null ? "'" + produtoJob.getCestPadrao() + "'" : null) + ","
-                                    + "" + (produtoJob.getCestInformado() != null ? "'" + produtoJob.getCestInformado() + "'" : null) + ","
-                                    + "" + (produtoJob.getCodigoProduto() != null ? "'" + produtoJob.getCodigoProduto() + "'" : null) + ","
-                                    + "" + produtoJob.getEan() + ","
-                                    + "" + (produtoJob.getNcm() != null ? "'" + produtoJob.getNcm() + "'" : null) + ","
-                                    + "" + (produtoJob.getNcmPadrao() != null ? "'" + produtoJob.getNcmPadrao() + "'" : null) + ","
-                                    + "" + (produtoJob.getNcmInformado() != null ? "'" + produtoJob.getNcmInformado() + "'" : null) + ","
-                                    + "" + (produtoJob.getNmProduto() != null ? "'" + produtoJob.getNmProduto() + "'" : null) + ","
-                                    + "" + produtoJob.getClienteId() + ")";
+                            query.setParameter("id", produtoJob.getId());
+                            query.setParameter("idUsuario", produtoJob.getAtributoPadrao().getIdUsuario());
+                            query.setParameter("nomeUsuario", produtoJob.getAtributoPadrao().getNmUsuario());
+                            query.setParameter("cest", produtoJob.getCest() != null && !produtoJob.getCest().equalsIgnoreCase("null") ? produtoJob.getCest() : null);
+                            query.setParameter("cestPadrao", produtoJob.getCestPadrao());
+                            query.setParameter("cestInformado", produtoJob.getCestInformado() != null && !produtoJob.getCestInformado().equalsIgnoreCase("null") ? produtoJob.getCestInformado() : null);
+                            query.setParameter("codigoProduto", produtoJob.getCodigoProduto() != null && !produtoJob.getCodigoProduto().equalsIgnoreCase("null") ? produtoJob.getCodigoProduto() : null);
+                            System.out.println("ean = " + produtoJob.getEan());
+                            query.setParameter("ean", produtoJob.getEan(), LongType.INSTANCE);
+                            query.setParameter("ncm", produtoJob.getNcm() != null && !produtoJob.getNcm().equalsIgnoreCase("null") ? produtoJob.getNcm() : null);
+                            query.setParameter("ncmPadrao", produtoJob.getNcmPadrao());
+                            query.setParameter("ncmInformado", produtoJob.getNcmInformado() != null && !produtoJob.getNcmInformado().equalsIgnoreCase("null") ? produtoJob.getNcmInformado() : null);
+                            query.setParameter("nomeProduto", produtoJob.getNmProduto() != null && !produtoJob.getNmProduto().equalsIgnoreCase("null") ? produtoJob.getNmProduto() : null);
+                            query.setParameter("idCliente", produtoJob.getClienteId());
 
-                            resp.add(sql);
+                            query.executeUpdate();
 
                             for (ProdutoCenarioJob produtoCenarioJob : produtoJob.getListaProdutoCenario()) {
+
+                                query = em.unwrap(Session.class).createSQLQuery("insert into syscontabil.produto_cenario(id,rgdata,rgevento,rgcodusu,rgusuario,divergente,confirmado,dominio_regras,regra_id,cenario_id,produto_cliente_id"
+                                        + ",cst_icms_saida_cliente,aliquota_icms_Saida_cliente"
+                                        + ",cst_pis_saida_cliente,aliquota_pis_saida_cliente"
+                                        + ",cst_cofins_saida_cliente,aliquota_cofins_saida_cliente"
+                                        + ",cst_ipi_saida_cliente,aliquota_ipi_saida_cliente"
+                                        + ",cst_icms_saida_padrao,aliquota_icms_saida_padrao"
+                                        + ",cst_pis_saida_padrao,aliquota_pis_saida_padrao"
+                                        + ",cst_cofins_saida_padrao,aliquota_cofins_saida_padrao"
+                                        + ",cst_ipi_saida_padrao,aliquota_ipi_saida_padrao"
+                                        + ",cst_icms_saida_informado,aliquota_icms_saida_informado"
+                                        + ",cst_pis_saida_informado,aliquota_pis_saida_informado"
+                                        + ",cst_cofins_saida_informado,aliquota_cofins_saida_informado"
+                                        + ",cst_ipi_saida_informado,aliquota_ipi_saida_informado)"
+                                        + "values(:id,now(),'1',:idUsuario,:nomeUsuario,:divergente,:confirmado,:nomeRegra,:idRegra,:idCenario,:idProdutoCliente,"
+                                        + ":cstIcmsSaidaCliente,:aliquotaIcmsSaidaCliente,"
+                                        + ":cstPisSaidaCliente,:aliquotaPisSaidaCliente,"
+                                        + ":cstCofinsSaidaCliente,:aliquotaCofinsSaidaCliente,"
+                                        + ":cstIpiSaidaCliente,:aliquotaIpiSaidaCliente,"
+                                        + ":cstIcmsSaidaPadrao,:aliquotaIcmsSaidaPadrao,"
+                                        + ":cstPisSaidaPadrao,:aliquotaPisSaidaPadrao,"
+                                        + ":cstCofinsSaidaPadrao,:aliquotaCofinsSaidaPadrao,"
+                                        + ":cstIpiSaidaPadrao,:aliquotaIpiSaidaPadrao,"
+                                        + ":cstIcmsSaidaInformado,:aliquotaIcmsSaidaInformado,"
+                                        + ":cstPisSaidaInformado,:aliquotaPisSaidaInformado,"
+                                        + ":cstCofinsSaidaInformado,:aliquotaCofinsSaidaInformado,"
+                                        + ":cstIpiSaidaInformado,:aliquotaIpiSaidaInformado)");
 
                                 if (produtoCenarioJob.getIdCenario() == null) {
 
                                     for (int i = 0; i < resultCenarioId.size(); i++) {
                                         produtoCenarioJob.setId(idCenario);
                                         produtoCenarioJob.setIdProduto(idProduto);
-                                        sql = "insert into syscontabil.produto_cenario(id,rgdata,rgevento,rgcodusu,rgusuario,divergente,confirmado,dominio_regras,regra_id,cenario_id,produto_cliente_id"
-                                                + ",cst_icms_saida_cliente,aliquota_icms_Saida_cliente"
-                                                + ",cst_pis_saida_cliente,aliquota_pis_saida_cliente"
-                                                + ",cst_cofins_saida_cliente,aliquota_cofins_saida_cliente"
-                                                + ",cst_ipi_saida_cliente,aliquota_ipi_saida_cliente"
-                                                + ",cst_icms_saida_padrao,aliquota_icms_saida_padrao"
-                                                + ",cst_pis_saida_padrao,aliquota_pis_saida_padrao"
-                                                + ",cst_cofins_saida_padrao,aliquota_cofins_saida_padrao"
-                                                + ",cst_ipi_saida_padrao,aliquota_ipi_saida_padrao"
-                                                + ",cst_icms_saida_informado,aliquota_icms_saida_informado"
-                                                + ",cst_pis_saida_informado,aliquota_pis_saida_informado"
-                                                + ",cst_cofins_saida_informado,aliquota_cofins_saida_informado"
-                                                + ",cst_ipi_saida_informado,aliquota_ipi_saida_informado)"
-                                                + "values(" + produtoCenarioJob.getId() + ","
-                                                + "now(),"
-                                                + "'1',"
-                                                + "" + produtoCenarioJob.getAtributoPadrao().getIdUsuario() + ","
-                                                + "" + (produtoCenarioJob.getAtributoPadrao().getNmUsuario() != null ? "'" + produtoCenarioJob.getAtributoPadrao().getNmUsuario() + "'" : null) + ","
-                                                + "'true',"
-                                                + "'false',"
-                                                + "" + ((produtoCenarioJob.getNmRegra() != null && !produtoCenarioJob.getNmRegra().isEmpty()) ? "'" + produtoCenarioJob.getNmRegra() + "'" : null) + ","
-                                                + "" + produtoCenarioJob.getIdRegra() + ","
-                                                + "" + resultCenarioId.get(i) + ","
-                                                + "" + produtoCenarioJob.getIdProduto() + ","
-                                                + "'" + produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() + "',"
-                                                + "" + produtoCenarioJob.getTributoEstadualCliente().getAliquotaIcmsSaidaCliente() + ","
-                                                + "'" + produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() + "',"
-                                                + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaPisSaidaCliente() + ","
-                                                + "'" + produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() + "',"
-                                                + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaCofinsSaidaCliente() + ","
-                                                + "'" + produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() + "',"
-                                                + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaIpiSaidaCliente() + ","
-                                                + "'" + produtoCenarioJob.getTributoEstadualPadrao().getCstIcmsSaidaPadrao() + "',"
-                                                + "" + produtoCenarioJob.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao() + ","
-                                                + "'" + produtoCenarioJob.getTributoFederalPadrao().getCstPisSaidaPadrao() + "',"
-                                                + "" + produtoCenarioJob.getTributoFederalPadrao().getAliquotaPisSaidaPadrao() + ","
-                                                + "'" + produtoCenarioJob.getTributoFederalPadrao().getCstCofinsSaidaPadrao() + "',"
-                                                + "" + produtoCenarioJob.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao() + ","
-                                                + "'" + produtoCenarioJob.getTributoFederalPadrao().getCstIpiSaidaPadrao() + "',"
-                                                + "" + produtoCenarioJob.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao() + ","
-                                                + "'" + produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() + "',"
-                                                + "" + produtoCenarioJob.getTributoEstadualCliente().getAliquotaIcmsSaidaCliente() + ","
-                                                + "'" + produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() + "',"
-                                                + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaPisSaidaCliente() + ","
-                                                + "'" + produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() + "',"
-                                                + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaCofinsSaidaCliente() + ","
-                                                + "'" + produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() + "',"
-                                                + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaIpiSaidaCliente() + ")";
 
-                                        resp.add(sql);
+                                        query.setParameter("id", produtoCenarioJob.getId());
+                                        query.setParameter("idUsuario", produtoCenarioJob.getAtributoPadrao().getIdUsuario());
+                                        query.setParameter("nomeUsuario", produtoCenarioJob.getAtributoPadrao().getNmUsuario());
+                                        query.setParameter("divergente", true);
+                                        query.setParameter("confirmado", false);
+                                        query.setParameter("nomeRegra", produtoCenarioJob.getNmRegra());
+                                        query.setParameter("idRegra", produtoCenarioJob.getIdRegra());
+                                        query.setParameter("idCenario", resultCenarioId.get(i));
+                                        query.setParameter("idProdutoCliente", produtoCenarioJob.getIdProduto());
+                                        query.setParameter("cstIcmsSaidaCliente", (produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() != null && !produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() : null));
+                                        query.setParameter("aliquotaIcmsSaidaCliente", produtoCenarioJob.getTributoEstadualCliente().getAliquotaIcmsSaidaCliente());
+                                        query.setParameter("cstPisSaidaCliente", (produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente().equals("null") ? produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() : null));
+                                        query.setParameter("aliquotaPisSaidaCliente", produtoCenarioJob.getTributoFederalCliente().getAliquotaPisSaidaCliente());
+                                        query.setParameter("cstCofinsSaidaCliente", (produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() : null));
+                                        query.setParameter("aliquotaCofinsSaidaCliente", produtoCenarioJob.getTributoFederalCliente().getAliquotaCofinsSaidaCliente());
+                                        query.setParameter("cstIpiSaidaCliente", (produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() : null));
+                                        query.setParameter("aliquotaIpiSaidaCliente", produtoCenarioJob.getTributoFederalCliente().getAliquotaIpiSaidaCliente());
+                                        query.setParameter("cstIcmsSaidaPadrao", (produtoCenarioJob.getTributoEstadualPadrao().getCstIcmsSaidaPadrao() != null && !produtoCenarioJob.getTributoEstadualPadrao().getCstIcmsSaidaPadrao().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoEstadualPadrao().getCstIcmsSaidaPadrao() : null));
+                                        query.setParameter("aliquotaIcmsSaidaPadrao", produtoCenarioJob.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
+                                        query.setParameter("cstPisSaidaPadrao", (produtoCenarioJob.getTributoFederalPadrao().getCstPisSaidaPadrao() != null && !produtoCenarioJob.getTributoFederalPadrao().getCstPisSaidaPadrao().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalPadrao().getCstPisSaidaPadrao() : null));
+                                        query.setParameter("aliquotaPisSaidaPadrao", produtoCenarioJob.getTributoFederalPadrao().getAliquotaPisSaidaPadrao());
+                                        query.setParameter("cstCofinsSaidaPadrao", (produtoCenarioJob.getTributoFederalPadrao().getCstCofinsSaidaPadrao() != null && !produtoCenarioJob.getTributoFederalPadrao().getCstCofinsSaidaPadrao().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalPadrao().getCstCofinsSaidaPadrao() : null));
+                                        query.setParameter("aliquotaCofinsSaidaPadrao", produtoCenarioJob.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao());
+                                        query.setParameter("cstIpiSaidaPadrao", (produtoCenarioJob.getTributoFederalPadrao().getCstIpiSaidaPadrao() != null && !produtoCenarioJob.getTributoFederalPadrao().getCstIpiSaidaPadrao().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalPadrao().getCstIpiSaidaPadrao() : null));
+                                        query.setParameter("aliquotaIpiSaidaPadrao", produtoCenarioJob.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
+                                        query.setParameter("cstIcmsSaidaInformado", (produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() != null && !produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() : null));
+                                        query.setParameter("aliquotaIcmsSaidaInformado", produtoCenarioJob.getTributoEstadualCliente().getAliquotaIcmsSaidaCliente());
+                                        query.setParameter("cstPisSaidaInformado", (produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente().equals("null") ? produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() : null));
+                                        query.setParameter("aliquotaPisSaidaInformado", produtoCenarioJob.getTributoFederalCliente().getAliquotaPisSaidaCliente());
+                                        query.setParameter("cstCofinsSaidaInformado", (produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() : null));
+                                        query.setParameter("aliquotaCofinsSaidaInformado", produtoCenarioJob.getTributoFederalCliente().getAliquotaCofinsSaidaCliente());
+                                        query.setParameter("cstIpiSaidaInformado", (produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() : null));
+                                        query.setParameter("aliquotaIpiSaidaInformado", produtoCenarioJob.getTributoFederalCliente().getAliquotaIpiSaidaCliente());
+
+                                        query.executeUpdate();
+
                                         idCenario++;
                                     }
                                 } else {
                                     produtoCenarioJob.setId(idCenario);
                                     produtoCenarioJob.setIdProduto(idProduto);
-                                    sql = "insert into syscontabil.produto_cenario(id,rgdata,rgevento,rgcodusu,rgusuario,divergente,confirmado,dominio_regras,regra_id,cenario_id,produto_cliente_id"
-                                            + ",cst_icms_saida_cliente,aliquota_icms_Saida_cliente"
-                                            + ",cst_pis_saida_cliente,aliquota_pis_saida_cliente"
-                                            + ",cst_cofins_saida_cliente,aliquota_cofins_saida_cliente"
-                                            + ",cst_ipi_saida_cliente,aliquota_ipi_saida_cliente"
-                                            + ",cst_icms_saida_padrao,aliquota_icms_saida_padrao"
-                                            + ",cst_pis_saida_padrao,aliquota_pis_saida_padrao"
-                                            + ",cst_cofins_saida_padrao,aliquota_cofins_saida_padrao"
-                                            + ",cst_ipi_saida_padrao,aliquota_ipi_saida_padrao"
-                                            + ",cst_icms_saida_informado,aliquota_icms_saida_informado"
-                                            + ",cst_pis_saida_informado,aliquota_pis_saida_informado"
-                                            + ",cst_cofins_saida_informado,aliquota_cofins_saida_informado"
-                                            + ",cst_ipi_saida_informado,aliquota_ipi_saida_informado)"
-                                            + "values(" + produtoCenarioJob.getId() + ","
-                                            + "now(),"
-                                            + "'1',"
-                                            + "" + produtoCenarioJob.getAtributoPadrao().getIdUsuario() + ","
-                                            + "" + (produtoCenarioJob.getAtributoPadrao().getNmUsuario() != null ? "'" + produtoCenarioJob.getAtributoPadrao().getNmUsuario() + "'" : null) + ","
-                                            + "'true',"
-                                            + "'false',"
-                                            + "" + ((produtoCenarioJob.getNmRegra() != null && !produtoCenarioJob.getNmRegra().isEmpty()) ? "'" + produtoCenarioJob.getNmRegra() + "'" : null) + ","
-                                            + "" + produtoCenarioJob.getIdRegra() + ","
-                                            + "" + produtoCenarioJob.getIdCenario() + ","
-                                            + "" + produtoCenarioJob.getIdProduto() + ","
-                                            + "'" + produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() + "',"
-                                            + "" + produtoCenarioJob.getTributoEstadualCliente().getAliquotaIcmsSaidaCliente() + ","
-                                            + "'" + produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() + "',"
-                                            + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaPisSaidaCliente() + ","
-                                            + "'" + produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() + "',"
-                                            + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaCofinsSaidaCliente() + ","
-                                            + "'" + produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() + "',"
-                                            + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaIpiSaidaCliente() + ","
-                                            + "'" + produtoCenarioJob.getTributoEstadualPadrao().getCstIcmsSaidaPadrao() + "',"
-                                            + "" + produtoCenarioJob.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao() + ","
-                                            + "'" + produtoCenarioJob.getTributoFederalPadrao().getCstPisSaidaPadrao() + "',"
-                                            + "" + produtoCenarioJob.getTributoFederalPadrao().getAliquotaPisSaidaPadrao() + ","
-                                            + "'" + produtoCenarioJob.getTributoFederalPadrao().getCstCofinsSaidaPadrao() + "',"
-                                            + "" + produtoCenarioJob.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao() + ","
-                                            + "'" + produtoCenarioJob.getTributoFederalPadrao().getCstIpiSaidaPadrao() + "',"
-                                            + "" + produtoCenarioJob.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao() + ","
-                                            + "'" + produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() + "',"
-                                            + "" + produtoCenarioJob.getTributoEstadualCliente().getAliquotaIcmsSaidaCliente() + ","
-                                            + "'" + produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() + "',"
-                                            + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaPisSaidaCliente() + ","
-                                            + "'" + produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() + "',"
-                                            + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaCofinsSaidaCliente() + ","
-                                            + "'" + produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() + "',"
-                                            + "" + produtoCenarioJob.getTributoFederalCliente().getAliquotaIpiSaidaCliente() + ")";
 
-                                    resp.add(sql);
+                                    query.setParameter("id", produtoCenarioJob.getId());
+                                    query.setParameter("idUsuario", produtoCenarioJob.getAtributoPadrao().getIdUsuario());
+                                    query.setParameter("nomeUsuario", produtoCenarioJob.getAtributoPadrao().getNmUsuario());
+                                    query.setParameter("divergente", true);
+                                    query.setParameter("confirmado", false);
+                                    query.setParameter("nomeRegra", produtoCenarioJob.getNmRegra());
+                                    query.setParameter("idRegra", produtoCenarioJob.getIdRegra());
+                                    query.setParameter("idCenario", produtoCenarioJob.getIdCenario());
+                                    query.setParameter("idProdutoCliente", produtoCenarioJob.getIdProduto());
+                                    query.setParameter("cstIcmsSaidaCliente", (produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() != null && !produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() : null));
+                                    query.setParameter("aliquotaIcmsSaidaCliente", produtoCenarioJob.getTributoEstadualCliente().getAliquotaIcmsSaidaCliente());
+                                    query.setParameter("cstPisSaidaCliente", (produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente().equals("null") ? produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() : null));
+                                    query.setParameter("aliquotaPisSaidaCliente", produtoCenarioJob.getTributoFederalCliente().getAliquotaPisSaidaCliente());
+                                    query.setParameter("cstCofinsSaidaCliente", (produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() : null));
+                                    query.setParameter("aliquotaCofinsSaidaCliente", produtoCenarioJob.getTributoFederalCliente().getAliquotaCofinsSaidaCliente());
+                                    query.setParameter("cstIpiSaidaCliente", (produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() : null));
+                                    query.setParameter("aliquotaIpiSaidaCliente", produtoCenarioJob.getTributoFederalCliente().getAliquotaIpiSaidaCliente());
+                                    query.setParameter("cstIcmsSaidaPadrao", (produtoCenarioJob.getTributoEstadualPadrao().getCstIcmsSaidaPadrao() != null && !produtoCenarioJob.getTributoEstadualPadrao().getCstIcmsSaidaPadrao().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoEstadualPadrao().getCstIcmsSaidaPadrao() : null));
+                                    query.setParameter("aliquotaIcmsSaidaPadrao", produtoCenarioJob.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
+                                    query.setParameter("cstPisSaidaPadrao", (produtoCenarioJob.getTributoFederalPadrao().getCstPisSaidaPadrao() != null && !produtoCenarioJob.getTributoFederalPadrao().getCstPisSaidaPadrao().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalPadrao().getCstPisSaidaPadrao() : null));
+                                    query.setParameter("aliquotaPisSaidaPadrao", produtoCenarioJob.getTributoFederalPadrao().getAliquotaPisSaidaPadrao());
+                                    query.setParameter("cstCofinsSaidaPadrao", (produtoCenarioJob.getTributoFederalPadrao().getCstCofinsSaidaPadrao() != null && !produtoCenarioJob.getTributoFederalPadrao().getCstCofinsSaidaPadrao().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalPadrao().getCstCofinsSaidaPadrao() : null));
+                                    query.setParameter("aliquotaCofinsSaidaPadrao", produtoCenarioJob.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao());
+                                    query.setParameter("cstIpiSaidaPadrao", (produtoCenarioJob.getTributoFederalPadrao().getCstIpiSaidaPadrao() != null && !produtoCenarioJob.getTributoFederalPadrao().getCstIpiSaidaPadrao().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalPadrao().getCstIpiSaidaPadrao() : null));
+                                    query.setParameter("aliquotaIpiSaidaPadrao", produtoCenarioJob.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
+                                    query.setParameter("cstIcmsSaidaInformado", (produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() != null && !produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoEstadualCliente().getCstIcmsSaidaCliente() : null));
+                                    query.setParameter("aliquotaIcmsSaidaInformado", produtoCenarioJob.getTributoEstadualCliente().getAliquotaIcmsSaidaCliente());
+                                    query.setParameter("cstPisSaidaInformado", (produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente().equals("null") ? produtoCenarioJob.getTributoFederalCliente().getCstPisSaidaCliente() : null));
+                                    query.setParameter("aliquotaPisSaidaInformado", produtoCenarioJob.getTributoFederalCliente().getAliquotaPisSaidaCliente());
+                                    query.setParameter("cstCofinsSaidaInformado", (produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalCliente().getCstCofinsSaidaCliente() : null));
+                                    query.setParameter("aliquotaCofinsSaidaInformado", produtoCenarioJob.getTributoFederalCliente().getAliquotaCofinsSaidaCliente());
+                                    query.setParameter("cstIpiSaidaInformado", (produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() != null && !produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente().equalsIgnoreCase("null") ? produtoCenarioJob.getTributoFederalCliente().getCstIpiSaidaCliente() : null));
+                                    query.setParameter("aliquotaIpiSaidaInformado", produtoCenarioJob.getTributoFederalCliente().getAliquotaIpiSaidaCliente());
+
+                                    query.executeUpdate();
                                     idCenario++;
                                 }
                                 //************************ registers processed *************************
-                                em.createNativeQuery("update syscontabil.arquivos_processar set numero_registros_processados =" + (contArquivo++) + " where id =" + arquivoId).executeUpdate();
+                                contArquivo++;
+                                em.createNativeQuery("update syscontabil.arquivos_processar set numero_registros_processados =" + contArquivo + " where id =" + arquivoId).executeUpdate();
                             }
                             //************************ final register processed *************************
                             em.createNativeQuery("update syscontabil.arquivos_processar set ultimo_registro_processado =" + idProduto + " where id =" + arquivoId).executeUpdate();
@@ -339,7 +356,7 @@ public class ArquivosProcessarService extends PadraoService<ArquivosProcessar> {
                         }
                     }
                     inserts = inserts + max;
-                    executeUpdate(resp);
+
                     alterValueSeq("syscontabil.seq_produto_cliente", idProduto);
                     alterValueSeq("syscontabil.seq_produto_cenario", idCenario);
                     resp = new ArrayList<>();

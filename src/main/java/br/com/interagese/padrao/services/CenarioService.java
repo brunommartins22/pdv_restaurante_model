@@ -47,12 +47,12 @@ public class CenarioService extends PadraoService<Cenario> {
 
         if (complementoConsulta != null && !complementoConsulta.trim().equals("")) {
             if (Utils.somenteNumeros(complementoConsulta)) {
-                consultaSQL = "o.id = '" + complementoConsulta;
+                consultaSQL = "o.id = " + complementoConsulta;
             } else {
                 consultaSQL = "o.nomeCenario  LIKE '%" + complementoConsulta + "%' ";
             }
         }
-        setOrder("order by o.nomeCenario");
+        setOrder("order by o.id");
         return consultaSQL;
     }
 
@@ -74,5 +74,14 @@ public class CenarioService extends PadraoService<Cenario> {
         }
     }
 
+    public List<Cenario> loadCenarioByUf(Long idUf) throws Exception{
+        TypedQuery<Cenario> result = em.createQuery("SELECT o FROM Cenario o WHERE o.estado.id = " + idUf, Cenario.class);
+
+        if(result.getResultList().isEmpty()){
+            addErro("Nenhum Cenário cadastrado para o Estado Informado!!");
+        }
+        
+        return result.getResultList();
+    }
 
 }

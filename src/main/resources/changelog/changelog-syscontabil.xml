@@ -57,10 +57,26 @@
             INSERT INTO seguranca.permissao VALUES ('1.05.03', '     Excluir', 'CADASTRO');
             INSERT INTO seguranca.permissao VALUES ('2', 'Processos', null);
             INSERT INTO seguranca.permissao VALUES ('2.01', 'Regra de tributação', 'PROCESSO');
-            INSERT INTO seguranca.permissao VALUES ('2.02', 'Produtos do Cliente', 'PROCESSO');
-            INSERT INTO seguranca.permissao VALUES ('2.02.01', '     Excessão por NCM', 'PROCESSO');
-            INSERT INTO seguranca.permissao VALUES ('2.02.02', '     Excessão por Produção', 'PROCESSO');
-            INSERT INTO seguranca.permissao VALUES ('2.02.03', '     Confirmação de Item', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.01', '         Incluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.02', '         Alterar', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.01.03', '         Excluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.02', 'Regra de NCM', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.02.01', '         Incluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.02.02', '         Alterar', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.02.03', '         Excluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.02.04', 'Cenario de Regra por NCM', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.02.04.01', '         Incluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.02.04.02', '         Alterar', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.02.04.03', '         Excluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.03', 'Regra de Produto', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.03.01', '         Incluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.03.02', '         Alterar', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.03.03', '         Excluir', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.04', 'Produtos do Cliente', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.04.01', '     Excessão por Produto', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.04.02', '     Excessão por NCM', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.04.03', '     Excessão por Regime', 'PROCESSO');
+            INSERT INTO seguranca.permissao VALUES ('2.04.04', '     Confirmação de Item', 'PROCESSO');
         </sql>
     </changeSet>
 
@@ -100,19 +116,29 @@
 
             INSERT INTO seguranca.permissao_sistema VALUES (23, '2', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (24, '2.01', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (25, '2.02', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (26, '2.02.01', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (27, '2.02.02', 1);
-            INSERT INTO seguranca.permissao_sistema VALUES (28, '2.02.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (25, '2.01.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (26, '2.01.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (27, '2.01.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (28, '2.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (29, '2.02.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (30, '2.02.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (31, '2.02.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (32, '2.02.04', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (33, '2.02.04.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (34, '2.02.04.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (35, '2.02.04.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (36, '2.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (37, '2.03.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (38, '2.03.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (39, '2.03.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (40, '2.04', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (41, '2.04.01', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (42, '2.04.02', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (43, '2.04.03', 1);
+            INSERT INTO seguranca.permissao_sistema VALUES (44, '2.04.04', 1);
         </sql>
     </changeSet>
 
-<!--    <changeSet id="5" author="joao" runOnChange="true">
-        <sql splitStatements="true" dbms="postgresql">
-            ALTER TABLE syscontabil.regra_regime_tributario
-            ADD CONSTRAINT uk_regime_tributario UNIQUE(regime_tributario);
-        </sql>
-    </changeSet>-->
 
     <changeSet id="5" author="syscontabil-bruno-joao" runOnChange="true">
         <sql splitStatements="true" dbms="postgresql">
@@ -147,24 +173,7 @@
         </sql>
     </changeSet>
 
-<!--    <changeSet id="9" author="syscontabil-bruno-joao"   runOnChange="true">
-        <sql splitStatements="true" dbms="postgresql">
-            CREATE DOMAIN syscontabil."DominioValidacaoProduto"
-            AS character varying(12)
-            CONSTRAINT "DominioValidacaoProduto" CHECK (value in ('PENDENTE','VALIDADO'));
-            ALTER DOMAIN syscontabil."DominioValidacaoProduto"
-            OWNER TO interage;
-        </sql>
-    </changeSet>
-
-    <changeSet id="10" author="syscontabil-bruno-joao" runOnChange="true">
-        <sql splitStatements="true" dbms="postgresql">
-            ALTER TABLE syscontabil.produto_cliente
-            ALTER COLUMN status TYPE syscontabil."DominioValidacaoProduto";
-        </sql>
-    </changeSet>-->
-
-    <changeSet id="9" author="joao" runOnChange="true">
+    <!--    <changeSet id="9" author="joao" runOnChange="true">
         <sql splitStatements="true" dbms="postgresql">
             INSERT INTO seguranca.permissao VALUES ('2.01.01', '     Excessão por Regime', 'PROCESSO');
             INSERT INTO seguranca.permissao VALUES ('2.01.01.01', '         Incluir', 'PROCESSO');
@@ -179,9 +188,9 @@
             INSERT INTO seguranca.permissao VALUES ('2.01.03.02', '         Alterar', 'PROCESSO');
             INSERT INTO seguranca.permissao VALUES ('2.01.03.03', '         Excluir', 'PROCESSO');
         </sql>
-    </changeSet>
+    </changeSet>-->
 
-    <changeSet id="10" author="joao"   runOnChange="true">
+<!--    <changeSet id="10" author="joao"   runOnChange="true">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from seguranca.permissao_sistema where id = 25</sqlCheck>
         </preConditions>
@@ -200,7 +209,7 @@
             INSERT INTO seguranca.permissao_sistema VALUES (35, '2.01.03.02', 1);
             INSERT INTO seguranca.permissao_sistema VALUES (36, '2.01.03.03', 1);
         </sql>
-    </changeSet>
+    </changeSet>-->
 
 
     <changeSet id="11" author="renatosm"   runOnChange="true">
