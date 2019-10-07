@@ -30,7 +30,6 @@ public class ClienteController extends PadraoController<Cliente> {
     
       
     
-    
-    
+   
     
 }
