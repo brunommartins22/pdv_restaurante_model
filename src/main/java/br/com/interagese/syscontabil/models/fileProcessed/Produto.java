@@ -264,32 +264,4 @@ public class Produto {
         this.cestInformado = cestInformado;
     }
 
-    /**
-     * @return the ativo
-     */
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    /**
-     * @param ativo the ativo to set
-     */
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
-    }
-
-    /**
-     * @return the log
-     */
-    public String getLog() {
-        return log;
-    }
-
-    /**
-     * @param log the log to set
-     */
-    public void setLog(String log) {
-        this.log = log;
-    }
-
 }
