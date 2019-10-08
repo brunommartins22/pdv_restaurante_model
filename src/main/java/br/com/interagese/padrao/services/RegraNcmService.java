@@ -17,6 +17,7 @@ import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.com.interagese.erplibrary.Utils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -127,31 +128,32 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
     @Override
     public RegraNcm create(RegraNcm obj) throws Exception {
         validar(obj);
-        RegraNcm regra = super.create(obj);
+        super.create(obj);
 
         String json = Utils.serializar((Object) obj, null);
         RegraNcmHistorico h = (RegraNcmHistorico) Utils.deserializar(json, RegraNcmHistorico.class);
-        h.setRegraNcm(regra);
+        h.setRegraNcm(obj);
         h.setId(null);
         regraNcmHistoricoService.create(h);
-
-        produtoCenarioService.changeRule(DominioRegras.NCM, regra);
-        return regra;
+        if (!StringUtils.isEmpty(obj.getNcmCliente())) {
+            produtoCenarioService.changeRule(DominioRegras.NCM, obj);
+        }
+        return obj;
     }
 
     @Override
     public RegraNcm update(RegraNcm obj) throws Exception {
         validar(obj);
-        RegraNcm regra = super.update(obj);
+        super.update(obj);
 
         String json = Utils.serializar((Object) obj, null);
         RegraNcmHistorico h = (RegraNcmHistorico) Utils.deserializar(json, RegraNcmHistorico.class);
-        h.setRegraNcm(regra);
+        h.setRegraNcm(obj);
         h.setId(null);
         regraNcmHistoricoService.create(h);
 
-        produtoCenarioService.updateRule(DominioRegras.NCM, regra);
-        return regra;
+        produtoCenarioService.updateRule(DominioRegras.NCM, obj);
+        return obj;
     }
 
     public void validar(RegraNcm regraNcm) throws Exception {
@@ -166,13 +168,13 @@ public class RegraNcmService extends PadraoService<RegraNcm> {
         List<String> resultRegime = em.createNativeQuery("SELECT tipo_regime as regime FROM syscontabil.cliente WHERE id = '" + clienteId + "'").getResultList();
         String regime = null;
         if (!resultRegime.isEmpty()) {
-            
-            regime = resultRegime.get(0) ;
+
+            regime = resultRegime.get(0);
         }
 
         RegraNcm regraNcm = null;
         if (regime != null && !regime.isEmpty()) {
-            TypedQuery<RegraNcm> result = (TypedQuery<RegraNcm>) em.createNativeQuery("SELECT * FROM syscontabil.regra_ncm WHERE (cenario_id =" + cenarioId + " and ncm = " + (ncm != null ? "'" + ncm + "'" : null) + " and regime_tributario =" + (regime != null ? "'" + regime + "'" : null) + ") or (cenario_id is null and ncm = " + (ncm != null ? "'" + ncm + "'" : null) + " and regime_tributario =" + (regime != null ? "'" + regime + "'" : null) + ")",RegraNcm.class);
+            TypedQuery<RegraNcm> result = (TypedQuery<RegraNcm>) em.createNativeQuery("SELECT * FROM syscontabil.regra_ncm WHERE (cenario_id =" + cenarioId + " and ncm = " + (ncm != null ? "'" + ncm + "'" : null) + " and regime_tributario =" + (regime != null ? "'" + regime + "'" : null) + ") or (cenario_id is null and ncm = " + (ncm != null ? "'" + ncm + "'" : null) + " and regime_tributario =" + (regime != null ? "'" + regime + "'" : null) + ")", RegraNcm.class);
             if (!result.getResultList().isEmpty()) {
                 regraNcm = result.getSingleResult();
             }

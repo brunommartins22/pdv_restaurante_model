@@ -26,6 +26,17 @@
             VALUES (1, 'TESTE', '00.000.000/0000-00', '0', 'JURIDICA', 1, 'INTER', now(), 1);
         </sql>
     </changeSet>
+    
+    <changeSet id="add contrato" author="bruno" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from seguranca.contrato where id = 1</sqlCheck>
+        </preConditions>
+         <sql splitStatements="true" dbms="postgresql">
+            INSERT INTO
+            seguranca.contrato (id, empresa_id,sistema_id)
+            VALUES (1, 1, 1);
+        </sql>
+    </changeSet>
 
     <changeSet id="3" author="adam"   runOnChange="true">
         <preConditions onFail="MARK_RAN">
