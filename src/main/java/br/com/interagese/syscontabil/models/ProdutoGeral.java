@@ -31,7 +31,7 @@ public class ProdutoGeral implements Serializable {
     private Long id;
     @Column(length = 255)
     private String nomeProduto;
-    @Column(unique = true)
+    @Column(length = 14,unique = true,nullable = false)
     private Long ean;
     @Column(length = 8, nullable = false)
     private String ncm;

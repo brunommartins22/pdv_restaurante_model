@@ -51,8 +51,8 @@ public class Produto {
      * @return the nmProduto
      */
     public String getNmProduto() {
-        if (ncmPadrao == null) {
-            ncmPadrao = "";
+        if (getNcmPadrao() == null) {
+            setNcmPadrao("");
         }
         return nmProduto;
     }
@@ -262,6 +262,34 @@ public class Produto {
      */
     public void setCestInformado(String cestInformado) {
         this.cestInformado = cestInformado;
+    }
+
+    /**
+     * @return the ativo
+     */
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    /**
+     * @param ativo the ativo to set
+     */
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    /**
+     * @return the log
+     */
+    public String getLog() {
+        return log;
+    }
+
+    /**
+     * @param log the log to set
+     */
+    public void setLog(String log) {
+        this.log = log;
     }
 
 }
