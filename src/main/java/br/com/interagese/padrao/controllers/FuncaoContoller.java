@@ -7,29 +7,21 @@ package br.com.interagese.padrao.controllers;
 
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
-import br.com.interagese.padrao.services.ClienteService;
-import br.com.interagese.syscontabil.models.Cliente;
+import br.com.interagese.syscontabil.models.Funcao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import br.com.interagese.padrao.services.FuncaoService;
 /**
  *
- * @author Bruno Martins
+ * @author Programacao
  */
 @RestController
-@RequestMapping(path = "api/clientes")
-public class ClienteController extends PadraoController<Cliente> {
+@RequestMapping(path = "api/funcoes")
+public class FuncaoContoller extends PadraoController<Funcao>{
     
-    //********************** inject service in controller **********************
-    @IsServiceDefault
     @Autowired
-    private ClienteService service;
-    
-    //*************************** endpoint *************************************
-    
-      
-    
-   
-    
+    @IsServiceDefault
+    private FuncaoService funcaoService;
+            
 }
