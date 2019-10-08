@@ -77,6 +77,8 @@ public class ProdutoCenario implements Serializable {
     private String status;
     @Transient
     private boolean isEdited;
+    @Transient
+    private boolean isCheck;
 
     public ProdutoCenario() {
         this.confirmado = false;
@@ -400,6 +402,20 @@ public class ProdutoCenario implements Serializable {
      */
     public void setIsEdited(boolean isEdited) {
         this.isEdited = isEdited;
+    }
+
+    /**
+     * @return the isCheck
+     */
+    public boolean isIsCheck() {
+        return isCheck;
+    }
+
+    /**
+     * @param isCheck the isCheck to set
+     */
+    public void setIsCheck(boolean isCheck) {
+        this.isCheck = isCheck;
     }
 
 }

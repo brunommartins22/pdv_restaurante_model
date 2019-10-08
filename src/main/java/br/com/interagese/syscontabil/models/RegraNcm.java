@@ -59,6 +59,8 @@ public class RegraNcm implements Serializable {
     private String nomeCenario;
     @Transient
     private String nomeCliente;
+    @Transient
+    private String ncmCliente;
 
     //**************************** Equals && HashCode **************************
     @Override
@@ -234,6 +236,20 @@ public class RegraNcm implements Serializable {
 
     public void setNomeCliente(String nomeCliente) {
         this.nomeCliente = nomeCliente;
+    }
+
+    /**
+     * @return the ncmCliente
+     */
+    public String getNcmCliente() {
+        return ncmCliente;
+    }
+
+    /**
+     * @param ncmCliente the ncmCliente to set
+     */
+    public void setNcmCliente(String ncmCliente) {
+        this.ncmCliente = ncmCliente;
     }
     
 }

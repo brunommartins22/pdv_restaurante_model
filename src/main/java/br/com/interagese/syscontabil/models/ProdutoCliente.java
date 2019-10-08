@@ -37,7 +37,7 @@ public class ProdutoCliente implements Serializable {
     private String nomeProduto;
     @Column(length = 120)
     private String codigoProduto;
-    @Column(length = 13)
+    @Column(length = 14)
     private Long ean;
     @Column(length = 8)
     private String ncmCliente;
@@ -55,6 +55,9 @@ public class ProdutoCliente implements Serializable {
     private String cestInformado;
     @Column(length = 7)
     private String cestConfirmado;
+    private boolean ativo;
+    @Column(length = 255)
+    private String log;
     @Embedded
     private AtributoPadrao atributoPadrao = new AtributoPadrao();
     @Transient
@@ -92,7 +95,6 @@ public class ProdutoCliente implements Serializable {
     }
 
     //**************************** get && setts ********************************
-
     /**
      * @return the id
      */
@@ -251,6 +253,9 @@ public class ProdutoCliente implements Serializable {
      * @return the cestInformado
      */
     public String getCestInformado() {
+        if (cestInformado == null) {
+            cestInformado = "";
+        }
         return cestInformado;
     }
 
@@ -302,6 +307,33 @@ public class ProdutoCliente implements Serializable {
     public void setIsProdutoGeral(boolean isProdutoGeral) {
         this.isProdutoGeral = isProdutoGeral;
     }
-   
+
+    /**
+     * @return the ativo
+     */
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    /**
+     * @param ativo the ativo to set
+     */
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    /**
+     * @return the log
+     */
+    public String getLog() {
+        return log;
+    }
+
+    /**
+     * @param log the log to set
+     */
+    public void setLog(String log) {
+        this.log = log;
+    }
 
 }
