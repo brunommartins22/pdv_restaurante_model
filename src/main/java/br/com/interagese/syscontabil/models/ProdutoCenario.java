@@ -7,6 +7,7 @@ package br.com.interagese.syscontabil.models;
 
 import br.com.interagese.erplibrary.AtributoPadrao;
 import br.com.interagese.syscontabil.domains.DominioRegras;
+import br.com.interagese.syscontabil.dto.CountProdutos;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -79,6 +80,8 @@ public class ProdutoCenario implements Serializable {
     private boolean isEdited;
     @Transient
     private boolean isCheck;
+    @Transient
+    private CountProdutos countProdutos;
 
     public ProdutoCenario() {
         this.confirmado = false;
@@ -190,6 +193,9 @@ public class ProdutoCenario implements Serializable {
      * @return the tributoFederalCliente
      */
     public TributoFederalCliente getTributoFederalCliente() {
+        if (tributoFederalCliente == null) {
+            tributoFederalCliente = new TributoFederalCliente();
+        }
         return tributoFederalCliente;
     }
 
@@ -204,6 +210,9 @@ public class ProdutoCenario implements Serializable {
      * @return the tributoEstadualCliente
      */
     public TributoEstadualCliente getTributoEstadualCliente() {
+        if (tributoEstadualCliente == null) {
+            tributoEstadualCliente = new TributoEstadualCliente();
+        }
         return tributoEstadualCliente;
     }
 
@@ -218,6 +227,9 @@ public class ProdutoCenario implements Serializable {
      * @return the tributoFederalPadrao
      */
     public TributoFederalPadrao getTributoFederalPadrao() {
+        if (tributoFederalPadrao == null) {
+            tributoFederalPadrao = new TributoFederalPadrao();
+        }
         return tributoFederalPadrao;
     }
 
@@ -232,6 +244,9 @@ public class ProdutoCenario implements Serializable {
      * @return the tributoEstadualPadrao
      */
     public TributoEstadualPadrao getTributoEstadualPadrao() {
+        if (tributoEstadualPadrao == null) {
+            tributoEstadualPadrao = new TributoEstadualPadrao();
+        }
         return tributoEstadualPadrao;
     }
 
@@ -296,6 +311,9 @@ public class ProdutoCenario implements Serializable {
      * @return the tributoFederalInformado
      */
     public TributoFederalInformado getTributoFederalInformado() {
+        if (tributoFederalInformado == null) {
+            tributoFederalInformado = new TributoFederalInformado();
+        }
         return tributoFederalInformado;
     }
 
@@ -310,6 +328,9 @@ public class ProdutoCenario implements Serializable {
      * @return the tributoEstadualInformado
      */
     public TributoEstadualInformado getTributoEstadualInformado() {
+        if (tributoEstadualInformado == null) {
+            tributoEstadualInformado = new TributoEstadualInformado();
+        }
         return tributoEstadualInformado;
     }
 
@@ -384,7 +405,8 @@ public class ProdutoCenario implements Serializable {
     }
 
     /**
-     * @param dominioRegrasInformadoBotaoDireito the dominioRegrasInformadoBotaoDireito to set
+     * @param dominioRegrasInformadoBotaoDireito the
+     * dominioRegrasInformadoBotaoDireito to set
      */
     public void setDominioRegrasInformadoBotaoDireito(DominioRegras dominioRegrasInformadoBotaoDireito) {
         this.dominioRegrasInformadoBotaoDireito = dominioRegrasInformadoBotaoDireito;
@@ -416,6 +438,20 @@ public class ProdutoCenario implements Serializable {
      */
     public void setIsCheck(boolean isCheck) {
         this.isCheck = isCheck;
+    }
+
+    /**
+     * @return the countProdutos
+     */
+    public CountProdutos getCountProdutos() {
+        return countProdutos;
+    }
+
+    /**
+     * @param countProdutos the countProdutos to set
+     */
+    public void setCountProdutos(CountProdutos countProdutos) {
+        this.countProdutos = countProdutos;
     }
 
 }
