@@ -7,6 +7,7 @@ package br.com.interagese.padrao.services;
 
 import br.com.interagese.padrao.rest.util.FiltroParametro;
 import br.com.interagese.padrao.rest.util.PadraoService;
+import br.com.interagese.rest.domain.DominioTipoPessoa;
 import br.com.interagese.syscontabil.models.Cliente;
 import java.util.List;
 import javax.persistence.Query;
@@ -82,6 +83,17 @@ public class ClienteService extends PadraoService<Cliente> {
     public void validar(Cliente cliente) throws Exception {
         if (existeCpfCnpj(cliente)) {
             addErro("CPF/CNPJ cadastrado anteriormente!");
+        }
+        if(cliente.getTipoCliente()==DominioTipoPessoa.JURIDICA){
+            if(StringUtils.isEmpty(cliente.getIeSt())){
+                cliente.setIeSt(null);
+            }
+            if(StringUtils.isEmpty(cliente.getIm())){
+                cliente.setIm(null);
+            }
+            if(StringUtils.isEmpty(cliente.getSuframa())){
+                cliente.setSuframa(null);
+            }
         }
         
     }

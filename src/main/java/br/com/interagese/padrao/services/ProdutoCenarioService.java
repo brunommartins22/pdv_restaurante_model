@@ -11,8 +11,8 @@ import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.models.ProdutoCenario;
 import br.com.interagese.syscontabil.models.RegraNcm;
 import br.com.interagese.syscontabil.models.RegraProduto;
-import java.math.BigInteger;
 import br.com.interagese.syscontabil.models.RegraRegimeTributario;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +27,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
 
-    public Long loadProdutoCenarioCount(Map resp) {
+    public Long loadProdutoCenarioCount(Map resp) throws Exception {
 
         Long clienteId = ((Integer) resp.get("clienteId")).longValue();
         Long cenarioId = ((Integer) resp.get("cenarioId")).longValue();
         String produto = (String) resp.get("produto");
+        String ncm = (String) resp.get("ncm");
+        Integer capitulo = (Integer) resp.get("capitulo");
+        String regra = (String) resp.get("regra");
         String status = (String) resp.get("status");
 
         String sql = "SELECT count(o) FROM ProdutoCenario o where o.produtoCliente.cliente.id = '" + clienteId + "' ";
@@ -39,15 +42,36 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
         if (cenarioId != null) {
             sql += " and o.cenario.id = '" + cenarioId + "'";
         }
-        if (produto != null && !produto.isEmpty()) {
+
+        if (!StringUtils.isEmpty(produto)) {
             if (Utils.somenteNumeros(produto)) {
                 sql += " and o.produtoCliente.ean = " + produto + "";
             } else {
                 sql += " and o.produtoCliente.nomeProduto like '%" + produto + "%'";
             }
         }
-        if (status != null && !status.isEmpty()) {
-            sql += " and o.divergente is " + status.equals("Pendente");
+
+        if (!StringUtils.isEmpty(ncm)) {
+            if (!Utils.somenteNumeros(ncm)) {
+                addErro("Informe apenas números para a pesquisa de NCM !!");
+            }
+            sql += " and o.produtoCliente.ncmInformado " + (ncm.length() == 8 ? "='" + ncm + "'" : "like '" + ncm + "%'");
+        }
+
+        if (capitulo != null) {
+            sql += " and LENGTH(o.produtoCliente.ncmInformado) = " + capitulo;
+        }
+
+        if (!StringUtils.isEmpty(regra)) {
+            sql += " and o." + (status.equals("Pendente") ? "dominioRegras" : "dominioRegrasConfirmado") + " = '" + regra + "'";
+        }
+
+        if (!StringUtils.isEmpty(status)) {
+            if (!status.equals("Inativo")) {
+                sql += " and o.divergente is " + status.equals("Pendente");
+            } else {
+                sql += " and o.produtoCliente.ativo = " + !status.equals("Inativo");
+            }
         }
 
         Long result = (Long) em.createQuery(sql).getSingleResult();
@@ -61,6 +85,8 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
         Long cenarioId = ((Integer) resp.get("cenarioId")).longValue();
         String produto = (String) resp.get("produto");
         String ncm = (String) resp.get("ncm");
+        Integer capitulo = (Integer) resp.get("capitulo");
+        String regra = (String) resp.get("regra");
         String status = (String) resp.get("status");
         int inicial = ((Number) resp.get("inicial")).intValue();
         int finalR = ((Number) resp.get("final")).intValue();
@@ -70,6 +96,7 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
         if (cenarioId != null) {
             sql += " and o.cenario.id = '" + cenarioId + "'";
         }
+
         if (!StringUtils.isEmpty(produto)) {
             if (Utils.somenteNumeros(produto)) {
                 sql += " and o.produtoCliente.ean = " + produto + "";
@@ -77,14 +104,28 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                 sql += " and o.produtoCliente.nomeProduto like '%" + produto + "%'";
             }
         }
+
         if (!StringUtils.isEmpty(ncm)) {
             if (!Utils.somenteNumeros(ncm)) {
                 addErro("Informe apenas números para a pesquisa de NCM !!");
             }
             sql += " and o.produtoCliente.ncmInformado " + (ncm.length() == 8 ? "='" + ncm + "'" : "like '" + ncm + "%'");
         }
+
+        if (capitulo != null) {
+            sql += " and LENGTH(o.produtoCliente.ncmInformado) = " + capitulo;
+        }
+
+        if (!StringUtils.isEmpty(regra)) {
+            sql += " and o." + (status.equals("Pendente") ? "dominioRegras" : "dominioRegrasConfirmado") + " = '" + regra + "'";
+        }
+
         if (!StringUtils.isEmpty(status)) {
-            sql += " and o.divergente is " + status.equals("Pendente");
+            if (!status.equals("Inativo")) {
+                sql += " and o.divergente is " + status.equals("Pendente") + " and o.produtoCliente.ativo is true";
+            } else {
+                sql += " and o.produtoCliente.ativo = " + !status.equals("Inativo");
+            }
         }
         sql += " order by o.id";
 
@@ -171,9 +212,10 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
                     }
                 }
 
+                String ncm = regraNcm.getNcmCliente() == null ? regraNcm.getNcm() : regraNcm.getNcmCliente();
+
                 Query queryCliente = em.createQuery("Select o.id from ProdutoCliente o "
-                        + "where o.ncmCliente like :ncm " + sqlComplementarCliente)
-                        .setParameter("ncm", regraNcm.getNcmCliente()+ "%");
+                        + "where o.ncmInformado like '" + ncm + "%' " + sqlComplementarCliente);
 
                 if (regraNcm.getRegimeTributario() != null && !listaCliente.isEmpty()) {
                     queryCliente.setParameter("listaCliente", listaCliente);
@@ -579,4 +621,41 @@ public class ProdutoCenarioService extends PadraoService<ProdutoCenario> {
 
         }
     }
+
+    /*
+    ***************************** count produtos validados *********************
+    select count(*) from syscontabil.produto_cliente p 
+    join syscontabil.produto_cenario pc on pc.produto_cliente_id = p.id and pc.confirmado is true and p.cliente_id = 50 and p.ativo is true
+     */
+    public Long getCountProdutosValidados(Long idCliente, Long idCenario) {
+        return ((BigInteger) em.createNativeQuery("select count(*) from syscontabil.produto_cliente p "
+                + "join syscontabil.produto_cenario pc on pc.produto_cliente_id = p.id "
+                + "and pc.confirmado is true and p.cliente_id = " + idCliente + " "
+                + "and pc.cenario_id = " + idCenario + " "
+                + "and p.ativo is true").getSingleResult()).longValue();
+    }
+
+    /*
+    ***************************** count produtos Pendentes ********************
+    select count(*) from syscontabil.produto_cliente p 
+    join syscontabil.produto_cenario pc on pc.produto_cliente_id = p.id and pc.confirmado is false and p.cliente_id = 50 and p.ativo is true
+     */
+    public Long getCountProdutosPendentes(Long idCliente, Long idCenario) {
+        return ((BigInteger) em.createNativeQuery("select count(*) from syscontabil.produto_cliente p "
+                + "join syscontabil.produto_cenario pc on pc.produto_cliente_id = p.id "
+                + "and pc.confirmado is false "
+                + "and p.cliente_id = " + idCliente + " "
+                + "and pc.cenario_id = " + idCenario + " "
+                + "and p.ativo is true").getSingleResult()).longValue();
+    }
+
+    //**************************** count produtos inativos *********************
+    public Long getCountProdutosInativos(Long idCliente, Long idCenario) {
+        return ((BigInteger) em.createNativeQuery("select count(*) from syscontabil.produto_cliente p "
+                + "join syscontabil.produto_cenario pc on pc.produto_cliente_id = p.id "
+                + "and pc.cenario_id = " + idCenario + " "
+                + "and p.ativo is false "
+                + "and p.cliente_id = " + idCliente).getSingleResult()).longValue();
+    }
+
 }

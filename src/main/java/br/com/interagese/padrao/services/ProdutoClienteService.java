@@ -11,6 +11,7 @@ import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.padrao.rest.util.TransformNativeQuery;
 import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.dto.ClienteProdutoDto;
+import br.com.interagese.syscontabil.dto.CountProdutos;
 import br.com.interagese.syscontabil.models.ArquivosProcessar;
 import br.com.interagese.syscontabil.models.ProdutoCenario;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
@@ -18,6 +19,8 @@ import br.com.interagese.syscontabil.models.ProdutoGeral;
 import br.com.interagese.syscontabil.models.RegraNcm;
 import br.com.interagese.syscontabil.models.RegraProduto;
 import br.com.interagese.syscontabil.models.RegraRegimeTributario;
+import br.com.interagese.syscontabil.models.TributoEstadualPadrao;
+import br.com.interagese.syscontabil.models.TributoFederalPadrao;
 import br.com.interagese.syscontabil.models.fileProcessed.ArquivoItem;
 import br.com.interagese.syscontabil.models.fileProcessed.Produto;
 import br.com.interagese.syscontabil.models.fileProcessed.ProdutoCenarioJob;
@@ -111,6 +114,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         if (result == null || result.isEmpty()) {
             throw new Exception("Nenhum registro encontrado na base de dados !!");
         } else {
+            
             result.forEach((produtoCenario) -> {
                 produtoCenario.setIsCheck(false);
                 produtoCenario.setStatus(produtoCenario.isDivergente() ? "Pendente" : "Validado");
@@ -121,68 +125,98 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 } else {
                     produtoCenario.getProdutoCliente().setIsProdutoGeral(false);
                 }
+
+                if (produtoCenario.getTributoFederalPadrao() == null) {
+                    produtoCenario.setTributoFederalPadrao(new TributoFederalPadrao());
+                }
+                if (produtoCenario.getTributoEstadualPadrao() == null) {
+                    produtoCenario.setTributoEstadualPadrao(new TributoEstadualPadrao());
+                }
+
                 produtoCenario.setIsEdited(false);
             });
+            //************************* load count filters *********************
+            Long idCliente = result.get(0).getProdutoCliente().getCliente().getId();
+            Long idCenario = result.get(0).getCenario().getId();
+            CountProdutos produtos = new CountProdutos();
+            produtos.setCountProdutosValidados(produtoCenarioService.getCountProdutosValidados(idCliente,idCenario));
+            produtos.setCountProdutosPendentes(produtoCenarioService.getCountProdutosPendentes(idCliente,idCenario));
+            produtos.setCountProdutosInativos(produtoCenarioService.getCountProdutosInativos(idCliente,idCenario));
+            result.get(0).setCountProdutos(produtos);
         }
         return result;
     }
 
-    public ProdutoCenario confirmClientRule(ProdutoCenario produtoCenario) throws Exception {
+    public void confirmClientRule(ProdutoCenario produtoCenario, boolean isBatch) throws Exception {
 
         if (produtoCenario != null && produtoCenario.getProdutoCliente().isAtivo()) {
 
             //***************** validation produto geral ***********************
+            String sqlUpdateProductClient = "UPDATE syscontabil.produto_cliente set";
+            String sqlparam = "";
             if (StringUtils.isEmpty(produtoCenario.getProdutoCliente().getNcmInformado())) {
-                addErro("Ncm não informado !!");
+                addErro("NCM não informado !!");
             } else {
                 if (produtoCenario.getProdutoCliente().getNcmInformado().length() < 8) {
-                    addErro("Ncm com quantidade de caracteres menor que 8 dígitos !!");
+                    addErro("NCM com quantidade de caracteres menor que 8 dígitos !!");
                 }
             }
 
-            if (!produtoCenario.getProdutoCliente().isIsProdutoGeral() && produtoCenario.getProdutoCliente().getEan() != null) {
+            if (produtoCenario.getProdutoCliente().getEan() != null) {
+                ProdutoGeral geral = null;
+                if (!produtoCenario.getProdutoCliente().isIsProdutoGeral()) {
+                    geral = new ProdutoGeral();
 
-                ProdutoGeral geral = new ProdutoGeral();
+                    geral.setEan(produtoCenario.getProdutoCliente().getEan());
+                    geral.setNomeProduto(produtoCenario.getProdutoCliente().getNomeProduto());
+                    geral.setNcm(produtoCenario.getProdutoCliente().getNcmInformado());
+                    geral.setCest(produtoCenario.getProdutoCliente().getCestInformado());
+                    geral.getAtributoPadrao().setDataAlteracao(new Date());
+                    geral.getAtributoPadrao().setIdUsuario(1L);
+                    geral.getAtributoPadrao().setNomeUsuario("INTER");
+                    geral.getAtributoPadrao().setDominioEvento(DominioEvento.I);
 
-                geral.setEan(produtoCenario.getProdutoCliente().getEan());
-                geral.setNomeProduto(produtoCenario.getProdutoCliente().getNomeProduto());
-                geral.setNcm(produtoCenario.getProdutoCliente().getNcmInformado());
-                geral.setCest(produtoCenario.getProdutoCliente().getCestInformado());
-                geral.getAtributoPadrao().setDataAlteracao(new Date());
-                geral.getAtributoPadrao().setIdUsuario(1L);
-                geral.getAtributoPadrao().setNomeUsuario("INTER");
-                geral.getAtributoPadrao().setDominioEvento(DominioEvento.I);
+                    produtoGeralService.create(geral);
 
-                produtoGeralService.create(geral);
+                    produtoCenario.getProdutoCliente().setIsProdutoGeral(true);
+                    produtoCenario.getProdutoCliente().setNcmPadrao(produtoCenario.getProdutoCliente().getNcmInformado());
+                    produtoCenario.getProdutoCliente().setCestPadrao(produtoCenario.getProdutoCliente().getCestInformado());
+                } else {
+                    List<Object[]> obj = produtoGeralService.findProdutoGeralByEan(produtoCenario.getProdutoCliente().getEan());
+                    produtoCenario.getProdutoCliente().setNcmPadrao((String) obj.get(0)[0]);
+                    produtoCenario.getProdutoCliente().setCestPadrao((String) obj.get(0)[1]);
+                    produtoCenario.getProdutoCliente().setNcmInformado(produtoCenario.getProdutoCliente().getNcmPadrao());
+                    produtoCenario.getProdutoCliente().setCestInformado(produtoCenario.getProdutoCliente().getCestPadrao());
+                }
+                sqlparam = " ncm_padrao = '" + produtoCenario.getProdutoCliente().getNcmPadrao() + "',"
+                        + " cest_padrao = " + (!StringUtils.isEmpty(produtoCenario.getProdutoCliente().getCestPadrao()) ? "'" + produtoCenario.getProdutoCliente().getCestPadrao() + "'" : "''") + ""
+                        + " where ean = " + produtoCenario.getProdutoCliente().getEan();
 
-                produtoCenario.getProdutoCliente().setIsProdutoGeral(true);
-                produtoCenario.getProdutoCliente().setNcmPadrao(produtoCenario.getProdutoCliente().getNcmInformado());
-                produtoCenario.getProdutoCliente().setCestPadrao(produtoCenario.getProdutoCliente().getCestInformado());
+                em.createNativeQuery(sqlUpdateProductClient + sqlparam).executeUpdate();
 
-                //******* update all product in table produtoCliente ***********
-                String sqlUpdateProductClient = "update syscontabil.produto_cliente set "
-                        + "ncm_padrao = '" + produtoCenario.getProdutoCliente().getNcmInformado() + "',"
-                        + "cest_padrao = '" + produtoCenario.getProdutoCliente().getCestInformado() + "'"
-                        + "where ean =" + produtoCenario.getProdutoCliente().getEan() + " or ncm_cliente = '" + produtoCenario.getProdutoCliente().getNcmCliente() + "'";
-
-                em.createNativeQuery(sqlUpdateProductClient).executeUpdate();
-
-            } else if (produtoCenario.getProdutoCliente().getEan() != null) {
+            } else if (produtoCenario.getProdutoCliente().getEan() != null && !isBatch) {
                 if (!produtoCenario.getProdutoCliente().getNcmInformado().equals(produtoCenario.getProdutoCliente().getNcmPadrao())) {
-                    addErro("Ncm informado precisa ser corrigido para o sugerido !!");
+                    addErro("NCM informado precisa ser corrigido para o sugerido !!");
                 }
 
                 if (!produtoCenario.getProdutoCliente().getCestInformado().equals(produtoCenario.getProdutoCliente().getCestPadrao())) {
-                    addErro("Cest informado precisa ser corrigido para o sugerido !!");
+                    addErro("CEST informado precisa ser corrigido para o sugerido !!");
                 }
+
             }
+
+            //********* update all product in table produtoCliente *************
+            sqlparam = " ncm_informado = '" + produtoCenario.getProdutoCliente().getNcmInformado() + "'"
+                    + " where ncm_cliente = '" + produtoCenario.getProdutoCliente().getNcmCliente() + "'";
+
+            em.createNativeQuery(sqlUpdateProductClient + sqlparam).executeUpdate();
 
             produtoCenario.getProdutoCliente().setNcmConfirmado(produtoCenario.getProdutoCliente().getNcmInformado());
             produtoCenario.getProdutoCliente().setCestConfirmado(produtoCenario.getProdutoCliente().getCestInformado());
 
             if (produtoCenario.getTributoFederalInformado() != null) {
 
-                if (!produtoCenario.isIsEdited()) {
+                if (!produtoCenario.isIsEdited() && !isBatch) {
                     if (!produtoCenario.getTributoFederalInformado().getCstPisSaidaInformado().equals(produtoCenario.getTributoFederalPadrao().getCstPisSaidaPadrao())) {
                         addErro("CST do Pis informado precisa ser alterado para o sugerido !!");
                     }
@@ -206,22 +240,37 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 //************************* Pis ********************************
                 //****************************** Tributos de Saída ************************************
                 //****************************** Update Client Exit ***********************************
-                produtoCenario.getTributoFederalPadrao().setCstPisSaidaPadrao(produtoCenario.getTributoFederalInformado().getCstPisSaidaInformado());
-                produtoCenario.getTributoFederalPadrao().setAliquotaPisSaidaPadrao(produtoCenario.getTributoFederalInformado().getAliquotaPisSaidaInformado());
+                if (!isBatch) {
+                    produtoCenario.getTributoFederalPadrao().setCstPisSaidaPadrao(produtoCenario.getTributoFederalInformado().getCstPisSaidaInformado());
+                    produtoCenario.getTributoFederalPadrao().setAliquotaPisSaidaPadrao(produtoCenario.getTributoFederalInformado().getAliquotaPisSaidaInformado());
+                } else {
+                    produtoCenario.getTributoFederalInformado().setCstPisSaidaInformado(produtoCenario.getTributoFederalPadrao().getCstPisSaidaPadrao());
+                    produtoCenario.getTributoFederalInformado().setAliquotaPisSaidaInformado(produtoCenario.getTributoFederalPadrao().getAliquotaPisSaidaPadrao());
+                }
                 produtoCenario.getTributoFederalConfirmado().setCstPisSaidaConfirmado(produtoCenario.getTributoFederalInformado().getCstPisSaidaInformado());
                 produtoCenario.getTributoFederalConfirmado().setAliquotaPisSaidaConfirmado(produtoCenario.getTributoFederalInformado().getAliquotaPisSaidaInformado());
                 //************************* Cofins *****************************
                 //****************************** Tributos de Saída ************************************
                 //****************************** Update Client Exit ***********************************
-                produtoCenario.getTributoFederalPadrao().setCstCofinsSaidaPadrao(produtoCenario.getTributoFederalInformado().getCstCofinsSaidaInformado());
-                produtoCenario.getTributoFederalPadrao().setAliquotaCofinsSaidaPadrao(produtoCenario.getTributoFederalInformado().getAliquotaCofinsSaidaInformado());
+                if (!isBatch) {
+                    produtoCenario.getTributoFederalPadrao().setCstCofinsSaidaPadrao(produtoCenario.getTributoFederalInformado().getCstCofinsSaidaInformado());
+                    produtoCenario.getTributoFederalPadrao().setAliquotaCofinsSaidaPadrao(produtoCenario.getTributoFederalInformado().getAliquotaCofinsSaidaInformado());
+                } else {
+                    produtoCenario.getTributoFederalInformado().setCstCofinsSaidaInformado(produtoCenario.getTributoFederalPadrao().getCstCofinsSaidaPadrao());
+                    produtoCenario.getTributoFederalInformado().setAliquotaCofinsSaidaInformado(produtoCenario.getTributoFederalPadrao().getAliquotaCofinsSaidaPadrao());
+                }
                 produtoCenario.getTributoFederalConfirmado().setCstCofinsSaidaConfirmado(produtoCenario.getTributoFederalInformado().getCstCofinsSaidaInformado());
                 produtoCenario.getTributoFederalConfirmado().setAliquotaCofinsSaidaConfirmado(produtoCenario.getTributoFederalInformado().getAliquotaCofinsSaidaInformado());
                 //**************************** Ipi *****************************
                 //****************************** Tributos de Saída ************************************
                 //****************************** Update Client Exit ***********************************
-                produtoCenario.getTributoFederalPadrao().setCstIpiSaidaPadrao(produtoCenario.getTributoFederalInformado().getCstIpiSaidaInformado());
-                produtoCenario.getTributoFederalPadrao().setAliquotaIpiSaidaPadrao(produtoCenario.getTributoFederalInformado().getAliquotaIpiSaidaInformado());
+                if (!isBatch) {
+                    produtoCenario.getTributoFederalPadrao().setCstIpiSaidaPadrao(produtoCenario.getTributoFederalInformado().getCstIpiSaidaInformado());
+                    produtoCenario.getTributoFederalPadrao().setAliquotaIpiSaidaPadrao(produtoCenario.getTributoFederalInformado().getAliquotaIpiSaidaInformado());
+                } else {
+                    produtoCenario.getTributoFederalInformado().setCstIpiSaidaInformado(produtoCenario.getTributoFederalPadrao().getCstIpiSaidaPadrao());
+                    produtoCenario.getTributoFederalInformado().setAliquotaIpiSaidaInformado(produtoCenario.getTributoFederalPadrao().getAliquotaIpiSaidaPadrao());
+                }
                 produtoCenario.getTributoFederalConfirmado().setCstIpiSaidaConfirmado(produtoCenario.getTributoFederalInformado().getCstIpiSaidaInformado());
                 produtoCenario.getTributoFederalConfirmado().setAliquotaIpiSaidaConfirmado(produtoCenario.getTributoFederalInformado().getAliquotaIpiSaidaInformado());
 
@@ -229,7 +278,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 
             if (produtoCenario.getTributoEstadualInformado() != null) {
 
-                if (!produtoCenario.isIsEdited()) {
+                if (!produtoCenario.isIsEdited() && !isBatch) {
                     if (!produtoCenario.getTributoEstadualInformado().getCstIcmsSaidaInformado().equals(produtoCenario.getTributoEstadualPadrao().getCstIcmsSaidaPadrao())) {
                         addErro("CST do Icms informado precisa ser alterado para o sugerido !!");
                     }
@@ -241,86 +290,93 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 //****************************** ICMS **************************
                 //****************************** Tributos de Saída ************************************
                 //****************************** Update Client Exit ***********************************
-                produtoCenario.getTributoEstadualPadrao().setCstIcmsSaidaPadrao(produtoCenario.getTributoEstadualInformado().getCstIcmsSaidaInformado());
-                produtoCenario.getTributoEstadualPadrao().setAliquotaIcmsSaidaPadrao(produtoCenario.getTributoEstadualInformado().getAliquotaIcmsSaidaInformado());
+                if (!isBatch) {
+                    produtoCenario.getTributoEstadualPadrao().setCstIcmsSaidaPadrao(produtoCenario.getTributoEstadualInformado().getCstIcmsSaidaInformado());
+                    produtoCenario.getTributoEstadualPadrao().setAliquotaIcmsSaidaPadrao(produtoCenario.getTributoEstadualInformado().getAliquotaIcmsSaidaInformado());
+                } else {
+                    produtoCenario.getTributoEstadualInformado().setCstIcmsSaidaInformado(produtoCenario.getTributoEstadualPadrao().getCstIcmsSaidaPadrao());
+                    produtoCenario.getTributoEstadualInformado().setAliquotaIcmsSaidaInformado(produtoCenario.getTributoEstadualPadrao().getAliquotaIcmsSaidaPadrao());
+                }
                 produtoCenario.getTributoEstadualConfirmado().setCstIcmsSaidaConfirmado(produtoCenario.getTributoEstadualInformado().getCstIcmsSaidaInformado());
                 produtoCenario.getTributoEstadualConfirmado().setAliquotaIcmsSaidaConfirmado(produtoCenario.getTributoEstadualInformado().getAliquotaIcmsSaidaInformado());
             }
 
-            switch (produtoCenario.getDominioRegrasInformado()) {
-                case PRODUTO: {
-                    RegraProduto regraProduto = null;
-                    if (!produtoCenario.getDominioRegras().equals(produtoCenario.getDominioRegrasInformado()) && !produtoCenario.getDominioRegrasInformadoBotaoDireito().equals(produtoCenario.getDominioRegrasInformado()) && produtoCenario.isIsEdited()) {
-                        regraProduto = new RegraProduto();
-                        regraProduto.getAtributoPadrao().setDataAlteracao(new Date());
-                        regraProduto.getAtributoPadrao().setIdUsuario(1L);
-                        regraProduto.getAtributoPadrao().setNomeUsuario("ADMINISTRADOR");
-                        regraProduto.getAtributoPadrao().setDominioEvento(DominioEvento.I);
-                        regraProduto.setCenario(produtoCenario.getCenario());
-                        if (produtoCenario.getProdutoCliente().getEan() != null) {
-                            regraProduto.setEanProduto(produtoCenario.getProdutoCliente().getEan());
+            if (!isBatch) {
+                switch (produtoCenario.getDominioRegrasInformado()) {
+                    case PRODUTO: {
+                        RegraProduto regraProduto = null;
+                        if (!produtoCenario.getDominioRegras().equals(produtoCenario.getDominioRegrasInformado()) && !produtoCenario.getDominioRegrasInformadoBotaoDireito().equals(produtoCenario.getDominioRegrasInformado()) && produtoCenario.isIsEdited()) {
+                            regraProduto = new RegraProduto();
+                            regraProduto.getAtributoPadrao().setDataAlteracao(new Date());
+                            regraProduto.getAtributoPadrao().setIdUsuario(1L);
+                            regraProduto.getAtributoPadrao().setNomeUsuario("ADMINISTRADOR");
+                            regraProduto.getAtributoPadrao().setDominioEvento(DominioEvento.I);
+                            regraProduto.setCenario(produtoCenario.getCenario());
+                            if (produtoCenario.getProdutoCliente().getEan() != null) {
+                                regraProduto.setEanProduto(produtoCenario.getProdutoCliente().getEan());
+                            } else {
+                                regraProduto.setCliente(produtoCenario.getProdutoCliente().getCliente());
+                                regraProduto.setCodigoProduto(produtoCenario.getProdutoCliente().getCodigoProduto());
+                            }
+                            regraProduto.setRegimeTributario(produtoCenario.getProdutoCliente().getCliente().getTipoRegime());
+                            regraProduto.setTributoFederalPadrao(produtoCenario.getTributoFederalPadrao());
+                            regraProduto.setTributoEstadualPadrao(produtoCenario.getTributoEstadualPadrao());
+                            regraProdutoService.create(regraProduto);
+                            produtoCenario.setRegraId(regraProduto.getId());
+
                         } else {
-                            regraProduto.setCliente(produtoCenario.getProdutoCliente().getCliente());
-                            regraProduto.setCodigoProduto(produtoCenario.getProdutoCliente().getCodigoProduto());
+                            regraProduto = regraProdutoService.findById(produtoCenario.getRegraId());
+                            regraProduto.getAtributoPadrao().setDataAlteracao(new Date());
+                            regraProduto.getAtributoPadrao().setIdUsuario(1L);
+                            regraProduto.getAtributoPadrao().setNomeUsuario("ADMINISTRADOR");
+                            regraProduto.getAtributoPadrao().setDominioEvento(DominioEvento.A);
+                            if (produtoCenario.getProdutoCliente().getEan() != null) {
+                                regraProduto.setEanProduto(produtoCenario.getProdutoCliente().getEan());
+                            } else {
+                                regraProduto.setCliente(produtoCenario.getProdutoCliente().getCliente());
+                                regraProduto.setCodigoProduto(produtoCenario.getProdutoCliente().getCodigoProduto());
+                            }
+                            regraProduto.setTributoFederalPadrao(produtoCenario.getTributoFederalPadrao());
+                            regraProduto.setTributoEstadualPadrao(produtoCenario.getTributoEstadualPadrao());
+                            produtoCenarioService.updateRule(DominioRegras.PRODUTO, regraProduto);
                         }
-                        regraProduto.setRegimeTributario(produtoCenario.getProdutoCliente().getCliente().getTipoRegime());
-                        regraProduto.setTributoFederalPadrao(produtoCenario.getTributoFederalPadrao());
-                        regraProduto.setTributoEstadualPadrao(produtoCenario.getTributoEstadualPadrao());
-                        regraProdutoService.create(regraProduto);
-                        produtoCenario.setRegraId(regraProduto.getId());
 
-                    } else {
-                        regraProduto = regraProdutoService.findById(produtoCenario.getRegraId());
-                        regraProduto.getAtributoPadrao().setDataAlteracao(new Date());
-                        regraProduto.getAtributoPadrao().setIdUsuario(1L);
-                        regraProduto.getAtributoPadrao().setNomeUsuario("ADMINISTRADOR");
-                        regraProduto.getAtributoPadrao().setDominioEvento(DominioEvento.A);
-                        if (produtoCenario.getProdutoCliente().getEan() != null) {
-                            regraProduto.setEanProduto(produtoCenario.getProdutoCliente().getEan());
+                        break;
+                    }
+                    case NCM: {
+                        RegraNcm regraNcm = null;
+                        if (!produtoCenario.getDominioRegras().equals(produtoCenario.getDominioRegrasInformado()) && !produtoCenario.getDominioRegrasInformadoBotaoDireito().equals(produtoCenario.getDominioRegrasInformado()) && produtoCenario.isIsEdited()) {
+                            regraNcm = new RegraNcm();
+                            regraNcm.getAtributoPadrao().setDataAlteracao(new Date());
+                            regraNcm.getAtributoPadrao().setIdUsuario(1L);
+                            regraNcm.getAtributoPadrao().setNomeUsuario("ADMINISTRADOR");
+                            regraNcm.getAtributoPadrao().setDominioEvento(DominioEvento.I);
+                            regraNcm.setNcm(produtoCenario.getProdutoCliente().getNcmInformado());
+                            regraNcm.setNcmCliente(produtoCenario.getProdutoCliente().getNcmCliente());
+                            regraNcm.setRegimeTributario(produtoCenario.getProdutoCliente().getCliente().getTipoRegime());
+                            regraNcm.setCenario(produtoCenario.getCenario());
+                            regraNcm.setTributoFederalPadrao(produtoCenario.getTributoFederalPadrao());
+                            regraNcm.setTributoEstadualPadrao(produtoCenario.getTributoEstadualPadrao());
+                            regraNcmService.create(regraNcm);
+                            produtoCenario.setRegraId(regraNcm.getId());
+
                         } else {
-                            regraProduto.setCliente(produtoCenario.getProdutoCliente().getCliente());
-                            regraProduto.setCodigoProduto(produtoCenario.getProdutoCliente().getCodigoProduto());
+                            regraNcm = regraNcmService.findById(produtoCenario.getRegraId());
+                            regraNcm.getAtributoPadrao().setDataAlteracao(new Date());
+                            regraNcm.getAtributoPadrao().setIdUsuario(1L);
+                            regraNcm.getAtributoPadrao().setNomeUsuario("ADMINISTRADOR");
+                            regraNcm.getAtributoPadrao().setDominioEvento(DominioEvento.A);
+                            regraNcm.setNcm(produtoCenario.getProdutoCliente().getNcmInformado());
+                            regraNcm.setTributoFederalPadrao(produtoCenario.getTributoFederalPadrao());
+                            regraNcm.setTributoEstadualPadrao(produtoCenario.getTributoEstadualPadrao());
+                            produtoCenarioService.updateRule(DominioRegras.NCM, regraNcm);
                         }
-                        regraProduto.setTributoFederalPadrao(produtoCenario.getTributoFederalPadrao());
-                        regraProduto.setTributoEstadualPadrao(produtoCenario.getTributoEstadualPadrao());
-                        produtoCenarioService.updateRule(DominioRegras.PRODUTO, regraProduto);
+                        break;
                     }
+                    case REGIME: {
 
-                    break;
-                }
-                case NCM: {
-                    RegraNcm regraNcm = null;
-                    if (!produtoCenario.getDominioRegras().equals(produtoCenario.getDominioRegrasInformado()) && !produtoCenario.getDominioRegrasInformadoBotaoDireito().equals(produtoCenario.getDominioRegrasInformado()) && produtoCenario.isIsEdited()) {
-                        regraNcm = new RegraNcm();
-                        regraNcm.getAtributoPadrao().setDataAlteracao(new Date());
-                        regraNcm.getAtributoPadrao().setIdUsuario(1L);
-                        regraNcm.getAtributoPadrao().setNomeUsuario("ADMINISTRADOR");
-                        regraNcm.getAtributoPadrao().setDominioEvento(DominioEvento.I);
-                        regraNcm.setNcm(produtoCenario.getProdutoCliente().getNcmInformado());
-                        regraNcm.setNcmCliente(produtoCenario.getProdutoCliente().getNcmCliente());
-                        regraNcm.setRegimeTributario(produtoCenario.getProdutoCliente().getCliente().getTipoRegime());
-                        regraNcm.setCenario(produtoCenario.getCenario());
-                        regraNcm.setTributoFederalPadrao(produtoCenario.getTributoFederalPadrao());
-                        regraNcm.setTributoEstadualPadrao(produtoCenario.getTributoEstadualPadrao());
-                        regraNcmService.create(regraNcm);
-                        produtoCenario.setRegraId(regraNcm.getId());
-
-                    } else {
-                        regraNcm = regraNcmService.findById(produtoCenario.getRegraId());
-                        regraNcm.getAtributoPadrao().setDataAlteracao(new Date());
-                        regraNcm.getAtributoPadrao().setIdUsuario(1L);
-                        regraNcm.getAtributoPadrao().setNomeUsuario("ADMINISTRADOR");
-                        regraNcm.getAtributoPadrao().setDominioEvento(DominioEvento.A);
-                        regraNcm.setNcm(produtoCenario.getProdutoCliente().getNcmInformado());
-                        regraNcm.setTributoFederalPadrao(produtoCenario.getTributoFederalPadrao());
-                        regraNcm.setTributoEstadualPadrao(produtoCenario.getTributoEstadualPadrao());
-                        produtoCenarioService.updateRule(DominioRegras.NCM, regraNcm);
+                        break;
                     }
-                    break;
-                }
-                case REGIME: {
-
-                    break;
                 }
             }
 
@@ -329,13 +385,24 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
             produtoCenario.setConfirmado(true);
             produtoCenario.setStatus("Validado");
             produtoCenario.setIsEdited(false);
+            produtoCenario.getAtributoPadrao().setDataAlteracao(new Date());
+            produtoCenario.getAtributoPadrao().setDominioEvento(DominioEvento.A);
+            produtoCenario.getProdutoCliente().getAtributoPadrao().setDataAlteracao(new Date());
+            produtoCenario.getProdutoCliente().getAtributoPadrao().setDominioEvento(DominioEvento.A);
 
             produtoCenarioService.update(produtoCenario);
-        }else{
+        } else {
             addErro("Produto Inativo para confirmação !!");
         }
+    }
 
-        return produtoCenario;
+    public void confirmClientRuleOnBatchProduct(List<ProdutoCenario> result) throws Exception {
+
+        if (!result.isEmpty()) {
+            for (ProdutoCenario produtoCenario : result) {
+                confirmClientRule(produtoCenario, true);
+            }
+        }
     }
 
     //*************************** Methods Job **********************************
@@ -770,11 +837,11 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
 
         if (item.getEan() == null && StringUtils.isEmpty(item.getCodigoProduto())) {
             text = "Código do Produto fornecido pelo cliente encontra-se com valor nulo. \r\n";
-        } else if (item.getEan().toString().length() < 8) {
+        } else if (item.getEan() != null && item.getEan().toString().length() < 8) {
             text = "Ean encontra-se com qtd de caracteres menor que 8 dígitos. \r\n";
-        } else if (item.getEan().toString().length() > 8 && item.getEan().toString().length() < 12) {
+        } else if (item.getEan() != null && item.getEan().toString().length() > 8 && item.getEan().toString().length() < 12) {
             text = "Ean encontra-se com quantidade de caracteres inválida. \r\n";
-        } else if (item.getEan().toString().length() > 14) {
+        } else if (item.getEan() != null && item.getEan().toString().length() > 14) {
             text = "Ean encontra-se com quantidade de caracteres acima do permitido. \r\n";
         }
 
@@ -783,10 +850,70 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         }
 
         if (StringUtils.isEmpty(item.getNmProduto())) {
-            text += "Nome do produto fornecido pelo cliente enotra-se com valor nulo.";
+            text += "Nome do produto fornecido pelo cliente encontra-se com valor nulo.";
         }
 
         return text;
+    }
+
+    public void editValueNcmOrCestbyInformed(List<ProdutoCenario> result, boolean isNcm) throws Exception {
+        if (!result.isEmpty()) {
+
+            for (ProdutoCenario produtoCenario : result) {
+
+                if (produtoCenario.getProdutoCliente().isIsProdutoGeral()) {
+
+                    //************************ produto geral ****************************
+                    String sqlUpdateProdutoGeral = "update syscontabil.produto_geral set " + (isNcm ? "ncm" : "cest") + " = :valor where ean = :ean";
+
+                    //************************ produtos pendentes ************************
+                    String sqlUpdateProdutoClienteP = "update syscontabil.produto_cliente p  set " + (isNcm ? "ncm_padrao" : "cest_padrao") + " = :valor,rgdata= now(),rgevento = 2"
+                            + " from (select * from syscontabil.produto_cenario ) pc  where pc.produto_cliente_id = p.id and pc.confirmado is false "
+                            + "and p.ativo is true and p.ean = :ean";
+
+                    //************************ produtos validados ************************
+                    String sqlUpdateProdutoClienteV = "update syscontabil.produto_cliente p  set " + (isNcm ? "ncm_informado" : "cst_informado") + " = :valor,"
+                            + "" + (isNcm ? "ncm_padrao" : "cest_padrao") + "= :valor," + (isNcm ? "ncm_confirmado" : "cest_confirmado") + " = :valor,"
+                            + "rgdata= now(),rgevento = 2"
+                            + " from (select * from syscontabil.produto_cenario ) pc  where pc.produto_cliente_id = p.id and pc.confirmado is true and p.ativo is true and p.ean = :ean";
+
+                    for (int i = 0; i < 3; i++) {
+                        em.createNativeQuery(i == 0 ? sqlUpdateProdutoGeral : i == 1 ? sqlUpdateProdutoClienteP : sqlUpdateProdutoClienteV)
+                                .setParameter("valor", isNcm ? produtoCenario.getProdutoCliente().getNcmInformado() : produtoCenario.getProdutoCliente().getCestInformado())
+                                .setParameter("ean", produtoCenario.getProdutoCliente().getEan()).executeUpdate();
+                    }
+
+                    produtoCenario.getProdutoCliente().setNcmPadrao(produtoCenario.getProdutoCliente().getNcmInformado());
+                    if (produtoCenario.isConfirmado()) {
+                        produtoCenario.getProdutoCliente().setNcmConfirmado(produtoCenario.getProdutoCliente().getNcmInformado());
+                    }
+                }
+
+                produtoCenario.getAtributoPadrao().setDataAlteracao(new Date());
+                produtoCenario.getAtributoPadrao().setDominioEvento(DominioEvento.A);
+                produtoCenario.getProdutoCliente().getAtributoPadrao().setDataAlteracao(new Date());
+                produtoCenario.getProdutoCliente().getAtributoPadrao().setDominioEvento(DominioEvento.A);
+
+                produtoCenarioService.update(produtoCenario);
+
+            }
+        }
+
+    }
+
+    public void inactivateProducts(List<ProdutoCenario> result, String log) throws Exception {
+        if (!result.isEmpty()) {
+            for (ProdutoCenario produtoCenario : result) {
+                produtoCenario.getProdutoCliente().setAtivo(false);
+                produtoCenario.getProdutoCliente().setLog(Utils.toCamelCase(log));
+                produtoCenario.getAtributoPadrao().setDataAlteracao(new Date());
+                produtoCenario.getAtributoPadrao().setDominioEvento(DominioEvento.A);
+                produtoCenario.getProdutoCliente().getAtributoPadrao().setDataAlteracao(new Date());
+                produtoCenario.getProdutoCliente().getAtributoPadrao().setDominioEvento(DominioEvento.A);
+                
+                produtoCenarioService.update(produtoCenario);
+            }
+        }
     }
 
 }

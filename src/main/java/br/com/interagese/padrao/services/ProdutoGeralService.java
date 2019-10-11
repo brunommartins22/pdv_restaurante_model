@@ -8,6 +8,7 @@ package br.com.interagese.padrao.services;
 import br.com.interagese.erplibrary.Utils;
 import br.com.interagese.padrao.rest.util.PadraoService;
 import br.com.interagese.syscontabil.models.ProdutoGeral;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,29 +17,33 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ProdutoGeralService extends PadraoService<ProdutoGeral> {
-    
+
     @Override
     public String getWhere(String complementoConsulta) {
         String consultaSQL = "";
 
         if (complementoConsulta != null && !complementoConsulta.trim().equals("")) {
             if (Utils.somenteNumeros(complementoConsulta)) {
-                consultaSQL = "o.id  = " + complementoConsulta +" or "
-                             +"o.ean =" + complementoConsulta + " or "
-                             +"o.ncm  LIKE '%" + complementoConsulta + "%' or "
-                             +"o.cest LIKE '%" + complementoConsulta + "' ";
-                
+                consultaSQL = "o.id  = " + complementoConsulta + " or "
+                        + "o.ean =" + complementoConsulta + " or "
+                        + "o.ncm  LIKE '%" + complementoConsulta + "%' or "
+                        + "o.cest LIKE '%" + complementoConsulta + "' ";
+
             } else {
-                consultaSQL =  "o.nomeProduto  LIKE '%" + complementoConsulta + "%' ";
-                               
+                consultaSQL = "o.nomeProduto  LIKE '%" + complementoConsulta + "%' ";
+
             }
         }
-        
-        System.out.println("consultaSQL: " +consultaSQL);
+
+        System.out.println("consultaSQL: " + consultaSQL);
         setOrder("order by o.id");
         return consultaSQL;
     }
-    
-    
-    
+
+    public List<Object[]> findProdutoGeralByEan(Long ean) {
+        String sqlProdutoGeral = "SELECT o.ncm as ncm,o.cest as cest FROM syscontabil.produto_geral o WHERE o.ean =" + ean;
+
+        return em.createNativeQuery(sqlProdutoGeral).getResultList();
+    }
+
 }

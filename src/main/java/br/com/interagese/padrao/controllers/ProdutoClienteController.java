@@ -7,13 +7,16 @@ package br.com.interagese.padrao.controllers;
 
 import br.com.interagese.padrao.rest.util.IsServiceDefault;
 import br.com.interagese.padrao.rest.util.PadraoController;
-import br.com.interagese.padrao.services.ClienteService;
 import br.com.interagese.padrao.services.ProdutoCenarioService;
 import br.com.interagese.padrao.services.ProdutoClienteService;
+import br.com.interagese.syscontabil.domains.DominioRegras;
 import br.com.interagese.syscontabil.models.ProdutoCenario;
 import br.com.interagese.syscontabil.models.ProdutoCliente;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +35,6 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
     private ProdutoClienteService produtoClienteService;
     @Autowired
     private ProdutoCenarioService produtoCenarioService;
-    @Autowired
-    private ClienteService clienteService;
 
     //**************************************************************************
     @PostMapping(path = "loadClientProductAll")
@@ -69,8 +70,40 @@ public class ProdutoClienteController extends PadraoController<ProdutoCliente> {
     public String confirmClientRule(@RequestBody String json) {
         try {
             ProdutoCenario produtoCenario = (ProdutoCenario) deserializar(json, ProdutoCenario.class);
-            return serializar(produtoClienteService.confirmClientRule(produtoCenario));
+            produtoClienteService.confirmClientRule(produtoCenario, false);
+            return serializar("");
         } catch (Exception ex) {
+            return returnException(ex);
+        }
+    }
+
+    @PostMapping(path = "confirmClientRuleOnBatchProduct")
+    public String confirmClientRuleOnBatchProduct(@RequestBody List<ProdutoCenario> result) {
+        try {
+            produtoClienteService.confirmClientRuleOnBatchProduct(result);
+            return serializar("");
+        } catch (Exception ex) {
+            return returnException(ex);
+        }
+    }
+
+    @PostMapping(path = "editValueNcmOrCestbyInformed/{value}")
+    public String editValueNcmOrCestbyInformed(@RequestBody List<ProdutoCenario> result, @PathVariable boolean value) {
+        try {
+            produtoClienteService.editValueNcmOrCestbyInformed(result, value);
+           return serializar("");
+        } catch (Exception ex) {
+            return returnException(ex);
+        }
+    }
+    
+    
+    @PostMapping(path = "inactivateProducts/{value}")
+    public String inactivateProducts(@RequestBody List<ProdutoCenario> result,@PathVariable String value){
+        try{
+            produtoClienteService.inactivateProducts(result, value);
+            return serializar("");
+        }catch(Exception ex){
             return returnException(ex);
         }
     }
