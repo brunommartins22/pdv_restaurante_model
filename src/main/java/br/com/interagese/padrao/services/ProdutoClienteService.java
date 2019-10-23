@@ -30,6 +30,7 @@ import java.io.FileReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.TypedQuery;
@@ -108,43 +109,70 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
         return null;
     }
 
-    public List<ProdutoCenario> loadProductClientRule(Map resp) throws Exception {
+    public Map loadProductClientRule(Map resp) throws Exception {
 
         List<ProdutoCenario> result = produtoCenarioService.loadProdutoCenarioByClienteById(resp);
+        Integer countInexistentes = 0;
+        Integer countInativos = 0;
+        Integer countValidados = 0;
+        Integer countPendentes = 0;
+        Integer countDivergentes = 0;
+
         if (result == null || result.isEmpty()) {
             throw new Exception("Nenhum registro encontrado na base de dados !!");
-        } else {
-            
-            result.forEach((produtoCenario) -> {
-                produtoCenario.setIsCheck(false);
-                produtoCenario.setStatus(produtoCenario.isDivergente() ? "Pendente" : "Validado");
-                produtoCenario.setDominioRegrasInformadoBotaoDireito(produtoCenario.isConfirmado() ? produtoCenario.getDominioRegrasConfirmado() : produtoCenario.getDominioRegras());
-                produtoCenario.setDominioRegrasInformado(produtoCenario.isConfirmado() ? produtoCenario.getDominioRegrasConfirmado() : produtoCenario.getDominioRegras());
-                if (!StringUtils.isEmpty(produtoCenario.getProdutoCliente().getNcmPadrao()) && produtoCenario.getProdutoCliente().getCestPadrao() != null) {
-                    produtoCenario.getProdutoCliente().setIsProdutoGeral(true);
-                } else {
-                    produtoCenario.getProdutoCliente().setIsProdutoGeral(false);
-                }
-
-                if (produtoCenario.getTributoFederalPadrao() == null) {
-                    produtoCenario.setTributoFederalPadrao(new TributoFederalPadrao());
-                }
-                if (produtoCenario.getTributoEstadualPadrao() == null) {
-                    produtoCenario.setTributoEstadualPadrao(new TributoEstadualPadrao());
-                }
-
-                produtoCenario.setIsEdited(false);
-            });
-            //************************* load count filters *********************
-            Long idCliente = result.get(0).getProdutoCliente().getCliente().getId();
-            Long idCenario = result.get(0).getCenario().getId();
-            CountProdutos produtos = new CountProdutos();
-            produtos.setCountProdutosValidados(produtoCenarioService.getCountProdutosValidados(idCliente,idCenario));
-            produtos.setCountProdutosPendentes(produtoCenarioService.getCountProdutosPendentes(idCliente,idCenario));
-            produtos.setCountProdutosInativos(produtoCenarioService.getCountProdutosInativos(idCliente,idCenario));
-            result.get(0).setCountProdutos(produtos);
         }
-        return result;
+
+        for (ProdutoCenario produtoCenario : result) {
+            produtoCenario.setIsCheck(false);
+            produtoCenario.setStatus(produtoCenario.isDivergente() ? "Pendente" : "Validado");
+            produtoCenario.setDominioRegrasInformadoBotaoDireito(produtoCenario.isConfirmado() ? produtoCenario.getDominioRegrasConfirmado() : produtoCenario.getDominioRegras());
+            produtoCenario.setDominioRegrasInformado(produtoCenario.isConfirmado() ? produtoCenario.getDominioRegrasConfirmado() : produtoCenario.getDominioRegras());
+            if (!StringUtils.isEmpty(produtoCenario.getProdutoCliente().getNcmPadrao()) && produtoCenario.getProdutoCliente().getCestPadrao() != null) {
+                produtoCenario.getProdutoCliente().setIsProdutoGeral(true);
+            } else {
+                produtoCenario.getProdutoCliente().setIsProdutoGeral(false);
+            }
+
+            if (produtoCenario.getTributoFederalPadrao() == null) {
+                produtoCenario.setTributoFederalPadrao(new TributoFederalPadrao());
+            }
+            if (produtoCenario.getTributoEstadualPadrao() == null) {
+                produtoCenario.setTributoEstadualPadrao(new TributoEstadualPadrao());
+            }
+
+            produtoCenario.setIsEdited(false);
+
+            if (!produtoCenario.getProdutoCliente().isAtivo()) {
+                countInativos++;
+            }
+            if (produtoCenario.isConfirmado()) {
+                countValidados++;
+            }
+            if (produtoCenario.isDivergente()) {
+                countPendentes++;
+                countDivergentes++;
+            }
+
+        }
+
+        //************************* load count filters *********************
+//        Long idCliente = result.get(0).getProdutoCliente().getCliente().getId();
+//        Long idCenario = result.get(0).getCenario().getId();
+//        CountProdutos produtos = new CountProdutos();
+//        produtos.setCountProdutosValidados(produtoCenarioService.getCountProdutosValidados(idCliente, idCenario));
+//        produtos.setCountProdutosPendentes(produtoCenarioService.getCountProdutosPendentes(idCliente, idCenario));
+//        produtos.setCountProdutosInativos(produtoCenarioService.getCountProdutosInativos(idCliente, idCenario));
+//        result.get(0).setCountProdutos(produtos);
+        Map map = new HashMap();
+
+        map.put("countInexistentes", countInexistentes);
+        map.put("countInativos", countInativos);
+        map.put("countValidados", countValidados);
+        map.put("countPendentes", countPendentes);
+        map.put("countDivergentes", countDivergentes);
+        map.put("list", result);
+
+        return map;
     }
 
     public void confirmClientRule(ProdutoCenario produtoCenario, boolean isBatch) throws Exception {
@@ -910,7 +938,7 @@ public class ProdutoClienteService extends PadraoService<ProdutoCliente> {
                 produtoCenario.getAtributoPadrao().setDominioEvento(DominioEvento.A);
                 produtoCenario.getProdutoCliente().getAtributoPadrao().setDataAlteracao(new Date());
                 produtoCenario.getProdutoCliente().getAtributoPadrao().setDominioEvento(DominioEvento.A);
-                
+
                 produtoCenarioService.update(produtoCenario);
             }
         }
