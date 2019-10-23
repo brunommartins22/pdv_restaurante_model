@@ -30,7 +30,6 @@ public class ProdutosService implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_produtos_service")
     @SequenceGenerator(name = "gen_produtos_service", sequenceName = "seq_produtos_service")
     private Long id;
-    @Column(nullable = false)
     @ManyToOne()
     private Cliente cliente;
     @ManyToOne()
