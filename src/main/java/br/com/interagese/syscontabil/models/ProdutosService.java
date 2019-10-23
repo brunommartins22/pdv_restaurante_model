@@ -31,9 +31,9 @@ public class ProdutosService implements Serializable {
     @SequenceGenerator(name = "gen_produtos_service", sequenceName = "seq_produtos_service")
     private Long id;
     @Column(nullable = false)
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne()
     private Cliente cliente;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne()
     private Cenario cenario;
     @Column(length = 120, nullable = false)
     private String codigoProduto;
