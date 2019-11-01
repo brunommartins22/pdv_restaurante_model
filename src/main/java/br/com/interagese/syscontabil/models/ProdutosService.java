@@ -7,15 +7,11 @@ package br.com.interagese.syscontabil.models;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -27,15 +23,13 @@ import javax.persistence.Table;
 public class ProdutosService implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_produtos_service")
-    @SequenceGenerator(name = "gen_produtos_service", sequenceName = "seq_produtos_service")
-    private Long id;
+    private String codigoProduto;
+    
     @ManyToOne()
     private Cliente cliente;
     @ManyToOne()
     private Cenario cenario;
-    @Column(length = 120, nullable = false)
-    private String codigoProduto;
+    
     @Column(length = 14)
     private Long ean;
     @Column(length = 255)
@@ -57,7 +51,7 @@ public class ProdutosService implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 19 * hash + Objects.hashCode(this.id);
+        hash = 19 * hash + Objects.hashCode(this.codigoProduto);
         return hash;
     }
 
@@ -73,27 +67,14 @@ public class ProdutosService implements Serializable {
             return false;
         }
         final ProdutosService other = (ProdutosService) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.codigoProduto, other.codigoProduto)) {
             return false;
         }
         return true;
     }
 
     //************************* get && setts ***********************************
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    
     /**
      * @return the cliente
      */
@@ -196,6 +177,9 @@ public class ProdutosService implements Serializable {
      * @return the tributoEstadualCliente
      */
     public TributoEstadualCliente getTributoEstadualCliente() {
+        if(tributoEstadualCliente == null){
+            tributoEstadualCliente = new TributoEstadualCliente();
+        }
         return tributoEstadualCliente;
     }
 
@@ -210,6 +194,9 @@ public class ProdutosService implements Serializable {
      * @return the tributoFederalCliente
      */
     public TributoFederalCliente getTributoFederalCliente() {
+        if(tributoFederalCliente == null){
+            tributoFederalCliente = new TributoFederalCliente();
+        }
         return tributoFederalCliente;
     }
 
