@@ -18,4 +18,11 @@
         <java.version>1.8</java.version>
     </properties>
     <name>pdv_restaurante_model</name>
+    <dependencies>
+        <dependency>
+            <groupId>br.com.interagese.interagese_rest</groupId>
+            <artifactId>interagese_rest</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
