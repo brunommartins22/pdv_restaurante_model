@@ -3,19 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.restaurantemodel.models;
+package br.com.interagese.restaurantemodel.models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -24,23 +20,23 @@ import javax.persistence.Table;
  * @author bruno
  */
 @Entity
-@Table(name = "departamento")
-public class Departamento implements Serializable {
+@Table(name = "unidade")
+public class Unidade implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_departamento")
-    @SequenceGenerator(name = "gen_departamento", sequenceName = "seq_departamento")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_unidade")
+    @SequenceGenerator(name = "gen_unidade",sequenceName = "seq_unidade")
     private Integer id;
     @Column(length = 255,nullable = false)
-    private String nmDepartamento;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Secao> listSecao;
+    private String nmUnidade;
+    @Column(length = 3,nullable = false)
+    private String sigla;
 
-    //******************************* Equals && Hashcode ***********************
+    //***************************** equals && hashcode *************************
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.id);
+        hash = 71 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -55,14 +51,14 @@ public class Departamento implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Departamento other = (Departamento) obj;
+        final Unidade other = (Unidade) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return true;
     }
+//*************************** get && setts *********************************
 
-    //******************************* get && setts *****************************
     public Integer getId() {
         return id;
     }
@@ -71,23 +67,32 @@ public class Departamento implements Serializable {
         this.id = id;
     }
 
-    public String getNmDepartamento() {
-        return nmDepartamento;
+    /**
+     * @return the nmUnidade
+     */
+    public String getNmUnidade() {
+        return nmUnidade;
     }
 
-    public void setNmDepartamento(String nmDepartamento) {
-        this.nmDepartamento = nmDepartamento;
+    /**
+     * @param nmUnidade the nmUnidade to set
+     */
+    public void setNmUnidade(String nmUnidade) {
+        this.nmUnidade = nmUnidade;
     }
 
-    public List<Secao> getListSecao() {
-        if (listSecao == null) {
-            listSecao = new ArrayList<>();
-        }
-        return listSecao;
+    /**
+     * @return the sigla
+     */
+    public String getSigla() {
+        return sigla;
     }
 
-    public void setListSecao(List<Secao> listSecao) {
-        this.listSecao = listSecao;
+    /**
+     * @param sigla the sigla to set
+     */
+    public void setSigla(String sigla) {
+        this.sigla = sigla;
     }
 
 }

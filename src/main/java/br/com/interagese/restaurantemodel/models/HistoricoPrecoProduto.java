@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.restaurantemodel.models;
+package br.com.interagese.restaurantemodel.models;
 
 import java.io.Serializable;
 import java.util.Date;
