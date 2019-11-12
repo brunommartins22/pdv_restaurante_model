@@ -5,45 +5,50 @@
  */
 package br.com.interagese.restaurantemodel.models;
 
+import br.com.interagese.erplibrary.AtributoPadrao;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-/**
- *
- * @author bruno
- */
+
+
+
 @Entity
 @Table(name = "departamento")
 public class Departamento implements Serializable {
-
+   
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_departamento")
-    @SequenceGenerator(name = "gen_departamento", sequenceName = "seq_departamento")
-    private Integer id;
-    @Column(length = 255,nullable = false)
-    private String nmDepartamento;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Secao> listSecao;
+    @GeneratedValue(generator = "gen_departamento", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name="gen_departamento", initialValue=1, allocationSize=1, sequenceName = "seq_departamento")  
+    private Long id;
+    @Column(nullable = false)
+    private String nomeDepartamento;
+    @ManyToOne
+    private Secao secao;
+    @Transient
+    private String nmSecao;
+    @Embedded
+    private AtributoPadrao atributoPadrao;
 
-    //******************************* Equals && Hashcode ***********************
+    //**************************************************************************
+       
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.id);
+        int hash = 3;
+        hash = 29 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -61,33 +66,48 @@ public class Departamento implements Serializable {
         }
         return true;
     }
+    
 
-    //******************************* get && setts *****************************
-    public Integer getId() {
+    //*************************************************************************
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getNmDepartamento() {
-        return nmDepartamento;
+    public String getNomeDepartamento() {
+        return nomeDepartamento;
     }
 
-    public void setNmDepartamento(String nmDepartamento) {
-        this.nmDepartamento = nmDepartamento;
+    public void setNomeDepartamento(String nomeDepartamento) {
+        this.nomeDepartamento = nomeDepartamento;
     }
 
-    public List<Secao> getListSecao() {
-        if (listSecao == null) {
-            listSecao = new ArrayList<>();
-        }
-        return listSecao;
+    public Secao getSecao() {
+        return secao;
     }
 
-    public void setListSecao(List<Secao> listSecao) {
-        this.listSecao = listSecao;
+    public void setSecao(Secao secao) {
+        this.secao = secao;
     }
 
+    public AtributoPadrao getAtributoPadrao() {
+        return atributoPadrao;
+    }
+
+    public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
+        this.atributoPadrao = atributoPadrao;
+    }
+
+    public String getNmSecao() {
+        return nmSecao;
+    }
+
+    public void setNmSecao(String nmSecao) {
+        this.nmSecao = nmSecao;
+    }
+    
 }

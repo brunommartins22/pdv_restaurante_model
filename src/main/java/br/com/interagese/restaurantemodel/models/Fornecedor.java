@@ -5,9 +5,11 @@
  */
 package br.com.interagese.restaurantemodel.models;
 
+import br.com.interagese.erplibrary.AtributoPadrao;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,6 +34,8 @@ public class Fornecedor implements Serializable {
     private String nmFornecedor;
     @ManyToOne(cascade = CascadeType.ALL)
     private Pessoa pessoa;
+    @Embedded
+    private AtributoPadrao atributoPadrao;
 
     public Integer getId() {
         return id;
@@ -55,6 +59,14 @@ public class Fornecedor implements Serializable {
 
     public void setPessoa(Pessoa pessoa) {
         this.pessoa = pessoa;
+    }
+
+    public AtributoPadrao getAtributoPadrao() {
+        return atributoPadrao;
+    }
+
+    public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
+        this.atributoPadrao = atributoPadrao;
     }
 
 }
