@@ -15,30 +15,29 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 
 /**
  *
  * @author Bruno Martins
  */
 @Entity
-@Table(name = "cliente")
-public class Cliente implements Serializable {
+@Table(name = "mesa")
+public class Mesa implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_cliente")
-    @SequenceGenerator(name = "gen_cliente", sequenceName = "seq_cliente")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_mesa")
+    @SequenceGenerator(name = "gen_mesa", sequenceName = "seq_mesa")
     private Long id;
-
+    private Integer numeroMesa;
+    private Integer quantidadePessoas;
     @ManyToOne(cascade = CascadeType.ALL)
-    private Pessoa pessoa;
-    private boolean ativo;
+    private Ambiente ambiente;
 
-    //************************** Equals && Hashcode ****************************
+    //*********************** Equals && Hashcode *******************************
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 41 * hash + Objects.hashCode(this.getId());
+        int hash = 7;
+        hash = 41 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -53,14 +52,14 @@ public class Cliente implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Cliente other = (Cliente) obj;
+        final Mesa other = (Mesa) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return true;
     }
-    //*************************** get && setts *********************************
 
+    //************************** get && setts **********************************
     /**
      * @return the id
      */
@@ -76,30 +75,45 @@ public class Cliente implements Serializable {
     }
 
     /**
-     * @return the pessoa
+     * @return the numeroMesa
      */
-    public Pessoa getPessoa() {
-        return pessoa;
+    public Integer getNumeroMesa() {
+        return numeroMesa;
     }
 
     /**
-     * @param pessoa the pessoa to set
+     * @param numeroMesa the numeroMesa to set
      */
-    public void setPessoa(Pessoa pessoa) {
-        this.pessoa = pessoa;
+    public void setNumeroMesa(Integer numeroMesa) {
+        this.numeroMesa = numeroMesa;
     }
 
     /**
-     * @return the ativo
+     * @return the quantidadePessoas
      */
-    public boolean isAtivo() {
-        return ativo;
+    public Integer getQuantidadePessoas() {
+        return quantidadePessoas;
     }
 
     /**
-     * @param ativo the ativo to set
+     * @param quantidadePessoas the quantidadePessoas to set
      */
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
+    public void setQuantidadePessoas(Integer quantidadePessoas) {
+        this.quantidadePessoas = quantidadePessoas;
     }
+
+    /**
+     * @return the ambiente
+     */
+    public Ambiente getAmbiente() {
+        return ambiente;
+    }
+
+    /**
+     * @param ambiente the ambiente to set
+     */
+    public void setAmbiente(Ambiente ambiente) {
+        this.ambiente = ambiente;
+    }
+
 }

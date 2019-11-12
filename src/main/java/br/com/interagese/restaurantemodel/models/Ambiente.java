@@ -7,38 +7,34 @@ package br.com.interagese.restaurantemodel.models;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 
 /**
  *
  * @author Bruno Martins
  */
 @Entity
-@Table(name = "cliente")
-public class Cliente implements Serializable {
-
+@Table(name = "ambiente")
+public class Ambiente implements Serializable{
+    
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_cliente")
-    @SequenceGenerator(name = "gen_cliente", sequenceName = "seq_cliente")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "gen_ambiente")
+    @SequenceGenerator(name = "gen_ambiente",sequenceName = "seq_ambiente")
     private Long id;
+    private String nomeAmbiente;
+    
+    //*************************** Equals && Hashcode ***************************
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Pessoa pessoa;
-    private boolean ativo;
-
-    //************************** Equals && Hashcode ****************************
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 41 * hash + Objects.hashCode(this.getId());
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.getId());
         return hash;
     }
 
@@ -53,13 +49,14 @@ public class Cliente implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Cliente other = (Cliente) obj;
+        final Ambiente other = (Ambiente) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return true;
     }
-    //*************************** get && setts *********************************
+    
+    //**************************** get && setts ********************************
 
     /**
      * @return the id
@@ -76,30 +73,19 @@ public class Cliente implements Serializable {
     }
 
     /**
-     * @return the pessoa
+     * @return the nomeAmbiente
      */
-    public Pessoa getPessoa() {
-        return pessoa;
+    public String getNomeAmbiente() {
+        return nomeAmbiente;
     }
 
     /**
-     * @param pessoa the pessoa to set
+     * @param nomeAmbiente the nomeAmbiente to set
      */
-    public void setPessoa(Pessoa pessoa) {
-        this.pessoa = pessoa;
+    public void setNomeAmbiente(String nomeAmbiente) {
+        this.nomeAmbiente = nomeAmbiente;
     }
-
-    /**
-     * @return the ativo
-     */
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    /**
-     * @param ativo the ativo to set
-     */
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
-    }
+    
+    
+    
 }

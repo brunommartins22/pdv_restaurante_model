@@ -35,8 +35,8 @@ public class Pessoa implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_pessoa")
     @SequenceGenerator(name = "gen_pessoa", sequenceName = "seq_pessoa")
     private Long id;
-    @Column(length = 255)
-    private String nmPessoa;
+    @Column(length = 255,nullable = false)
+    private String nomePessoa;
     @Column(length = 17)
     private String cpfCnpj;
     @Column(length = 7)
@@ -97,13 +97,7 @@ public class Pessoa implements Serializable {
         this.id = id;
     }
 
-    public String getNmPessoa() {
-        return nmPessoa;
-    }
-
-    public void setNmPessoa(String nmPessoa) {
-        this.nmPessoa = nmPessoa;
-    }
+  
 
     /**
      * @return the cpfCnpj
@@ -187,6 +181,20 @@ public class Pessoa implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * @return the nomePessoa
+     */
+    public String getNomePessoa() {
+        return nomePessoa;
+    }
+
+    /**
+     * @param nomePessoa the nomePessoa to set
+     */
+    public void setNomePessoa(String nomePessoa) {
+        this.nomePessoa = nomePessoa;
     }
 
 }

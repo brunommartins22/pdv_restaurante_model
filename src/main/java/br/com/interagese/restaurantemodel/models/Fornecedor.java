@@ -8,7 +8,6 @@ package br.com.interagese.restaurantemodel.models;
 import br.com.interagese.erplibrary.AtributoPadrao;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,8 +29,6 @@ public class Fornecedor implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_fornecedor")
     @SequenceGenerator(name = "gen_fornecedor", sequenceName = "seq_fornecedor")
     private Integer id;
-    @Column(length = 255,nullable = false)
-    private String nmFornecedor;
     @ManyToOne(cascade = CascadeType.ALL)
     private Pessoa pessoa;
     @Embedded
@@ -45,13 +42,6 @@ public class Fornecedor implements Serializable {
         this.id = id;
     }
 
-    public String getNmFornecedor() {
-        return nmFornecedor;
-    }
-
-    public void setNmFornecedor(String nmFornecedor) {
-        this.nmFornecedor = nmFornecedor;
-    }
 
     public Pessoa getPessoa() {
         return pessoa;
