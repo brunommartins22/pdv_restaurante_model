@@ -28,7 +28,7 @@ public class Cliente implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_cliente")
     @SequenceGenerator(name = "gen_cliente", sequenceName = "seq_cliente")
-    private Integer id;
+    private Long id;
     @Size(max = 255)
     private String nmCliente;
     @ManyToOne(cascade = CascadeType.ALL)
@@ -65,14 +65,14 @@ public class Cliente implements Serializable {
     /**
      * @return the id
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

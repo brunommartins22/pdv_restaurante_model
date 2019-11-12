@@ -34,7 +34,7 @@ public class Pessoa implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_pessoa")
     @SequenceGenerator(name = "gen_pessoa", sequenceName = "seq_pessoa")
-    private Integer id;
+    private Long id;
     @Column(length = 255)
     private String nmPessoa;
     @Column(length = 17)
@@ -89,11 +89,11 @@ public class Pessoa implements Serializable {
     }
     //*************************** get && setts *********************************
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
