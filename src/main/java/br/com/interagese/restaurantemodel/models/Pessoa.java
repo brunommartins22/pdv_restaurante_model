@@ -5,14 +5,19 @@
  */
 package br.com.interagese.restaurantemodel.models;
 
+import br.com.interagese.erplibrary.AtributoPadrao;
 import br.com.interagese.erplibrary.Utils;
+import br.com.interagese.rest.domain.DominioTipoPessoa;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -35,22 +40,27 @@ public class Pessoa implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_pessoa")
     @SequenceGenerator(name = "gen_pessoa", sequenceName = "seq_pessoa")
     private Long id;
-    @Column(length = 255,nullable = false)
+    @Column(length = 255, nullable = false)
     private String nomePessoa;
+    @Column(length = 255)
+    private String nomeFantasia;
     @Column(length = 17)
     private String cpfCnpj;
-    @Column(length = 7)
-    private String rg;
     @Column(length = 12)
-    private String ie;
+    private String ieRg;
     @Column(length = 255)
     private String email;
     @Fetch(FetchMode.SELECT)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Endereco> listEndereco;
     @Fetch(FetchMode.SELECT)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Telefone> listTelefone;
+    @Column(length = 30, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DominioTipoPessoa tipoPessoa;
+    @Embedded
+    private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
     public String getCpfCnpjDesc() {
         String result = "";
@@ -96,8 +106,6 @@ public class Pessoa implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
-  
 
     /**
      * @return the cpfCnpj
@@ -147,34 +155,6 @@ public class Pessoa implements Serializable {
         this.listTelefone = listTelefone;
     }
 
-    /**
-     * @return the rg
-     */
-    public String getRg() {
-        return rg;
-    }
-
-    /**
-     * @param rg the rg to set
-     */
-    public void setRg(String rg) {
-        this.rg = rg;
-    }
-
-    /**
-     * @return the ie
-     */
-    public String getIe() {
-        return ie;
-    }
-
-    /**
-     * @param ie the ie to set
-     */
-    public void setIe(String ie) {
-        this.ie = ie;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -195,6 +175,38 @@ public class Pessoa implements Serializable {
      */
     public void setNomePessoa(String nomePessoa) {
         this.nomePessoa = nomePessoa;
+    }
+
+    public DominioTipoPessoa getTipoPessoa() {
+        return tipoPessoa;
+    }
+
+    public void setTipoPessoa(DominioTipoPessoa tipoPessoa) {
+        this.tipoPessoa = tipoPessoa;
+    }
+
+    public AtributoPadrao getAtributoPadrao() {
+        return atributoPadrao;
+    }
+
+    public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
+        this.atributoPadrao = atributoPadrao;
+    }
+
+    public String getNomeFantasia() {
+        return nomeFantasia;
+    }
+
+    public void setNomeFantasia(String nomeFantasia) {
+        this.nomeFantasia = nomeFantasia;
+    }
+
+    public String getIeRg() {
+        return ieRg;
+    }
+
+    public void setIeRg(String ieRg) {
+        this.ieRg = ieRg;
     }
 
 }
