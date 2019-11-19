@@ -39,7 +39,7 @@ public class Endereco implements Serializable{
     @Column(length = 255)
     private String complemento;
     @Column(length = 120)
-    private String numero;
+        private String numero;
     @ManyToOne
     private Cidade cidade;
     @ManyToOne
