@@ -44,7 +44,7 @@ public class Pessoa implements Serializable {
     private String nomePessoa;
     @Column(length = 255)
     private String nomeFantasia;
-    @Column(length = 17)
+    @Column(length = 20)
     private String cpfCnpj;
     @Column(length = 12)
     private String ieRg;

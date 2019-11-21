@@ -5,9 +5,11 @@
  */
 package br.com.interagese.restaurantemodel.models;
 
+import br.com.interagese.erplibrary.AtributoPadrao;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,6 +42,8 @@ public class Telefone implements Serializable {
     @Column(length = 1)
     private String nmOperadora;
     private boolean ativo;
+    @Embedded
+    private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
     public String getTipoTelefoneDesc() {
         String result = "";
@@ -162,6 +166,14 @@ public class Telefone implements Serializable {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public AtributoPadrao getAtributoPadrao() {
+        return atributoPadrao;
+    }
+
+    public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
+        this.atributoPadrao = atributoPadrao;
     }
 
 }

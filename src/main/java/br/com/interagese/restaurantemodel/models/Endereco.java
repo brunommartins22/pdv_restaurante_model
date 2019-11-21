@@ -5,11 +5,13 @@
  */
 package br.com.interagese.restaurantemodel.models;
 
+import br.com.interagese.erplibrary.AtributoPadrao;
 import br.com.interagese.padrao.rest.models.Cidade;
 import br.com.interagese.padrao.rest.models.Estado;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -39,12 +41,14 @@ public class Endereco implements Serializable{
     @Column(length = 255)
     private String complemento;
     @Column(length = 120)
-        private String numero;
+    private String numero;
     @ManyToOne
     private Cidade cidade;
     @ManyToOne
     private Estado estado;
     private boolean ativo;
+    @Embedded
+    private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
     //************************** Equals && Hashcode ****************************
     @Override
@@ -185,6 +189,14 @@ public class Endereco implements Serializable{
      */
     public void setEstado(Estado estado) {
         this.estado = estado;
+    }
+
+    public AtributoPadrao getAtributoPadrao() {
+        return atributoPadrao;
+    }
+
+    public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
+        this.atributoPadrao = atributoPadrao;
     }
 
 
