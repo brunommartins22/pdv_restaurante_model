@@ -7,6 +7,7 @@ package br.com.interagese.restaurantemodel.models;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,7 +28,11 @@ public class Ambiente implements Serializable{
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "gen_ambiente")
     @SequenceGenerator(name = "gen_ambiente",sequenceName = "seq_ambiente")
     private Long id;
+    @Column(length = 120,nullable = false)
     private String nomeAmbiente;
+    @Column(nullable = false)
+    private Integer quantidadeMesas;
+    private boolean ativo;
     
     //*************************** Equals && Hashcode ***************************
 
@@ -84,6 +89,28 @@ public class Ambiente implements Serializable{
      */
     public void setNomeAmbiente(String nomeAmbiente) {
         this.nomeAmbiente = nomeAmbiente;
+    }
+
+    /**
+     * @return the quantidadeMesas
+     */
+    public Integer getQuantidadeMesas() {
+        return quantidadeMesas;
+    }
+
+    /**
+     * @param quantidadeMesas the quantidadeMesas to set
+     */
+    public void setQuantidadeMesas(Integer quantidadeMesas) {
+        this.quantidadeMesas = quantidadeMesas;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
     
     

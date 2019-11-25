@@ -6,13 +6,15 @@
 package br.com.interagese.restaurantemodel.models;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -28,10 +30,13 @@ public class Mesa implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_mesa")
     @SequenceGenerator(name = "gen_mesa", sequenceName = "seq_mesa")
     private Long id;
+    @Column(nullable = false)
     private Integer numeroMesa;
+    @Column(nullable = false)
     private Integer quantidadePessoas;
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Ambiente ambiente;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Ambiente> listaAmbientes;
+    private boolean ativo;
 
     //*********************** Equals && Hashcode *******************************
     @Override
@@ -102,18 +107,21 @@ public class Mesa implements Serializable {
         this.quantidadePessoas = quantidadePessoas;
     }
 
-    /**
-     * @return the ambiente
-     */
-    public Ambiente getAmbiente() {
-        return ambiente;
+
+    public List<Ambiente> getListaAmbientes() {
+        return listaAmbientes;
     }
 
-    /**
-     * @param ambiente the ambiente to set
-     */
-    public void setAmbiente(Ambiente ambiente) {
-        this.ambiente = ambiente;
+    public void setListaAmbientes(List<Ambiente> listaAmbientes) {
+        this.listaAmbientes = listaAmbientes;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 
 }
