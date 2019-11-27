@@ -5,9 +5,11 @@
  */
 package br.com.interagese.restaurantemodel.models;
 
+import br.com.interagese.erplibrary.AtributoPadrao;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -33,6 +35,8 @@ public class Cliente implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     private Pessoa pessoa;
     private boolean ativo;
+    @Embedded
+    private AtributoPadrao atributoPadrao = new AtributoPadrao();
 
     //************************** Equals && Hashcode ****************************
     @Override
@@ -101,5 +105,13 @@ public class Cliente implements Serializable {
      */
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public AtributoPadrao getAtributoPadrao() {
+        return atributoPadrao;
+    }
+
+    public void setAtributoPadrao(AtributoPadrao atributoPadrao) {
+        this.atributoPadrao = atributoPadrao;
     }
 }
