@@ -6,17 +6,15 @@
 package br.com.interagese.restaurantemodel.models;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -34,9 +32,15 @@ public class Mesa implements Serializable {
     private Integer numeroMesa;
     @Column(nullable = false)
     private Integer quantidadePessoas;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Ambiente> listaAmbientes;
+    /**
+     * 0-Livre,1-Em uso
+     */
+    private boolean status;
     private boolean ativo;
+    @Transient
+    private String numeroMesaDesc;
+    @Transient
+    private String quantidadePessoasDesc;
 
     //*********************** Equals && Hashcode *******************************
     @Override
@@ -107,21 +111,54 @@ public class Mesa implements Serializable {
         this.quantidadePessoas = quantidadePessoas;
     }
 
-
-    public List<Ambiente> getListaAmbientes() {
-        return listaAmbientes;
-    }
-
-    public void setListaAmbientes(List<Ambiente> listaAmbientes) {
-        this.listaAmbientes = listaAmbientes;
-    }
-
     public boolean isAtivo() {
         return ativo;
     }
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+
+    /**
+     * @return the numeroMesaDesc
+     */
+    public String getNumeroMesaDesc() {
+        return numeroMesaDesc;
+    }
+
+    /**
+     * @param numeroMesaDesc the numeroMesaDesc to set
+     */
+    public void setNumeroMesaDesc(String numeroMesaDesc) {
+        this.numeroMesaDesc = numeroMesaDesc;
+    }
+
+    /**
+     * @return the quantidadePessoasDesc
+     */
+    public String getQuantidadePessoasDesc() {
+        return quantidadePessoasDesc;
+    }
+
+    /**
+     * @param quantidadePessoasDesc the quantidadePessoasDesc to set
+     */
+    public void setQuantidadePessoasDesc(String quantidadePessoasDesc) {
+        this.quantidadePessoasDesc = quantidadePessoasDesc;
+    }
+
+    /**
+     * @return the status
+     */
+    public boolean isStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
 }
