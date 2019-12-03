@@ -29,7 +29,7 @@ public class Cliente implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_cliente")
-    @SequenceGenerator(name = "gen_cliente", sequenceName = "seq_cliente")
+    @SequenceGenerator(name = "gen_cliente", initialValue=1, allocationSize=1, sequenceName = "seq_cliente")
     private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)

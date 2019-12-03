@@ -27,7 +27,7 @@ public class Fornecedor implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_fornecedor")
-    @SequenceGenerator(name = "gen_fornecedor", sequenceName = "seq_fornecedor")
+    @SequenceGenerator(name = "gen_fornecedor", initialValue=1, allocationSize=1, sequenceName = "seq_fornecedor")
     private Long id;
     @ManyToOne(cascade = CascadeType.ALL)
     private Pessoa pessoa;
